@@ -11,6 +11,7 @@ export const actionIntentSchema = z.enum([
   "create_cash_income",
   "create_cash_expense",
   "create_company_constitution",
+  "create_transaction_from_document",
 ]);
 
 export const financialPayloadSchema = z.object({
@@ -19,6 +20,8 @@ export const financialPayloadSchema = z.object({
   category: z.string().min(1),
   description: z.string().min(1),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Debe ser YYYY-MM-DD"),
+  document_id: z.string().optional(),
+  document_name: z.string().optional(),
 });
 
 export const constitutionPayloadSchema = z.object({
@@ -106,6 +109,7 @@ export const aiIntentSchema = z.enum([
   "create_cash_income",
   "create_cash_expense",
   "create_company_constitution",
+  "create_transaction_from_document",
   "none",
 ]);
 
@@ -115,6 +119,8 @@ export const aiFinancialPayloadSchema = z.object({
   category: z.string().min(1),
   description: z.string().min(1),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Debe ser YYYY-MM-DD"),
+  document_id: z.string().optional(),
+  document_name: z.string().optional(),
 });
 
 export const aiConstitutionPayloadSchema = z.object({
@@ -276,3 +282,92 @@ export type CreateBusinessDiagnosisInput = z.infer<typeof createBusinessDiagnosi
 export type AIBusinessDiagnosisClassifier = z.infer<typeof aiBusinessDiagnosisClassifierSchema>;
 export type AIBusinessDiagnosisEmitter = z.infer<typeof aiBusinessDiagnosisEmitterSchema>;
 export type AIBusinessDiagnosisInterpretation = z.infer<typeof aiBusinessDiagnosisInterpretationSchema>;
+
+// ------------------------------------------------------------------
+// Schemas para documentos (Fase 4A)
+// ------------------------------------------------------------------
+
+export const documentFolderSchema = z.enum([
+  "legal",
+  "tributario",
+  "rrhh",
+  "operaciones",
+]);
+
+export const documentStatusSchema = z.enum([
+  "uploaded",
+  "pending_analysis",
+  "analyzed",
+  "confirmed",
+  "rejected",
+  "failed",
+]);
+
+export const documentRecordSchema = z.object({
+  id: z.string(),
+  company_id: z.string(),
+  name: z.string(),
+  folder: documentFolderSchema,
+  file_type: z.string(),
+  mime_type: z.string().optional(),
+  file_size: z.number().int().optional(),
+  storage_bucket: z.string(),
+  storage_path: z.string().optional(),
+  status: documentStatusSchema,
+  source: z.string(),
+  extracted_payload: z.record(z.string(), z.unknown()).optional(),
+  linked_agent_action_id: z.string().optional(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const createDocumentInputSchema = z.object({
+  company_id: z.string(),
+  name: z.string().min(1),
+  folder: documentFolderSchema,
+  file_type: z.string().min(1),
+  mime_type: z.string().optional(),
+  file_size: z.number().int().optional(),
+  storage_bucket: z.string(),
+  storage_path: z.string().optional(),
+  status: documentStatusSchema.default("uploaded"),
+  source: z.string().default("manual_upload"),
+});
+
+export const uploadDocumentResponseSchema = z.object({
+  success: z.boolean(),
+  data: documentRecordSchema,
+});
+
+export type DocumentFolder = z.infer<typeof documentFolderSchema>;
+export type DocumentStatus = z.infer<typeof documentStatusSchema>;
+export type Document = z.infer<typeof documentRecordSchema>;
+export type CreateDocumentInput = z.infer<typeof createDocumentInputSchema>;
+export type UploadDocumentResponse = z.infer<typeof uploadDocumentResponseSchema>;
+
+// ------------------------------------------------------------------
+// Schemas para extracción documental (Fase 4B)
+// ------------------------------------------------------------------
+
+export const documentExtractionSchema = z.object({
+  mode: z.literal("mock"),
+  document_kind: z.enum([
+    "invoice",
+    "receipt",
+    "contract",
+    "tax_certificate",
+    "unknown",
+  ]),
+  issuer_name: z.string().optional(),
+  issuer_rut: z.string().optional(),
+  document_date: z.string().optional(),
+  total_amount: z.number().optional(),
+  currency: z.string().default("CLP"),
+  suggested_folder: documentFolderSchema.optional(),
+  suggested_category: z.string().optional(),
+  confidence: z.number().min(0).max(1),
+  warnings: z.array(z.string()).default([]),
+  fields_detected: z.record(z.string(), z.unknown()).default({}),
+});
+
+export type DocumentExtraction = z.infer<typeof documentExtractionSchema>;

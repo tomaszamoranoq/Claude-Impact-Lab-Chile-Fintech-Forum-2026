@@ -104,15 +104,21 @@ export async function confirmAgentAction(
       );
     }
 
+    const payload = action.proposed_payload;
+    const documentReference = isFinancialPayload(payload) && payload.document_name
+      ? payload.document_name
+      : undefined;
+
     const transaction: CashTransaction = {
       id: generateId("tx"),
       company_id: action.company_id,
-      type: action.proposed_payload.type,
-      amount: action.proposed_payload.amount,
-      category: action.proposed_payload.category,
-      date: action.proposed_payload.date,
-      description: action.proposed_payload.description,
+      type: payload.type,
+      amount: payload.amount,
+      category: payload.category,
+      date: payload.date,
+      description: payload.description,
       status: "confirmed",
+      document_reference: documentReference,
       created_at: now,
     };
 

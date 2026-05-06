@@ -33,9 +33,17 @@ ANTHROPIC_API_KEY=sk-ant-...
 
 1. Crea un proyecto en [Supabase](https://supabase.com).
 2. Ve al **SQL Editor** y ejecuta el contenido de [`docs/supabase-schema.sql`](docs/supabase-schema.sql).
-3. Esto crea las tablas `companies`, `agent_actions`, `cash_transactions` y `business_diagnoses`, junto con los índices y datos iniciales (empresa mock y transacciones de la panadería).
+3. Esto crea las tablas `companies`, `agent_actions`, `cash_transactions`, `business_diagnoses` y `documents`, junto con los índices y datos iniciales (empresa mock y transacciones de la panadería).
 
-> **Recordatorio Fase 3C:** Si tu base de datos ya estaba configurada antes de Fase 3C, vuelve a ejecutar `docs/supabase-schema.sql` en el SQL Editor. El script es idempotente y agregará la nueva tabla `business_diagnoses` sin afectar los datos existentes.
+> **Recordatorio Fase 4A:** Si tu base de datos ya estaba configurada antes de Fase 4A, vuelve a ejecutar `docs/supabase-schema.sql` en el SQL Editor. El script es idempotente y agregará la nueva tabla `documents` sin afectar los datos existentes.
+
+4. Crea el bucket privado `company-documents` en **Supabase Storage**:
+   - Ve a Storage en el dashboard de Supabase.
+   - Crea un nuevo bucket llamado `company-documents`.
+   - Mantenlo como **privado** (no público).
+   - No se requieren políticas de acceso adicionales para la demo actual, ya que el backend usa `SUPABASE_SERVICE_ROLE_KEY`.
+
+> **Nota:** Las descargas directas con signed URLs quedarán para una fase posterior.
 
 ### Stack
 
@@ -133,7 +141,39 @@ ANTHROPIC_API_KEY=sk-ant-...
 
 - **Atomicidad:** la confirmación de una acción financiera implica dos queries sucesivas (update de acción + insert de transacción). Si falla la segunda, la acción queda como `executed` sin transacción asociada. Esto es aceptable para la demo single-tenant actual; la atomicidad real se abordará en una fase posterior.
 - Sin autenticación: `company_id` y `user_id` son mocks fijos.
-- Sin Supabase Storage, pgvector, IA real ni integración SII.
+- Sin pgvector, IA real ni integración SII.
+
+### Fase 4A — Carga de documentos PDF/foto con Supabase Storage
+
+- Tabla `documents` en Supabase para metadata de archivos.
+- Bucket privado `company-documents` en Supabase Storage.
+- Página `/app/documentos` permite subir PDF/PNG/JPEG (máx. 5 MB) a carpetas: Legal, Tributario, RRHH, Operaciones.
+- El archivo se guarda en Storage y su metadata en la tabla `documents` con `status: uploaded`.
+- Botón "Analizar" simula extracción sin usar Claude Vision: cambia el status a `analyzed` y guarda un `extracted_payload` mock explícito.
+- **No se crean `agent_actions` ni `cash_transactions` al subir o analizar documentos.**
+- Flujo actual: Upload → metadata en DB → `uploaded` → Analizar → `analyzed` (mock).
+- Flujo futuro: Vision extraction → documento tributario confirmable → pago/caja separado.
+- Sin signed URLs todavía; el acceso a archivos queda para una fase posterior.
+
+### Fase 4B — Extracción documental mock-controlada con propuesta confirmable
+
+- El análisis documental es **100% mock y determinístico**: clasifica según el nombre del archivo, carpeta y tipo, sin OCR ni Claude Vision.
+- Al hacer click en "Analizar", el sistema genera una propuesta estructurada (`DocumentExtraction`) con campos como tipo de documento, emisor, monto, categoría sugerida, confianza y advertencias.
+- La propuesta queda guardada en `documents.extracted_payload` y se muestra en una fila expandida dentro de la tabla de documentos.
+- Montos mock son determinísticos (ej. factura de harina = $120.000, boleta = $25.000) para que la demo sea reproducible.
+- **No se crean `agent_actions` ni `cash_transactions` al analizar documentos.**
+- Botón "Confirmar extracción" está visible pero deshabilitado, con copy "Disponible en próxima fase".
+- Próxima fase: convertir la extracción confirmada en propuesta operativa (factura, pago, caja) con confirmación humana explícita.
+
+### Fase 4C — Confirmación documental controlada
+
+- Al confirmar una extracción documental operable (`invoice` o `receipt` con monto), el sistema crea una `agent_action` con status `proposed` e intent `create_transaction_from_document`.
+- El documento pasa a `status: confirmed` y se vincula a la acción mediante `linked_agent_action_id`.
+- **No se crea `cash_transaction` al confirmar la extracción.** La ejecución real queda en `/app/acciones-ia`.
+- Documentos no operables (`contract`, `tax_certificate`, `unknown`) no generan acción y permanecen en `analyzed`.
+- En `/app/acciones-ia`, las acciones desde documento muestran intent "Registrar desde documento" con el monto, categoría y fecha detectados.
+- Al confirmar la acción en Acciones IA, se crea la transacción de caja con `document_reference` apuntando al nombre del documento.
+- Flujo completo: Documento → Analizar → Confirmar extracción → Acción propuesta → Confirmar en Acciones IA → Transacción de caja.
 
 ### Endpoints API
 
@@ -148,6 +188,10 @@ ANTHROPIC_API_KEY=sk-ant-...
 | POST | `/api/interpret-business-diagnosis` | Interpretar diagnóstico de negocio con IA (Claude) |
 | POST | `/api/business-diagnosis` | Crear diagnóstico de negocio |
 | GET | `/api/business-diagnosis/latest` | Obtener último diagnóstico de negocio |
+| GET | `/api/documents` | Listar documentos de la empresa |
+| POST | `/api/documents/upload` | Subir documento a Supabase Storage |
+| POST | `/api/documents/[id]/analyze` | Simular análisis de documento (mock, sin Vision) |
+| POST | `/api/documents/[id]/confirm-extraction` | Confirmar extracción y crear acción propuesta |
 
 ## Enfoque del MVP
 
@@ -156,7 +200,7 @@ ANTHROPIC_API_KEY=sk-ant-...
 - Empresa en un Dia.
 - Empresario Individual, EIRL y SpA.
 - Regimen PROPYME General con Contabilidad Simplificada.
-- Carga manual de documentos/XML en la primera version.
+- Carga manual de documentos PDF/foto con organización por carpetas.
 - IA con respuestas trazables, fuentes y confirmacion humana antes de ejecutar acciones.
 
 ## Documentos Iniciales

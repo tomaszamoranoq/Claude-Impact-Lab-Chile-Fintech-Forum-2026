@@ -92,6 +92,36 @@ create index if not exists idx_business_diagnoses_company_created
   on business_diagnoses(company_id, created_at desc);
 
 -- -----------------------------------------------------------
+-- Tabla: documents (Fase 4A)
+-- -----------------------------------------------------------
+create table if not exists documents (
+  id uuid primary key default gen_random_uuid(),
+  company_id text not null references companies(id) on delete cascade,
+  name text not null,
+  folder text not null check (folder in ('legal', 'tributario', 'rrhh', 'operaciones')),
+  file_type text not null,
+  mime_type text,
+  file_size integer,
+  storage_bucket text not null default 'company-documents',
+  storage_path text,
+  status text not null check (status in ('uploaded', 'pending_analysis', 'analyzed', 'confirmed', 'rejected', 'failed')),
+  source text not null default 'manual_upload',
+  extracted_payload jsonb,
+  linked_agent_action_id text references agent_actions(id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- -----------------------------------------------------------
+-- Índices para documents (Fase 4A)
+-- -----------------------------------------------------------
+create index if not exists idx_documents_company_created
+  on documents(company_id, created_at desc);
+
+create index if not exists idx_documents_company_folder
+  on documents(company_id, folder);
+
+-- -----------------------------------------------------------
 -- Seed: empresa mock (idempotente)
 -- -----------------------------------------------------------
 insert into companies (

@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { AgentAction, AgentActionStatus } from "@/lib/schemas";
-import { Search, SlidersHorizontal, Sparkles, Eye } from "lucide-react";
+import { Search, SlidersHorizontal, Sparkles, Eye, CheckCircle, XCircle } from "lucide-react";
 
 type FilterStatus = AgentActionStatus | "all";
 
@@ -45,6 +45,7 @@ const intentLabels: Record<string, string> = {
   create_cash_income: "Registrar ingreso",
   create_cash_expense: "Registrar egreso",
   create_company_constitution: "Constituir empresa",
+  create_transaction_from_document: "Registrar desde documento",
 };
 
 function formatDateOnly(isoString: string): string {
@@ -64,7 +65,8 @@ function summarizePayload(action: AgentAction): string {
   const payload = action.proposed_payload;
   if ("amount" in payload) {
     const typeLabel = payload.type === "income" ? "Ingreso" : "Egreso";
-    return `${typeLabel}: $${payload.amount.toLocaleString("es-CL")} · ${payload.category}`;
+    const docRef = payload.document_name ? ` · ${payload.document_name}` : "";
+    return `${typeLabel}: $${payload.amount.toLocaleString("es-CL")} · ${payload.category}${docRef}`;
   }
   if ("legal_type" in payload) {
     return `Figura legal: ${payload.legal_type}`;
@@ -78,10 +80,12 @@ export default function AccionesIAPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<FilterStatus>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchActions() {
       try {
+        setLoading(true);
         const res = await fetch("/api/agent-actions");
         const json = await res.json();
         if (json.success) {
@@ -106,6 +110,44 @@ export default function AccionesIAPage() {
   const toggleExpand = (id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
   };
+
+  async function handleConfirmAction(id: string) {
+    setProcessingId(id);
+    try {
+      const res = await fetch(`/api/agent-actions/${id}/confirm`, { method: "POST" });
+      const json = await res.json();
+      if (json.success) {
+        setActions((prev) =>
+          prev.map((a) => (a.id === id ? json.data.action : a))
+        );
+      } else {
+        alert(json.error || "Error al confirmar acción");
+      }
+    } catch {
+      alert("Error de red al confirmar acción");
+    } finally {
+      setProcessingId(null);
+    }
+  }
+
+  async function handleRejectAction(id: string) {
+    setProcessingId(id);
+    try {
+      const res = await fetch(`/api/agent-actions/${id}/reject`, { method: "POST" });
+      const json = await res.json();
+      if (json.success) {
+        setActions((prev) =>
+          prev.map((a) => (a.id === id ? json.data : a))
+        );
+      } else {
+        alert(json.error || "Error al rechazar acción");
+      }
+    } catch {
+      alert("Error de red al rechazar acción");
+    } finally {
+      setProcessingId(null);
+    }
+  }
 
   return (
     <div className="p-6 md:p-8 overflow-y-auto">
@@ -193,6 +235,10 @@ export default function AccionesIAPage() {
                     {filtered.map((action) => {
                       const isExpanded = expandedId === action.id;
                       const statusCfg = statusConfig[action.status];
+                      const isProcessing = processingId === action.id;
+                      const isProposed = action.status === "proposed";
+                      const hasDocument = "document_name" in action.proposed_payload;
+
                       return (
                         <Fragment key={action.id}>
                           <tr
@@ -224,10 +270,44 @@ export default function AccionesIAPage() {
                               </span>
                             </td>
                             <td className="px-5 py-3.5">
-                              <button className="inline-flex items-center gap-1 px-3 py-1.5 bg-chalk border border-silver-mist rounded-full text-xs text-ink hover:bg-vellum transition-colors cursor-default">
-                                <Eye size={12} />
-                                Ver detalle
-                              </button>
+                              <div className="flex items-center gap-1.5">
+                                {isProposed && (
+                                  <>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleConfirmAction(action.id);
+                                      }}
+                                      disabled={isProcessing}
+                                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-graphite text-chalk rounded-full text-xs font-semibold hover:bg-ink transition-colors disabled:opacity-50"
+                                    >
+                                      <CheckCircle size={12} />
+                                      Confirmar
+                                    </button>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleRejectAction(action.id);
+                                      }}
+                                      disabled={isProcessing}
+                                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-chalk border border-silver-mist rounded-full text-xs text-ink hover:bg-vellum transition-colors disabled:opacity-50"
+                                    >
+                                      <XCircle size={12} />
+                                      Rechazar
+                                    </button>
+                                  </>
+                                )}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleExpand(action.id);
+                                  }}
+                                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-chalk border border-silver-mist rounded-full text-xs text-ink hover:bg-vellum transition-colors"
+                                >
+                                  <Eye size={12} />
+                                  {isExpanded ? "Ocultar" : "Ver detalle"}
+                                </button>
+                              </div>
                             </td>
                           </tr>
                           {isExpanded && (
@@ -240,6 +320,14 @@ export default function AccionesIAPage() {
                                       {action.input_text}
                                     </p>
                                   </div>
+                                  {hasDocument && (
+                                    <div>
+                                      <span className="text-[11px] font-bold text-ash uppercase tracking-wider">Documento asociado</span>
+                                      <p className="mt-1 text-ink bg-chalk border border-silver-mist rounded-lg px-3 py-2">
+                                        {(action.proposed_payload as Record<string, unknown>).document_name as string}
+                                      </p>
+                                    </div>
+                                  )}
                                   <div>
                                     <span className="text-[11px] font-bold text-ash uppercase tracking-wider">Payload</span>
                                     <pre className="mt-1 text-xs text-ink bg-chalk border border-silver-mist rounded-lg px-3 py-2 overflow-x-auto">

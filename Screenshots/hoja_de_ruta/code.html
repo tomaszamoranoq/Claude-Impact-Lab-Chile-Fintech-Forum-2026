@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hoja de Ruta - Escritorio Operativo</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary": "#ffffff",
+                        "ochre": "#7f6c1f",
+                        "blossom": "#fae9f4",
+                        "buttercup": "#fbf4d8",
+                        "surface-dim": "#ddd9d9",
+                        "outline": "#76777b",
+                        "blueprint": "#2e77e5",
+                        "primary": "#181a1f",
+                        "ink": "#3f434a",
+                        "on-tertiary-fixed-variant": "#4f453f",
+                        "terracotta": "#f67748",
+                        "on-primary-container": "#95969c",
+                        "on-primary-fixed-variant": "#45474c",
+                        "inverse-surface": "#313030",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#d3c4bc",
+                        "surface-variant": "#e5e2e2",
+                        "surface-container": "#f1eded",
+                        "linen": "#f0e4d6",
+                        "vellum": "#fdf9f4",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "silver-mist": "#d9dde6",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#fcf8f8",
+                        "sage": "#547358",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#221a15",
+                        "on-secondary-container": "#00285c",
+                        "primary-fixed-dim": "#c5c6cc",
+                        "on-background": "#1c1b1c",
+                        "surface-container-high": "#ebe7e7",
+                        "tertiary": "#201914",
+                        "secondary-container": "#4c8efe",
+                        "on-tertiary-container": "#a1948d",
+                        "tertiary-container": "#362d28",
+                        "parchment": "#f9efe4",
+                        "surface": "#fcf8f8",
+                        "slate": "#656565",
+                        "surface-container-highest": "#e5e2e2",
+                        "surface-tint": "#5d5e64",
+                        "tertiary-fixed": "#efdfd8",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#e2e2e8",
+                        "secondary": "#005bc0",
+                        "inverse-primary": "#c5c6cc",
+                        "chalk": "#fdfdfd",
+                        "mauve": "#9d4d77",
+                        "primary-container": "#2d2f34",
+                        "on-secondary-fixed": "#001a41",
+                        "ash": "#9da3af",
+                        "surface-container-low": "#f6f3f3",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "dusk-blue": "#446aa7",
+                        "background": "#fcf8f8",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#191c20",
+                        "secondary-fixed": "#d8e2ff",
+                        "outline-variant": "#c6c6cb",
+                        "on-secondary-fixed-variant": "#004493",
+                        "graphite": "#2d2f34",
+                        "on-surface": "#1c1b1c",
+                        "on-surface-variant": "#45474b",
+                        "inverse-on-surface": "#f4f0f0"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "page-padding-mobile": "16px",
+                        "gap-sm": "12px",
+                        "gap-base": "8px",
+                        "sidebar-width": "260px",
+                        "gap-md": "16px",
+                        "gap-lg": "24px",
+                        "contextual-panel-width": "320px",
+                        "page-padding-desktop": "24px"
+                    },
+                    fontFamily: {
+                        "caption": ["Work Sans"],
+                        "data-mono": ["ui-monospace"],
+                        "small-body": ["Work Sans"],
+                        "body": ["Work Sans"],
+                        "section-title": ["Work Sans"],
+                        "page-title": ["Work Sans"],
+                        "card-title": ["Work Sans"]
+                    },
+                    fontSize: {
+                        "caption": ["11px", { lineHeight: "16px", fontWeight: "600" }],
+                        "data-mono": ["12px", { lineHeight: "18px", fontWeight: "400" }],
+                        "small-body": ["13px", { lineHeight: "20px", fontWeight: "400" }],
+                        "body": ["14px", { lineHeight: "22px", fontWeight: "400" }],
+                        "section-title": ["20px", { lineHeight: "28px", fontWeight: "650" }],
+                        "page-title": ["28px", { lineHeight: "36px", fontWeight: "700" }],
+                        "card-title": ["15px", { lineHeight: "22px", fontWeight: "650" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Minimal custom scrollbar for clean aesthetic */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #d9dde6; /* silver-mist */
+            border-radius: 9999px;
+        }
+        
+        /* Timeline styling */
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: -20px;
+            width: 2px;
+            background-color: #d9dde6; /* silver-mist */
+            z-index: 0;
+        }
+        .timeline-section:last-child .timeline-line::before {
+            display: none;
+        }
+        .task-connector::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 24px;
+            width: 20px;
+            height: 2px;
+            background-color: #d9dde6; /* silver-mist */
+            z-index: 0;
+        }
+        
+    </style>
+</head>
+<body class="bg-parchment text-graphite font-body text-body antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed h-screen overflow-hidden flex">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-vellum text-graphite font-body text-body bg-linen dark:bg-primary-container flex flex-col h-screen p-gap-md overflow-y-auto border-r border-silver-mist/30 z-20">
+<!-- Brand/Header -->
+<div class="flex items-center gap-gap-sm mb-gap-lg pt-gap-sm px-gap-sm">
+<div class="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-silver-mist">
+<img alt="Logo de la Empresa" class="w-full h-full object-cover" data-alt="A clean, minimalist corporate logo featuring abstract geometric shapes representing growth and stability, styled in dark graphite on a crisp white background. Professional, high-end editorial aesthetic. Warm lighting." src="https://lh3.googleusercontent.com/aida/ADBb0uiDQGaxv7qVLCUivW7IKdjGQKzSgqx_2jp2GAos4wBwpjlnTsEvndlLXR9IRRZHXfKkCCWPHQmPbEkhnRKAwPW1PaEI9BxSHvDzcQZGngxfpv0EAdILmi03NKJwUwKA6AY0bLcNWUzx7yKquOFt97x84HG93PmHxtDC2UPVn5i8xmo14xffFWpI5sKobCNiV2Kl-qATVcW2i77b8JoXKDWOWC8odktvVYeYsZtyPCvCShukgZEhbNZ_ED7BGVFsOo3N7JzwF7z__g"/>
+</div>
+<div class="flex flex-col">
+<span class="font-page-title text-card-title font-bold text-graphite tracking-tight leading-none">Escritorio Operativo</span>
+<span class="font-small-body text-caption text-on-surface-variant mt-1">Chile Emprende</span>
+</div>
+</div>
+<!-- Main Navigation -->
+<nav class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<span class="font-body text-body">Agente IA</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary font-bold border-r-4 border-primary bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="map" data-weight="fill">map</span>
+<span class="font-body text-body">Hoja de Ruta</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="business">business</span>
+<span class="font-body text-body">Empresa</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-body text-body">Documentos</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-body text-body">Libro de Caja</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span class="font-body text-body">Cumplimiento</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-mauve" data-icon="bolt">bolt</span>
+<span class="font-body text-body text-mauve font-semibold">Acciones IA</span>
+</a>
+</nav>
+<!-- CTA -->
+<div class="mt-auto pt-gap-md mb-gap-md px-2">
+<button class="w-full bg-graphite text-chalk font-body text-body font-semibold py-2.5 px-4 rounded-full hover:bg-primary transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                Nueva Operación
+            </button>
+</div>
+<!-- Footer Navigation -->
+<div class="border-t border-silver-mist/50 pt-gap-md flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body text-body">Configuración</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-body text-body">Ayuda</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-[260px] flex flex-col h-screen overflow-hidden bg-parchment relative">
+<!-- TopAppBar -->
+<header class="docked full-width top-0 bg-parchment border-b border-silver-mist flex justify-between items-center h-16 px-page-padding-desktop shrink-0 z-10">
+<div class="flex items-center gap-gap-lg">
+<h1 class="font-page-title text-section-title font-bold text-graphite tracking-tight hidden md:block">Escritorio Operativo</h1>
+<nav class="hidden md:flex items-center gap-gap-md h-full">
+<a class="font-body text-body text-on-surface-variant hover:text-primary transition-colors h-full flex items-center px-2" href="#">Dashboard</a>
+<a class="font-body text-body text-on-surface-variant hover:text-primary transition-colors h-full flex items-center px-2" href="#">Notificaciones</a>
+</nav>
+</div>
+<div class="flex items-center gap-gap-md">
+<!-- Search -->
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-vellum border border-silver-mist rounded-full font-body text-small-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-[200px] transition-all" placeholder="Buscar..." type="text"/>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 rounded-full hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors" title="notifications">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<!-- Profile Menu Dropdown Anchor -->
+<button class="flex items-center gap-2 pl-2 pr-1 py-1 rounded-full border border-silver-mist bg-vellum hover:bg-surface-container-high transition-colors ml-2">
+<img alt="Avatar de usuario" class="w-8 h-8 rounded-full object-cover" data-alt="A professional headshot of an entrepreneur, confident expression, warm studio lighting, clean minimal background, styled in high-resolution corporate editorial photography." src="https://lh3.googleusercontent.com/aida/ADBb0uitoQir9mQMkWwdXSIrup6fx53lzD8Ug4XdG3s3fuJNjDNknL98k4dL5XctLjqD_JZjbjaAWCndrwtjCbfingmruDXMpQ05ckVNAEKnGgX2DuVEGtl7WKqZWzz7riU2rLYHeifoYUDrJ33O1E4pG_VpN5WvN-61WBghbQBXKBWooLNfDdJmfcXkf1dJVzvnOJNkjkxbW5j-tBb7ZV1XSXyYIl_6MZyPXUjQoVTV2oYu_ZaatxE3HepikqSQpXGf2UuQH6J3ZxeHXA"/>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Page Content Scrollable Area -->
+<div class="flex-1 overflow-y-auto p-page-padding-desktop md:p-gap-lg">
+<!-- KPI Header Area -->
+<div class="mb-gap-lg flex flex-col md:flex-row md:items-end justify-between gap-gap-md">
+<div>
+<h2 class="font-page-title text-page-title font-bold text-graphite mb-1">Hoja de Ruta</h2>
+<p class="font-body text-body text-on-surface-variant">Progreso de formalización y puesta en marcha.</p>
+</div>
+<!-- KPI Badges -->
+<div class="flex flex-wrap gap-gap-sm">
+<div class="flex items-center gap-2 bg-vellum border border-silver-mist rounded-lg px-3 py-2 shadow-sm">
+<div class="w-2.5 h-2.5 rounded-full bg-sage"></div>
+<span class="font-section-title text-card-title text-graphite">6</span>
+<span class="font-small-body text-small-body text-on-surface-variant">Completadas</span>
+</div>
+<div class="flex items-center gap-2 bg-vellum border border-silver-mist rounded-lg px-3 py-2 shadow-sm">
+<div class="w-2.5 h-2.5 rounded-full bg-blueprint"></div>
+<span class="font-section-title text-card-title text-graphite">1</span>
+<span class="font-small-body text-small-body text-on-surface-variant">En progreso</span>
+</div>
+<div class="flex items-center gap-2 bg-vellum border border-silver-mist rounded-lg px-3 py-2 shadow-sm">
+<div class="w-2.5 h-2.5 rounded-full bg-ochre"></div>
+<span class="font-section-title text-card-title text-graphite">10</span>
+<span class="font-small-body text-small-body text-on-surface-variant">Pendientes</span>
+</div>
+</div>
+</div>
+<!-- Timeline Content -->
+<div class="max-w-4xl pb-12">
+<!-- Section 1: Exploración -->
+<div class="timeline-section relative mb-12">
+<div class="flex items-center gap-4 mb-6 relative z-10">
+<div class="w-10 h-10 rounded-full bg-sage flex items-center justify-center shrink-0 border-4 border-parchment shadow-sm">
+<span class="material-symbols-outlined text-chalk text-[20px]" data-icon="check">check</span>
+</div>
+<div>
+<h3 class="font-section-title text-section-title text-graphite">Fase 1: Exploración</h3>
+<p class="font-body text-small-body text-on-surface-variant">Definición del modelo de negocio y viabilidad.</p>
+</div>
+</div>
+<div class="pl-12 timeline-line relative">
+<!-- Task: Diagnóstico -->
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-md shadow-sm mb-gap-md relative task-connector">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-gap-sm mb-2">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-sage mt-0.5" data-icon="task_alt">task_alt</span>
+<div>
+<h4 class="font-section-title text-card-title text-graphite">Diagnóstico de viabilidad</h4>
+<p class="font-body text-body text-on-surface-variant mt-1">Evaluación inicial de la idea de negocio y mercado objetivo.</p>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="font-caption text-caption uppercase px-2 py-1 bg-surface-container rounded-md text-on-surface-variant border border-silver-mist">SERCOTEC</span>
+<span class="font-caption text-caption px-2 py-1 bg-sage/10 text-sage rounded-md font-semibold">Completado</span>
+</div>
+</div>
+</div>
+<!-- Task: Análisis de mercado -->
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-md shadow-sm mb-gap-md relative task-connector">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-gap-sm mb-2">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-sage mt-0.5" data-icon="task_alt">task_alt</span>
+<div>
+<h4 class="font-section-title text-card-title text-graphite">Análisis de mercado</h4>
+<p class="font-body text-body text-on-surface-variant mt-1">Estudio de competidores directos y segmentación de clientes.</p>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="font-caption text-caption px-2 py-1 bg-sage/10 text-sage rounded-md font-semibold">Completado</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: Constitución -->
+<div class="timeline-section relative mb-12">
+<div class="flex items-center gap-4 mb-6 relative z-10">
+<div class="w-10 h-10 rounded-full bg-blueprint flex items-center justify-center shrink-0 border-4 border-parchment shadow-sm">
+<span class="material-symbols-outlined text-chalk text-[20px]" data-icon="flag">flag</span>
+</div>
+<div>
+<h3 class="font-section-title text-section-title text-graphite">Fase 2: Constitución</h3>
+<p class="font-body text-small-body text-on-surface-variant">Creación legal de la entidad comercial.</p>
+</div>
+</div>
+<div class="pl-12 timeline-line relative">
+<!-- Task: Elegir figura legal -->
+<div class="bg-chalk border border-blueprint/30 rounded-xl p-gap-md shadow-sm mb-gap-md relative task-connector shadow-[0_4px_12px_rgba(46,119,229,0.08)]">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-blueprint rounded-l-xl"></div>
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-gap-sm mb-2">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-blueprint mt-0.5" data-icon="pending">pending</span>
+<div>
+<h4 class="font-section-title text-card-title text-graphite">Elegir figura legal</h4>
+<p class="font-body text-body text-on-surface-variant mt-1">Determinar si será SpA, EIRL o Sociedad de Responsabilidad Limitada.</p>
+<!-- Contextual AI Action inside active task -->
+<div class="mt-4 bg-vellum border border-silver-mist rounded-lg p-3 flex gap-3">
+<div class="w-1 bg-mauve rounded-full shrink-0"></div>
+<div>
+<div class="flex items-center gap-1.5 text-mauve mb-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-caption text-caption font-bold uppercase tracking-wider">Análisis IA Recomendado</span>
+</div>
+<p class="font-body text-small-body text-graphite mb-2">Basado en tus socios (2), recomendamos una SpA para facilitar futura entrada de capital.</p>
+<button class="font-small-body text-small-body bg-graphite text-chalk px-3 py-1.5 rounded-full hover:bg-primary transition-colors">Ver comparativa</button>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="font-caption text-caption uppercase px-2 py-1 bg-surface-container rounded-md text-on-surface-variant border border-silver-mist">Empresa en un Día</span>
+<span class="font-caption text-caption px-2 py-1 bg-blueprint/10 text-blueprint rounded-md font-semibold">En progreso</span>
+</div>
+</div>
+</div>
+<!-- Task: Inscribir empresa -->
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-md shadow-sm mb-gap-md relative task-connector opacity-75">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-gap-sm mb-2">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-on-surface-variant mt-0.5" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+<div>
+<h4 class="font-section-title text-card-title text-graphite">Inscribir empresa</h4>
+<p class="font-body text-body text-on-surface-variant mt-1">Firma de escritura y publicación en el Diario Oficial.</p>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="font-caption text-caption uppercase px-2 py-1 bg-surface-container rounded-md text-on-surface-variant border border-silver-mist">CBR</span>
+<span class="font-caption text-caption px-2 py-1 bg-ochre/10 text-ochre rounded-md font-semibold">Pendiente</span>
+</div>
+</div>
+</div>
+<!-- Task: Obtener patente -->
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-md shadow-sm mb-gap-md relative task-connector opacity-75">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-gap-sm mb-2">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-on-surface-variant mt-0.5" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+<div>
+<h4 class="font-section-title text-card-title text-graphite">Obtener patente comercial</h4>
+<p class="font-body text-body text-on-surface-variant mt-1">Trámite municipal para operar legalmente en el domicilio fijado.</p>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="font-caption text-caption uppercase px-2 py-1 bg-surface-container rounded-md text-on-surface-variant border border-silver-mist">Municipalidad</span>
+<span class="font-caption text-caption px-2 py-1 bg-ochre/10 text-ochre rounded-md font-semibold">Pendiente</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 3: Inicio Tributario -->
+<div class="timeline-section relative">
+<div class="flex items-center gap-4 mb-6 relative z-10">
+<div class="w-10 h-10 rounded-full bg-vellum border-2 border-silver-mist flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<h3 class="font-section-title text-section-title text-graphite">Fase 3: Inicio Tributario</h3>
+<p class="font-body text-small-body text-on-surface-variant">Obligaciones con el Servicio de Impuestos Internos.</p>
+</div>
+</div>
+<div class="pl-12 timeline-line relative">
+<!-- Task: Obtener RUT -->
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-md shadow-sm mb-gap-md relative task-connector opacity-60">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-gap-sm mb-2">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-on-surface-variant mt-0.5" data-icon="lock">lock</span>
+<div>
+<h4 class="font-section-title text-card-title text-graphite">Obtener RUT Empresa</h4>
+<p class="font-body text-body text-on-surface-variant mt-1">Asignación de Rol Único Tributario para la nueva entidad.</p>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="font-caption text-caption uppercase px-2 py-1 bg-surface-container rounded-md text-on-surface-variant border border-silver-mist">SII</span>
+<span class="font-caption text-caption px-2 py-1 bg-surface-variant text-on-surface-variant rounded-md font-semibold">Bloqueado</span>
+</div>
+</div>
+</div>
+<!-- Task: Iniciar actividades -->
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-md shadow-sm mb-gap-md relative task-connector opacity-60">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-gap-sm mb-2">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-on-surface-variant mt-0.5" data-icon="lock">lock</span>
+<div>
+<h4 class="font-section-title text-card-title text-graphite">Iniciar actividades</h4>
+<p class="font-body text-body text-on-surface-variant mt-1">Declaración oficial de inicio de operaciones afectas o exentas de IVA.</p>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="font-caption text-caption uppercase px-2 py-1 bg-surface-container rounded-md text-on-surface-variant border border-silver-mist">SII</span>
+<span class="font-caption text-caption px-2 py-1 bg-surface-variant text-on-surface-variant rounded-md font-semibold">Bloqueado</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

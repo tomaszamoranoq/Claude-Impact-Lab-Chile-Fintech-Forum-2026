@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Escritorio Operativo - Asesor Inicial</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-secondary": "#ffffff",
+                "ochre": "#7f6c1f",
+                "blossom": "#fae9f4",
+                "buttercup": "#fbf4d8",
+                "surface-dim": "#ddd9d9",
+                "outline": "#76777b",
+                "blueprint": "#2e77e5",
+                "primary": "#181a1f",
+                "ink": "#3f434a",
+                "on-tertiary-fixed-variant": "#4f453f",
+                "terracotta": "#f67748",
+                "on-primary-container": "#95969c",
+                "on-primary-fixed-variant": "#45474c",
+                "inverse-surface": "#313030",
+                "error-container": "#ffdad6",
+                "tertiary-fixed-dim": "#d3c4bc",
+                "surface-variant": "#e5e2e2",
+                "surface-container": "#f1eded",
+                "linen": "#f0e4d6",
+                "vellum": "#fdf9f4",
+                "secondary-fixed-dim": "#adc6ff",
+                "silver-mist": "#d9dde6",
+                "surface-container-lowest": "#ffffff",
+                "surface-bright": "#fcf8f8",
+                "sage": "#547358",
+                "on-primary": "#ffffff",
+                "on-tertiary-fixed": "#221a15",
+                "on-secondary-container": "#00285c",
+                "primary-fixed-dim": "#c5c6cc",
+                "on-background": "#1c1b1c",
+                "surface-container-high": "#ebe7e7",
+                "tertiary": "#201914",
+                "secondary-container": "#4c8efe",
+                "on-tertiary-container": "#a1948d",
+                "tertiary-container": "#362d28",
+                "parchment": "#f9efe4",
+                "surface": "#fcf8f8",
+                "slate": "#656565",
+                "surface-container-highest": "#e5e2e2",
+                "surface-tint": "#5d5e64",
+                "tertiary-fixed": "#efdfd8",
+                "on-tertiary": "#ffffff",
+                "primary-fixed": "#e2e2e8",
+                "secondary": "#005bc0",
+                "inverse-primary": "#c5c6cc",
+                "chalk": "#fdfdfd",
+                "mauve": "#9d4d77",
+                "primary-container": "#2d2f34",
+                "on-secondary-fixed": "#001a41",
+                "ash": "#9da3af",
+                "surface-container-low": "#f6f3f3",
+                "on-error-container": "#93000a",
+                "on-error": "#ffffff",
+                "dusk-blue": "#446aa7",
+                "background": "#fcf8f8",
+                "error": "#ba1a1a",
+                "on-primary-fixed": "#191c20",
+                "secondary-fixed": "#d8e2ff",
+                "outline-variant": "#c6c6cb",
+                "on-secondary-fixed-variant": "#004493",
+                "graphite": "#2d2f34",
+                "on-surface": "#1c1b1c",
+                "on-surface-variant": "#45474b",
+                "inverse-on-surface": "#f4f0f0"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "page-padding-mobile": "16px",
+                "gap-sm": "12px",
+                "gap-base": "8px",
+                "sidebar-width": "260px",
+                "gap-md": "16px",
+                "gap-lg": "24px",
+                "contextual-panel-width": "320px",
+                "page-padding-desktop": "24px"
+        },
+        "fontFamily": {
+                "caption": [
+                        "Work Sans"
+                ],
+                "data-mono": [
+                        "ui-monospace"
+                ],
+                "small-body": [
+                        "Work Sans"
+                ],
+                "body": [
+                        "Work Sans"
+                ],
+                "section-title": [
+                        "Work Sans"
+                ],
+                "page-title": [
+                        "Work Sans"
+                ],
+                "card-title": [
+                        "Work Sans"
+                ]
+        },
+        "fontSize": {
+                "caption": [
+                        "11px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "data-mono": [
+                        "12px",
+                        {
+                                "lineHeight": "18px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "small-body": [
+                        "13px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body": [
+                        "14px",
+                        {
+                                "lineHeight": "22px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "section-title": [
+                        "20px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "650"
+                        }
+                ],
+                "page-title": [
+                        "28px",
+                        {
+                                "lineHeight": "36px",
+                                "fontWeight": "700"
+                        }
+                ],
+                "card-title": [
+                        "15px",
+                        {
+                                "lineHeight": "22px",
+                                "fontWeight": "650"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+    body {
+        font-family: 'Work Sans', sans-serif;
+    }
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24
+    }
+    .filled-icon {
+        font-variation-settings: 'FILL' 1;
+    }
+</style>
+</head>
+<body class="bg-parchment h-screen overflow-hidden flex">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-vellum dark:bg-graphite flex flex-col p-gap-md overflow-y-auto border-r border-linen dark:border-primary-container z-20 shadow-sm hidden md:flex">
+<!-- Header -->
+<div class="flex items-center gap-gap-sm mb-gap-lg px-gap-sm">
+<img alt="Logo de la Empresa" class="w-10 h-10 rounded-full object-cover border border-silver-mist" data-alt="A small, circular abstract geometric logo mark in deep graphite grey and soft white, suitable for a professional operational desk dashboard. The logo features clean lines and a minimalist corporate aesthetic." src="https://lh3.googleusercontent.com/aida/ADBb0uiDQGaxv7qVLCUivW7IKdjGQKzSgqx_2jp2GAos4wBwpjlnTsEvndlLXR9IRRZHXfKkCCWPHQmPbEkhnRKAwPW1PaEI9BxSHvDzcQZGngxfpv0EAdILmi03NKJwUwKA6AY0bLcNWUzx7yKquOFt97x84HG93PmHxtDC2UPVn5i8xmo14xffFWpI5sKobCNiV2Kl-qATVcW2i77b8JoXKDWOWC8odktvVYeYsZtyPCvCShukgZEhbNZ_ED7BGVFsOo3N7JzwF7z__g"/>
+<div>
+<h1 class="font-page-title text-card-title font-bold text-graphite dark:text-chalk">Escritorio Operativo</h1>
+<p class="font-caption text-caption text-on-surface-variant dark:text-on-primary-container">Chile Emprende</p>
+</div>
+</div>
+<!-- CTA -->
+<button class="w-full bg-graphite text-chalk font-card-title text-card-title py-2 px-4 rounded-full mb-gap-lg flex items-center justify-center gap-2 hover:bg-ink transition-colors duration-200">
+<span class="material-symbols-outlined filled-icon">add</span>
+            Nueva Operación
+        </button>
+<!-- Navigation Tabs -->
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-gap-sm px-gap-sm py-2 rounded-lg text-primary dark:text-inverse-primary font-bold bg-linen dark:bg-primary-container border-r-4 border-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-body text-body">Agente IA</span>
+</a>
+<a class="flex items-center gap-gap-sm px-gap-sm py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-body text-body">Hoja de Ruta</span>
+</a>
+<a class="flex items-center gap-gap-sm px-gap-sm py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">business</span>
+<span class="font-body text-body">Empresa</span>
+</a>
+<a class="flex items-center gap-gap-sm px-gap-sm py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-body text-body">Documentos</span>
+</a>
+<a class="flex items-center gap-gap-sm px-gap-sm py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-body text-body">Libro de Caja</span>
+</a>
+<a class="flex items-center gap-gap-sm px-gap-sm py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-body text-body">Cumplimiento</span>
+</a>
+<a class="flex items-center gap-gap-sm px-gap-sm py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">bolt</span>
+<span class="font-body text-body">Acciones IA</span>
+</a>
+</nav>
+<!-- Footer Tabs -->
+<div class="mt-auto pt-gap-md border-t border-silver-mist dark:border-outline-variant space-y-1">
+<a class="flex items-center gap-gap-sm px-gap-sm py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body text-body">Configuración</span>
+</a>
+<a class="flex items-center gap-gap-sm px-gap-sm py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body text-body">Ayuda</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-[260px] relative w-full">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center h-16 px-page-padding-desktop bg-parchment dark:bg-primary z-10 w-full shrink-0">
+<!-- Brand / Title -->
+<div class="flex items-center">
+<h2 class="font-section-title text-section-title text-graphite dark:text-chalk font-bold md:hidden">Escritorio Operativo</h2>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-gap-md">
+<!-- Top Links (Desktop Only) -->
+<div class="hidden md:flex gap-gap-md mr-gap-md">
+<a class="font-body text-body text-on-surface-variant dark:text-on-primary-container hover:text-primary dark:hover:text-secondary-fixed transition-colors" href="#">Dashboard</a>
+<a class="font-body text-body text-on-surface-variant dark:text-on-primary-container hover:text-primary dark:hover:text-secondary-fixed transition-colors" href="#">Notificaciones</a>
+</div>
+<!-- Icons -->
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors md:hidden">
+<span class="material-symbols-outlined">search</span>
+</button>
+<!-- Profile -->
+<div class="flex items-center gap-gap-sm ml-gap-sm">
+<div class="hidden md:flex flex-col items-end">
+<span class="font-body text-small-body font-semibold text-graphite">Perfil</span>
+<span class="font-caption text-caption text-on-surface-variant">Cerrar Sesión</span>
+</div>
+<img alt="Avatar de usuario" class="w-8 h-8 rounded-full object-cover border border-silver-mist" data-alt="A professional headshot of a young entrepreneur in a well-lit modern workspace, wearing a casual but neat dark shirt. The background is slightly blurred showing warm wooden textures and soft natural lighting. The mood is confident and approachable." src="https://lh3.googleusercontent.com/aida/ADBb0uitoQir9mQMkWwdXSIrup6fx53lzD8Ug4XdG3s3fuJNjDNknL98k4dL5XctLjqD_JZjbjaAWCndrwtjCbfingmruDXMpQ05ckVNAEKnGgX2DuVEGtl7WKqZWzz7riU2rLYHeifoYUDrJ33O1E4pG_VpN5WvN-61WBghbQBXKBWooLNfDdJmfcXkf1dJVzvnOJNkjkxbW5j-tBb7ZV1XSXyYIl_6MZyPXUjQoVTV2oYu_ZaatxE3HepikqSQpXGf2UuQH6J3ZxeHXA"/>
+</div>
+</div>
+</header>
+<!-- Content Split Layout -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Central Panel (Chat Interface) -->
+<main class="flex-1 flex flex-col overflow-hidden bg-parchment px-page-padding-desktop py-gap-lg">
+<div class="flex-1 overflow-y-auto pr-gap-md custom-scrollbar space-y-gap-lg pb-24">
+<!-- Intro/Date -->
+<div class="text-center">
+<span class="font-caption text-caption text-on-surface-variant bg-surface-variant px-3 py-1 rounded-full">Hoy, 10:45 AM</span>
+</div>
+<!-- Assistant Message -->
+<div class="flex items-start gap-gap-sm max-w-3xl">
+<div class="w-8 h-8 rounded-full bg-vellum border border-silver-mist flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-graphite text-[18px]">smart_toy</span>
+</div>
+<div class="bg-chalk border border-silver-mist rounded-xl rounded-tl-none p-gap-md shadow-sm">
+<p class="font-body text-body text-ink mb-gap-sm">Hola. Veo que estás interesado en estructurar tu nuevo negocio. He analizado la información que proporcionaste ayer. Parece que estamos listos para comenzar el proceso de constitución de la sociedad. ¿Te gustaría proceder con la creación de una SpA?</p>
+<p class="font-body text-body text-ink">Basado en tus notas, he preparado una propuesta de acción para agilizar el trámite.</p>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex items-start gap-gap-sm max-w-3xl ml-auto justify-end">
+<div class="bg-graphite rounded-xl rounded-tr-none p-gap-md text-chalk">
+<p class="font-body text-body">Sí, me parece bien. La idea es que sea una SpA con un único socio por ahora.</p>
+</div>
+</div>
+<!-- AI Proposed Action (Central Pattern) -->
+<div class="flex items-start gap-gap-sm max-w-4xl">
+<div class="w-8 h-8 rounded-full bg-vellum border border-silver-mist flex items-center justify-center shrink-0 mt-2">
+<span class="material-symbols-outlined text-graphite text-[18px]">bolt</span>
+</div>
+<div class="bg-vellum border border-silver-mist rounded-xl rounded-tl-none p-0 overflow-hidden shadow-sm flex flex-col w-full relative">
+<!-- Left Accent Line -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-mauve"></div>
+<div class="p-gap-md pl-gap-lg">
+<!-- Header -->
+<div class="flex justify-between items-start mb-gap-sm">
+<div class="flex items-center gap-gap-sm">
+<h3 class="font-card-title text-card-title text-graphite font-bold">Acción propuesta por IA</h3>
+<span class="bg-surface-variant text-ink font-caption text-caption px-2 py-0.5 rounded-full flex items-center gap-1">
+                                             Intención: Crear empresa
+                                         </span>
+</div>
+<span class="text-sage font-caption text-caption flex items-center gap-1 bg-surface-bright border border-silver-mist px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Confianza: Alta
+                                     </span>
+</div>
+<p class="font-body text-small-body text-on-surface-variant mb-gap-md">He estructurado los datos iniciales para el borrador de constitución. Revisa la información antes de generar el documento legal.</p>
+<!-- Data Fields Grid -->
+<div class="grid grid-cols-2 gap-gap-md mb-gap-md bg-surface-bright p-gap-sm rounded-lg border border-silver-mist">
+<div>
+<span class="font-caption text-caption text-slate block mb-1">Nombre Propuesto</span>
+<span class="font-body text-body text-ink font-semibold">Panadería La Estrella SpA</span>
+</div>
+<div>
+<span class="font-caption text-caption text-slate block mb-1">Socios Detectados</span>
+<span class="font-body text-body text-ink">1 (Único)</span>
+</div>
+<div>
+<span class="font-caption text-caption text-slate block mb-1">Tipo de Sociedad</span>
+<span class="font-body text-body text-ink">Sociedad por Acciones (SpA)</span>
+</div>
+<div>
+<span class="font-caption text-caption text-slate block mb-1">Campos Faltantes</span>
+<span class="font-body text-body text-terracotta flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span> Capital Inicial
+                                         </span>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-gap-sm pt-gap-sm border-t border-silver-mist border-opacity-50 mt-auto">
+<button class="bg-graphite text-chalk font-small-body text-small-body py-1.5 px-4 rounded-full hover:bg-ink transition-colors flex items-center gap-2">
+                                         Confirmar
+                                     </button>
+<button class="bg-transparent border border-silver-mist text-ink font-small-body text-small-body py-1.5 px-4 rounded-full hover:bg-surface-variant transition-colors">
+                                         Rechazar
+                                     </button>
+<button class="ml-auto text-on-surface-variant hover:text-primary font-small-body text-small-body flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">edit</span> Editar datos
+                                     </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Chat Input Area (Fixed Bottom) -->
+<div class="absolute bottom-0 left-0 right-0 p-page-padding-desktop bg-gradient-to-t from-parchment via-parchment to-transparent pt-12 md:right-[320px]">
+<div class="bg-chalk border border-silver-mist rounded-xl p-2 flex items-center gap-gap-sm shadow-sm relative focus-within:border-outline-variant transition-colors">
+<button class="p-2 text-on-surface-variant hover:text-primary rounded-full hover:bg-surface-variant transition-colors shrink-0">
+<span class="material-symbols-outlined">attach_file</span>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 font-body text-body text-ink placeholder-on-primary-container outline-none py-2" placeholder="Escribe un mensaje o adjunta un documento..." type="text"/>
+<button class="p-2 bg-graphite text-chalk rounded-lg hover:bg-ink transition-colors shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Contextual Insight Panel (Right Panel) -->
+<aside class="hidden xl:flex flex-col w-[320px] bg-vellum border-l border-linen shrink-0 p-gap-md overflow-y-auto">
+<div class="mb-gap-lg">
+<h3 class="font-section-title text-card-title text-graphite font-bold mb-1">Hoja de Ruta</h3>
+<p class="font-caption text-caption text-on-surface-variant">Progreso actual de tu proyecto.</p>
+</div>
+<!-- Roadmap Timeline -->
+<div class="relative border-l-2 border-silver-mist ml-3 space-y-gap-lg pb-gap-md">
+<!-- Etapa 1: Completada -->
+<div class="relative pl-gap-md">
+<div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-graphite border-2 border-vellum flex items-center justify-center">
+<span class="material-symbols-outlined text-chalk text-[10px] font-bold">check</span>
+</div>
+<h4 class="font-card-title text-small-body text-graphite font-semibold mb-0.5">1. Exploración</h4>
+<p class="font-caption text-caption text-on-surface-variant">Definición de modelo y viabilidad.</p>
+<span class="inline-block mt-2 font-data-mono text-data-mono text-sage bg-surface-bright border border-silver-mist px-2 py-0.5 rounded text-[10px]">Completado</span>
+</div>
+<!-- Etapa 2: Activa -->
+<div class="relative pl-gap-md">
+<div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-chalk border-2 border-primary"></div>
+<h4 class="font-card-title text-small-body text-primary font-bold mb-0.5">2. Constitución</h4>
+<p class="font-caption text-caption text-on-surface-variant">Creación legal de la entidad.</p>
+<!-- Mini tasks within active stage -->
+<div class="mt-gap-sm space-y-2 bg-surface-bright p-gap-sm rounded-lg border border-silver-mist">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check_box</span>
+<span class="font-small-body text-small-body text-ink line-through opacity-70">Definir tipo de sociedad</span>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px] mt-0.5">check_box_outline_blank</span>
+<span class="font-small-body text-small-body text-ink">Borrador de estatutos</span>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px] mt-0.5">check_box_outline_blank</span>
+<span class="font-small-body text-small-body text-ink">Firma ante notario</span>
+</div>
+</div>
+</div>
+<!-- Etapa 3: Futura -->
+<div class="relative pl-gap-md opacity-50">
+<div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-surface-variant border-2 border-vellum"></div>
+<h4 class="font-card-title text-small-body text-graphite font-semibold mb-0.5">3. Iniciación de Actividades</h4>
+<p class="font-caption text-caption text-on-surface-variant">Trámites ante el SII.</p>
+</div>
+</div>
+<!-- Quick Info Card -->
+<div class="mt-auto bg-surface-bright border border-silver-mist rounded-xl p-gap-md">
+<div class="flex items-center gap-gap-sm mb-gap-sm text-ochre">
+<span class="material-symbols-outlined text-[18px]">lightbulb</span>
+<span class="font-card-title text-small-body font-semibold">Consejo Operativo</span>
+</div>
+<p class="font-caption text-caption text-on-surface-variant">Recuerda que para la constitución de una SpA necesitarás definir un capital inicial, aunque este sea mínimo.</p>
+</div>
+</aside>
+</div>
+</div>
+<!-- Images Preloader -->
+<div class="hidden">
+<img alt="Preload" data-alt="A modern office desk setup focusing on a tablet displaying financial charts, with a warm cup of coffee nearby. The lighting is bright and airy, reflecting a clean and productive workspace environment." src="https://lh3.googleusercontent.com/aida/ADBb0ui3Uf-SWXFfk8fMITqehhBfQAlWoz4HMFoJdJP4UL--vW668m6Z6cgbWH-hYe9iqxq9winQSIuCQ-UK-FahthJvyIOg77JwWWecgL1_04sS7HF4f-ncVO0MGvXb4tNJkqebQ51uFh09wpJ9FN2cwSS-y1VkT2qkNlYDIwJOrn4AI9G9Em_cqzcGq5IoVJBbH5vnBcUD0xguDEm-qZOkJRdMSmmpi0a1frA_kOwAXI8nde3ykApJOruZftSfL2SEZiQxadSEhZV6Cw"/>
+<img alt="Preload" data-alt="A close-up of a person's hands typing on a sleek laptop keyboard in a sunlit room. The aesthetic is clean, professional, and slightly warm, conveying focused work in a modern startup setting." src="https://lh3.googleusercontent.com/aida/ADBb0ujdTZ87He8TGVju4UM1H75ErLofmjO3330y8GV4-JqSycz8phFzgFoWJPbMwlNoTYjihM4DrOoRQaoUkJcxIOsMTG3rm27NiDmELlcBa_hcy2TQLNouk65_Rqu8_qdHPYzxNVfRdsLqf1li6GuLqN4ozJFrL3LUiMGb0ALPX4tMAQzRx07NKTYJr1wba3L20sIpxGZy0kkGNCkKM9aGBtCl0Qlf9QulwL7DK4mWaPknh3RNEtCBZUCFiSmQYjOARZ1_RIWrEQMfiA"/>
+<img alt="Preload" data-alt="An abstract visualization of a document stack or digital files, rendered in soft pastel colors like vellum and parchment, with subtle drop shadows. The image represents organization and bureaucratic processes made simple." src="https://lh3.googleusercontent.com/aida/ADBb0ujyhLv2YmxRCSRjiIFxo19se0MKdBwfdlhu3UAdZ7bB1TrjCuYACRXNUVXjVc6XscpM5Rgqs5c4rIGfJg0vx2OcaQqk2_M87B2d5lFcmIGP5SVSId54pvaTv0Fz54c5Z4ZdgFSMQOaqla74fDII4wjg4OmXFOkpFZvcgGno8yhcwNwkWC_eVUZ-vPw55oHV2_GIIV4SL-NiXokfhPeblqaG9049mDrdpU4En7QAQLdV6SaRdLCMatWOravxGnGbEMRKGbwvIyo_"/>
+<img alt="Preload" data-alt="A macro shot of a fountain pen resting on a crisp sheet of textured paper. The lighting highlights the fine details of the nib and the paper's grain. The mood is sophisticated and official, suitable for legal documentation themes." src="https://lh3.googleusercontent.com/aida/ADBb0uhLrzjaf3nC6Dw6CoQIpjWl29lMiYWe7p_i94_WLShA54iiqdYDxgjOMajbZaOqfFY090B8mJdxTTaNvXfAVgnr6bZlWf5jnGhgVm5ncXj-E84j1JPbSr00p6-bEZ7yRELv5fmde2ULaMqG7g7Aa_zxqu6Qmv2cIoLAPMq3W57JdynujQH1YcFIkAv7JH-YGY5Jydvrr1YHQKTVxX59WkLtj3pmR8djrXrPEAuFjoJLhE173qSnINS4L3jhQBBjd4RxiJ6tf62D"/>
+</div>
+</body></html>

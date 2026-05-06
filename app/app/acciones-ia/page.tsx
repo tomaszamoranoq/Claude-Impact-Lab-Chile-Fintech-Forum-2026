@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { AgentAction, AgentActionStatus } from "@/lib/schemas";
+import { Search, SlidersHorizontal, Sparkles, Eye } from "lucide-react";
 
 type FilterStatus = AgentActionStatus | "all";
 
@@ -16,32 +17,27 @@ const statusFilters: { key: FilterStatus; label: string }[] = [
 
 const statusConfig: Record<
   AgentActionStatus,
-  { label: string; badgeClass: string; dotClass: string }
+  { label: string; badgeClass: string }
 > = {
   proposed: {
     label: "Propuesta",
-    badgeClass: "bg-blue-50 text-blue-700 border-blue-200",
-    dotClass: "bg-blue-500",
+    badgeClass: "bg-blossom text-mauve border-mauve/20",
   },
   confirmed: {
     label: "Confirmada",
-    badgeClass: "bg-green-50 text-green-700 border-green-200",
-    dotClass: "bg-green-500",
+    badgeClass: "bg-sage/10 text-sage border-sage/20",
   },
   rejected: {
     label: "Rechazada",
-    badgeClass: "bg-red-50 text-red-700 border-red-200",
-    dotClass: "bg-red-500",
+    badgeClass: "bg-ash/10 text-ash border-ash/20",
   },
   executed: {
     label: "Ejecutada",
-    badgeClass: "bg-purple-50 text-purple-700 border-purple-200",
-    dotClass: "bg-purple-500",
+    badgeClass: "bg-blueprint/10 text-blueprint border-blueprint/20",
   },
   failed: {
     label: "Fallida",
-    badgeClass: "bg-gray-100 text-gray-700 border-gray-300",
-    dotClass: "bg-gray-500",
+    badgeClass: "bg-terracotta/10 text-terracotta border-terracotta/20",
   },
 };
 
@@ -50,21 +46,6 @@ const intentLabels: Record<string, string> = {
   create_cash_expense: "Registrar egreso",
   create_company_constitution: "Constituir empresa",
 };
-
-function formatDate(isoString: string): string {
-  try {
-    const d = new Date(isoString);
-    return d.toLocaleDateString("es-CL", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  } catch {
-    return isoString;
-  }
-}
 
 function formatDateOnly(isoString: string): string {
   try {
@@ -89,11 +70,6 @@ function summarizePayload(action: AgentAction): string {
     return `Figura legal: ${payload.legal_type}`;
   }
   return "—";
-}
-
-function truncate(str: string, max: number): string {
-  if (str.length <= max) return str;
-  return str.slice(0, max) + "…";
 }
 
 export default function AccionesIAPage() {
@@ -132,20 +108,38 @@ export default function AccionesIAPage() {
   };
 
   return (
-    <div className="flex-1 p-8 overflow-y-auto">
+    <div className="p-6 md:p-8 overflow-y-auto">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900">Centro de Acciones IA</h1>
-        <p className="mt-1 text-gray-600">
-          Auditoría de acciones propuestas, confirmadas, ejecutadas y rechazadas por el sistema.
-        </p>
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-graphite">Centro de Acciones IA</h1>
+          <p className="text-sm text-slate mt-1">
+            Auditoría de acciones propuestas, confirmadas, ejecutadas y rechazadas por el sistema.
+          </p>
+        </div>
 
-        {loading && <p className="mt-6 text-sm text-gray-500">Cargando…</p>}
-        {error && <p className="mt-6 text-sm text-red-500">{error}</p>}
+        {loading && <p className="text-sm text-ash">Cargando…</p>}
+        {error && <p className="text-sm text-terracotta">{error}</p>}
 
         {!loading && !error && (
           <>
-            {/* Filtros */}
-            <div className="mt-6 flex flex-wrap gap-2">
+            {/* Search + Filters */}
+            <div className="flex items-center gap-3 mb-5">
+              <div className="flex items-center gap-2 flex-1 max-w-sm px-3 py-2 bg-chalk border border-silver-mist rounded-full text-sm">
+                <Search size={14} className="text-ash" />
+                <input
+                  type="text"
+                  placeholder="Buscar acciones..."
+                  className="flex-1 bg-transparent text-ink placeholder:text-ash focus:outline-none"
+                />
+              </div>
+              <button className="inline-flex items-center gap-1.5 px-3 py-2 bg-chalk border border-silver-mist rounded-full text-sm text-ink hover:bg-vellum transition-colors cursor-default">
+                <SlidersHorizontal size={14} />
+                Filtros
+              </button>
+            </div>
+
+            {/* Filters */}
+            <div className="flex flex-wrap gap-2 mb-5">
               {statusFilters.map((f) => {
                 const count =
                   f.key === "all"
@@ -157,19 +151,14 @@ export default function AccionesIAPage() {
                     key={f.key}
                     onClick={() => setFilter(f.key)}
                     className={
-                      "px-3 py-1.5 text-sm font-medium rounded-md border transition-colors " +
+                      "px-3 py-1.5 text-sm font-medium rounded-full border transition-colors " +
                       (active
-                        ? "bg-gray-900 text-white border-gray-900"
-                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50")
+                        ? "bg-graphite text-chalk border-graphite"
+                        : "bg-chalk text-ink border-silver-mist hover:bg-vellum")
                     }
                   >
                     {f.label}
-                    <span
-                      className={
-                        "ml-2 text-xs tabular-nums " +
-                        (active ? "text-gray-300" : "text-gray-400")
-                      }
-                    >
+                    <span className={"ml-2 text-xs tabular-nums " + (active ? "text-chalk/60" : "text-ash")}>
                       {count}
                     </span>
                   </button>
@@ -177,45 +166,26 @@ export default function AccionesIAPage() {
               })}
             </div>
 
-            {/* Tabla */}
-            <div className="mt-6 bg-white border border-gray-200 rounded-lg overflow-hidden">
+            {/* Table */}
+            <div className="bg-chalk border border-silver-mist rounded-2xl shadow-card overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
-                        Fecha
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">
-                        Intención
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
-                        Estado
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
-                        Confianza
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Input original
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">
-                        Payload resumido
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
-                        Campos faltantes
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
-                        Modelo
-                      </th>
+                <table className="min-w-full">
+                  <thead>
+                    <tr className="border-b border-silver-mist/60">
+                      {["Fecha", "Intención", "Datos detectados", "Estado", "Acción"].map((h) => (
+                        <th
+                          key={h}
+                          className="px-5 py-3 text-left text-[11px] font-bold text-ash uppercase tracking-wider"
+                        >
+                          {h}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody>
                     {filtered.length === 0 && (
                       <tr>
-                        <td
-                          colSpan={8}
-                          className="px-4 py-8 text-center text-sm text-gray-500"
-                        >
+                        <td colSpan={5} className="px-5 py-8 text-center text-sm text-ash">
                           No hay acciones que coincidan con este filtro.
                         </td>
                       </tr>
@@ -227,112 +197,58 @@ export default function AccionesIAPage() {
                         <Fragment key={action.id}>
                           <tr
                             onClick={() => toggleExpand(action.id)}
-                            className="hover:bg-gray-50 cursor-pointer transition-colors"
+                            className="border-b border-silver-mist/30 hover:bg-vellum/50 cursor-pointer transition-colors"
                           >
-                            <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                            <td className="px-5 py-3.5 text-sm text-slate whitespace-nowrap">
                               {formatDateOnly(action.created_at)}
                             </td>
-                            <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
-                              {intentLabels[action.intent] || action.intent}
+                            <td className="px-5 py-3.5">
+                              <div className="text-sm font-semibold text-ink">
+                                {intentLabels[action.intent] || action.intent}
+                              </div>
+                              <div className="flex items-center gap-1 mt-1">
+                                <Sparkles size={12} className="text-mauve" />
+                                <span className="text-[11px] text-slate">
+                                  Confianza: {(action.confidence * 100).toFixed(0)}%
+                                </span>
+                              </div>
                             </td>
-                            <td className="px-4 py-3 whitespace-nowrap">
+                            <td className="px-5 py-3.5 text-sm text-slate">
+                              {summarizePayload(action)}
+                            </td>
+                            <td className="px-5 py-3.5">
                               <span
-                                className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium border ${statusCfg.badgeClass}`}
+                                className={`inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full font-semibold border ${statusCfg.badgeClass}`}
                               >
-                                <span
-                                  className={`w-1.5 h-1.5 rounded-full ${statusCfg.dotClass}`}
-                                />
                                 {statusCfg.label}
                               </span>
                             </td>
-                            <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap tabular-nums">
-                              {(action.confidence * 100).toFixed(0)}%
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-700 max-w-xs">
-                              {truncate(action.input_text, 60)}
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
-                              {summarizePayload(action)}
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-700">
-                              <div className="flex flex-wrap gap-1">
-                                {action.missing_fields.length > 0 ? (
-                                  action.missing_fields.map((field) => (
-                                    <span
-                                      key={field}
-                                      className="inline-block px-1.5 py-0.5 text-xs bg-yellow-50 text-yellow-700 rounded border border-yellow-200"
-                                    >
-                                      {field}
-                                    </span>
-                                  ))
-                                ) : (
-                                  <span className="text-gray-400 text-xs">—</span>
-                                )}
-                              </div>
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-500 whitespace-nowrap">
-                              {action.model_used}
+                            <td className="px-5 py-3.5">
+                              <button className="inline-flex items-center gap-1 px-3 py-1.5 bg-chalk border border-silver-mist rounded-full text-xs text-ink hover:bg-vellum transition-colors cursor-default">
+                                <Eye size={12} />
+                                Ver detalle
+                              </button>
                             </td>
                           </tr>
                           {isExpanded && (
-                            <tr className="bg-gray-50/50">
-                              <td colSpan={8} className="px-4 py-4">
+                            <tr className="bg-vellum/40">
+                              <td colSpan={5} className="px-5 py-4">
                                 <div className="space-y-3 text-sm">
                                   <div>
-                                    <span className="font-medium text-gray-700">
-                                      Input completo:
-                                    </span>
-                                    <p className="mt-1 text-gray-900 bg-white border border-gray-200 rounded-md px-3 py-2">
+                                    <span className="text-[11px] font-bold text-ash uppercase tracking-wider">Input</span>
+                                    <p className="mt-1 text-ink bg-chalk border border-silver-mist rounded-lg px-3 py-2">
                                       {action.input_text}
                                     </p>
                                   </div>
                                   <div>
-                                    <span className="font-medium text-gray-700">
-                                      Payload propuesto:
-                                    </span>
-                                    <pre className="mt-1 text-xs text-gray-800 bg-white border border-gray-200 rounded-md px-3 py-2 overflow-x-auto">
-                                      {JSON.stringify(
-                                        action.proposed_payload,
-                                        null,
-                                        2
-                                      )}
+                                    <span className="text-[11px] font-bold text-ash uppercase tracking-wider">Payload</span>
+                                    <pre className="mt-1 text-xs text-ink bg-chalk border border-silver-mist rounded-lg px-3 py-2 overflow-x-auto">
+                                      {JSON.stringify(action.proposed_payload, null, 2)}
                                     </pre>
                                   </div>
-                                  <div className="flex flex-wrap gap-6 text-xs text-gray-500">
-                                    <div>
-                                      <span className="font-medium text-gray-600">
-                                        ID:
-                                      </span>{" "}
-                                      {action.id}
-                                    </div>
-                                    <div>
-                                      <span className="font-medium text-gray-600">
-                                        Intención técnica:
-                                      </span>{" "}
-                                      {action.intent}
-                                    </div>
-                                    <div>
-                                      <span className="font-medium text-gray-600">
-                                        Creada:
-                                      </span>{" "}
-                                      {formatDate(action.created_at)}
-                                    </div>
-                                    {action.executed_at && (
-                                      <div>
-                                        <span className="font-medium text-gray-600">
-                                          Ejecutada:
-                                        </span>{" "}
-                                        {formatDate(action.executed_at)}
-                                      </div>
-                                    )}
-                                    <div>
-                                      <span className="font-medium text-gray-600">
-                                        Fuentes:
-                                      </span>{" "}
-                                      {action.sources_used.length > 0
-                                        ? action.sources_used.join(", ")
-                                        : "—"}
-                                    </div>
+                                  <div className="flex flex-wrap gap-4 text-xs text-ash">
+                                    <span><span className="font-semibold text-slate">ID:</span> {action.id}</span>
+                                    <span><span className="font-semibold text-slate">Modelo:</span> {action.model_used}</span>
                                   </div>
                                 </div>
                               </td>
@@ -346,11 +262,10 @@ export default function AccionesIAPage() {
               </div>
             </div>
 
-            <p className="mt-4 text-xs text-gray-400">
-              {filtered.length} acción
-              {filtered.length !== 1 ? "es" : ""} mostrada
+            <p className="mt-4 text-xs text-ash">
+              {filtered.length} acción{filtered.length !== 1 ? "es" : ""} mostrada
               {filter !== "all" ? ` (filtrado: ${statusFilters.find((f) => f.key === filter)?.label})` : ""}
-              {" "}· Total: {actions.length}
+              {" · Total: "}{actions.length}
             </p>
           </>
         )}

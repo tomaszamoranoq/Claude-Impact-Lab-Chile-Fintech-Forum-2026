@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Escritorio Operativo - Empresa</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;650;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-secondary": "#ffffff",
+                "ochre": "#7f6c1f",
+                "blossom": "#fae9f4",
+                "buttercup": "#fbf4d8",
+                "surface-dim": "#ddd9d9",
+                "outline": "#76777b",
+                "blueprint": "#2e77e5",
+                "primary": "#181a1f",
+                "ink": "#3f434a",
+                "on-tertiary-fixed-variant": "#4f453f",
+                "terracotta": "#f67748",
+                "on-primary-container": "#95969c",
+                "on-primary-fixed-variant": "#45474c",
+                "inverse-surface": "#313030",
+                "error-container": "#ffdad6",
+                "tertiary-fixed-dim": "#d3c4bc",
+                "surface-variant": "#e5e2e2",
+                "surface-container": "#f1eded",
+                "linen": "#f0e4d6",
+                "vellum": "#fdf9f4",
+                "secondary-fixed-dim": "#adc6ff",
+                "silver-mist": "#d9dde6",
+                "surface-container-lowest": "#ffffff",
+                "surface-bright": "#fcf8f8",
+                "sage": "#547358",
+                "on-primary": "#ffffff",
+                "on-tertiary-fixed": "#221a15",
+                "on-secondary-container": "#00285c",
+                "primary-fixed-dim": "#c5c6cc",
+                "on-background": "#1c1b1c",
+                "surface-container-high": "#ebe7e7",
+                "tertiary": "#201914",
+                "secondary-container": "#4c8efe",
+                "on-tertiary-container": "#a1948d",
+                "tertiary-container": "#362d28",
+                "parchment": "#f9efe4",
+                "surface": "#fcf8f8",
+                "slate": "#656565",
+                "surface-container-highest": "#e5e2e2",
+                "surface-tint": "#5d5e64",
+                "tertiary-fixed": "#efdfd8",
+                "on-tertiary": "#ffffff",
+                "primary-fixed": "#e2e2e8",
+                "secondary": "#005bc0",
+                "inverse-primary": "#c5c6cc",
+                "chalk": "#fdfdfd",
+                "mauve": "#9d4d77",
+                "primary-container": "#2d2f34",
+                "on-secondary-fixed": "#001a41",
+                "ash": "#9da3af",
+                "surface-container-low": "#f6f3f3",
+                "on-error-container": "#93000a",
+                "on-error": "#ffffff",
+                "dusk-blue": "#446aa7",
+                "background": "#fcf8f8",
+                "error": "#ba1a1a",
+                "on-primary-fixed": "#191c20",
+                "secondary-fixed": "#d8e2ff",
+                "outline-variant": "#c6c6cb",
+                "on-secondary-fixed-variant": "#004493",
+                "graphite": "#2d2f34",
+                "on-surface": "#1c1b1c",
+                "on-surface-variant": "#45474b",
+                "inverse-on-surface": "#f4f0f0"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "page-padding-mobile": "16px",
+                "gap-sm": "12px",
+                "gap-base": "8px",
+                "sidebar-width": "260px",
+                "gap-md": "16px",
+                "gap-lg": "24px",
+                "contextual-panel-width": "320px",
+                "page-padding-desktop": "24px"
+        },
+        "fontFamily": {
+                "caption": [
+                        "Work Sans"
+                ],
+                "data-mono": [
+                        "ui-monospace"
+                ],
+                "small-body": [
+                        "Work Sans"
+                ],
+                "body": [
+                        "Work Sans"
+                ],
+                "section-title": [
+                        "Work Sans"
+                ],
+                "page-title": [
+                        "Work Sans"
+                ],
+                "card-title": [
+                        "Work Sans"
+                ]
+        },
+        "fontSize": {
+                "caption": [
+                        "11px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "data-mono": [
+                        "12px",
+                        {
+                                "lineHeight": "18px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "small-body": [
+                        "13px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body": [
+                        "14px",
+                        {
+                                "lineHeight": "22px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "section-title": [
+                        "20px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "650"
+                        }
+                ],
+                "page-title": [
+                        "28px",
+                        {
+                                "lineHeight": "36px",
+                                "fontWeight": "700"
+                        }
+                ],
+                "card-title": [
+                        "15px",
+                        {
+                                "lineHeight": "22px",
+                                "fontWeight": "650"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+  body {
+    background-color: #f9efe4; /* parchment */
+  }
+</style>
+</head>
+<body class="bg-parchment font-body text-body text-graphite min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="bg-vellum fixed left-0 top-0 h-full w-[260px] flex flex-col p-gap-md overflow-y-auto hidden md:flex border-r border-linen z-10">
+<div class="mb-gap-lg flex items-center gap-gap-sm">
+<img alt="Logo de la Empresa" class="w-10 h-10 rounded-full object-cover border border-silver-mist" data-alt="A small, elegant corporate logo for a Chilean enterprise. The logo features a stylized, abstract geometric shape representing a star or sun, rendered in a warm, sophisticated palette of deep navy blue and soft terracotta. The background is a crisp, off-white, suggesting high-quality vellum paper. The design is modern, professional, and entirely free of text, set within a perfect square composition." src="https://lh3.googleusercontent.com/aida/ADBb0uiDQGaxv7qVLCUivW7IKdjGQKzSgqx_2jp2GAos4wBwpjlnTsEvndlLXR9IRRZHXfKkCCWPHQmPbEkhnRKAwPW1PaEI9BxSHvDzcQZGngxfpv0EAdILmi03NKJwUwKA6AY0bLcNWUzx7yKquOFt97x84HG93PmHxtDC2UPVn5i8xmo14xffFWpI5sKobCNiV2Kl-qATVcW2i77b8JoXKDWOWC8odktvVYeYsZtyPCvCShukgZEhbNZ_ED7BGVFsOo3N7JzwF7z__g"/>
+<div>
+<h1 class="font-page-title text-page-title font-bold text-graphite tracking-tight leading-tight">Escritorio Operativo</h1>
+<p class="font-caption text-caption text-on-surface-variant uppercase tracking-wider">Chile Emprende</p>
+</div>
+</div>
+<button class="bg-graphite text-chalk font-card-title text-card-title py-2 px-4 rounded-full mb-gap-lg hover:bg-ink transition-colors w-full flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+        Nueva Operación
+    </button>
+<div class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span>Agente IA</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">map</span>
+<span>Hoja de Ruta</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-container-high text-primary font-bold border-r-4 border-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">business</span>
+<span>Empresa</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>Documentos</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span>Libro de Caja</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span>Cumplimiento</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">bolt</span>
+<span>Acciones IA</span>
+</a>
+</div>
+<div class="mt-auto pt-gap-md border-t border-linen flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Agente IA</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+<span>Ayuda</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-[260px] min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-parchment docked full-width top-0 border-b border-silver-mist flex justify-between items-center h-16 px-page-padding-desktop sticky z-20">
+<div class="flex items-center gap-gap-md">
+<!-- Mobile Menu Toggle (Visible only on mobile) -->
+<button class="md:hidden text-graphite p-2 rounded-lg hover:bg-surface-container-high">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="font-section-title text-section-title font-bold text-graphite hidden md:block">Empresa</h2>
+</div>
+<div class="flex items-center gap-gap-lg">
+<div class="hidden lg:flex items-center gap-gap-md">
+<a class="text-on-surface-variant hover:text-primary transition-colors text-small-body" href="#">Dashboard</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-small-body" href="#">Notificaciones</a>
+</div>
+<div class="flex items-center bg-surface-container-high rounded-full px-3 py-1.5 focus-within:ring-2 focus-within:ring-outline-variant transition-shadow">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] mr-2">search</span>
+<input class="bg-transparent border-none outline-none text-small-body text-graphite placeholder-on-surface-variant w-40 focus:ring-0 p-0" placeholder="Buscar..." type="text"/>
+</div>
+<div class="flex items-center gap-gap-sm">
+<button class="text-on-surface-variant hover:text-primary transition-transform scale-95 active:scale-100 p-2 rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-px bg-silver-mist mx-2"></div>
+<div class="flex items-center gap-2 cursor-pointer hover:bg-surface-container-high p-1 pr-3 rounded-full transition-colors border border-transparent hover:border-silver-mist">
+<img alt="Avatar de usuario" class="w-8 h-8 rounded-full object-cover" data-alt="A professional headshot of a female entrepreneur with a warm, confident smile. She is wearing a modern, tailored navy blazer over a crisp white blouse. The background is a soft, out-of-focus modern office setting with subtle natural light. The color grading emphasizes warm, editorial tones, fitting perfectly within a sophisticated SaaS application." src="https://lh3.googleusercontent.com/aida/ADBb0uitoQir9mQMkWwdXSIrup6fx53lzD8Ug4XdG3s3fuJNjDNknL98k4dL5XctLjqD_JZjbjaAWCndrwtjCbfingmruDXMpQ05ckVNAEKnGgX2DuVEGtl7WKqZWzz7riU2rLYHeifoYUDrJ33O1E4pG_VpN5WvN-61WBghbQBXKBWooLNfDdJmfcXkf1dJVzvnOJNkjkxbW5j-tBb7ZV1XSXyYIl_6MZyPXUjQoVTV2oYu_ZaatxE3HepikqSQpXGf2UuQH6J3ZxeHXA"/>
+<span class="text-small-body font-card-title text-graphite hidden sm:block">Perfil</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">expand_more</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-page-padding-mobile md:p-page-padding-desktop max-w-7xl mx-auto w-full flex flex-col gap-gap-lg">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-gap-md">
+<div>
+<h2 class="font-page-title text-page-title text-graphite tracking-tight mb-1">Perfil de la Empresa</h2>
+<p class="font-small-body text-small-body text-on-surface-variant">Gestiona la información legal y operativa de Panadería La Estrella SpA.</p>
+</div>
+<div class="flex gap-gap-sm">
+<button class="bg-chalk border border-silver-mist text-graphite font-card-title text-small-body py-2 px-4 rounded-full hover:bg-surface-container-low transition-colors shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                    Editar Perfil
+                </button>
+<button class="bg-graphite text-chalk font-card-title text-small-body py-2 px-4 rounded-full hover:bg-ink transition-colors shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                    Descargar Ficha
+                </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gap-md lg:gap-gap-lg items-start">
+<!-- Left Column: Legal Data Card (Spans 8 cols on large screens) -->
+<div class="lg:col-span-8 flex flex-col gap-gap-md">
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-lg shadow-sm relative overflow-hidden">
+<!-- Subtle background texture/accent -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-linen opacity-30 rounded-bl-full -mr-16 -mt-16 pointer-events-none"></div>
+<div class="flex items-center gap-4 mb-gap-lg relative z-10">
+<div class="w-16 h-16 rounded-xl bg-surface-container-high flex items-center justify-center border border-silver-mist shadow-inner">
+<span class="material-symbols-outlined text-graphite text-[32px]">storefront</span>
+</div>
+<div>
+<h3 class="font-section-title text-section-title text-graphite mb-1">Datos Legales</h3>
+<div class="flex items-center gap-2">
+<span class="bg-vellum border border-silver-mist text-ochre text-caption px-2 py-0.5 rounded-full uppercase tracking-wider font-semibold">Activa</span>
+<span class="text-caption text-on-surface-variant">Última actualización: Hoy, 09:41 AM</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-gap-lg gap-y-gap-md relative z-10">
+<!-- Field -->
+<div class="flex flex-col gap-1 border-b border-surface-variant pb-3 md:border-none md:pb-0">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wide">Nombre Legal</span>
+<span class="font-body text-body text-graphite font-medium">Panadería La Estrella SpA</span>
+</div>
+<!-- Field -->
+<div class="flex flex-col gap-1 border-b border-surface-variant pb-3 md:border-none md:pb-0">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wide">RUT</span>
+<span class="font-data-mono text-data-mono text-graphite">76.123.456-7</span>
+</div>
+<!-- Field -->
+<div class="flex flex-col gap-1 border-b border-surface-variant pb-3 md:border-none md:pb-0">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wide">Figura Legal</span>
+<span class="font-body text-body text-graphite">Sociedad por Acciones (SpA)</span>
+</div>
+<!-- Field -->
+<div class="flex flex-col gap-1 border-b border-surface-variant pb-3 md:border-none md:pb-0">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wide">Régimen Tributario</span>
+<span class="font-body text-body text-graphite">Pro Pyme General (14 D3)</span>
+</div>
+<!-- Field -->
+<div class="flex flex-col gap-1 border-b border-surface-variant pb-3 md:border-none md:pb-0">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wide">Representante Legal</span>
+<span class="font-body text-body text-graphite">María José Rojas</span>
+</div>
+<!-- Field -->
+<div class="flex flex-col gap-1 border-b border-surface-variant pb-3 md:border-none md:pb-0">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wide">Rubro</span>
+<span class="font-body text-body text-graphite">Elaboración de productos de panadería</span>
+</div>
+<!-- Field -->
+<div class="flex flex-col gap-1 border-b border-surface-variant pb-3 md:border-none md:pb-0">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wide">Comuna</span>
+<span class="font-body text-body text-graphite">Providencia, Región Metropolitana</span>
+</div>
+<!-- Field -->
+<div class="flex flex-col gap-1">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wide">Etapa Actual</span>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-blueprint"></span>
+<span class="font-body text-body text-graphite font-medium">Tax Start</span>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Proposed Action (Contextual) -->
+<div class="bg-vellum border-l-4 border-mauve rounded-r-xl p-gap-md shadow-sm border border-y-silver-mist border-r-silver-mist flex flex-col md:flex-row md:items-start justify-between gap-gap-md">
+<div class="flex gap-gap-md items-start">
+<div class="p-2 bg-blossom rounded-full text-mauve mt-1">
+<span class="material-symbols-outlined text-[20px]">magic_button</span>
+</div>
+<div>
+<h4 class="font-card-title text-card-title text-graphite mb-1">Sugerencia de Inteligencia Artificial</h4>
+<p class="font-small-body text-small-body text-on-surface-variant mb-2">Hemos detectado una inconsistencia menor entre el rubro registrado y sus últimas facturas emitidas. ¿Desea revisar la categorización de actividades económicas ante el SII?</p>
+<div class="flex gap-3">
+<span class="bg-chalk border border-silver-mist text-caption font-data-mono px-2 py-1 rounded text-ink flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">policy</span>Confianza: 87%</span>
+</div>
+</div>
+</div>
+<div class="flex flex-row md:flex-col gap-2 shrink-0">
+<button class="bg-graphite text-chalk font-card-title text-caption py-1.5 px-3 rounded-full hover:bg-ink transition-colors text-center">Revisar</button>
+<button class="bg-transparent border border-silver-mist text-graphite font-card-title text-caption py-1.5 px-3 rounded-full hover:bg-surface-container-low transition-colors text-center">Ignorar</button>
+</div>
+</div>
+</div>
+<!-- Right Column: Summary Mini-cards (Spans 4 cols on large screens) -->
+<div class="lg:col-span-4 flex flex-col gap-gap-md">
+<!-- Tareas -->
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-md shadow-sm flex items-center justify-between hover:shadow-md transition-shadow cursor-pointer group">
+<div class="flex flex-col gap-1">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">checklist</span> Tareas Completadas
+                        </span>
+<div class="flex items-baseline gap-2">
+<span class="font-page-title text-page-title text-graphite">6</span>
+<span class="font-body text-body text-on-surface-variant">/ 17</span>
+</div>
+</div>
+<div class="w-12 h-12 rounded-full border-4 border-surface-variant flex items-center justify-center relative">
+<!-- Simulated progress ring -->
+<svg class="absolute top-0 left-0 w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-blueprint" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="35, 100" stroke-width="4"></path>
+</svg>
+<span class="material-symbols-outlined text-blueprint text-[20px] group-hover:scale-110 transition-transform">arrow_forward</span>
+</div>
+</div>
+<!-- Próxima Obligación -->
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-md shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">event_upcoming</span> Próxima Obligación
+                        </span>
+<span class="bg-buttercup text-ochre text-caption px-2 py-0.5 rounded-full font-semibold border border-ochre/20">Pendiente</span>
+</div>
+<h4 class="font-card-title text-card-title text-graphite mb-1">Declaración de IVA (F29)</h4>
+<div class="flex items-center gap-2 text-small-body font-data-mono text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                        2026-06-12
+                    </div>
+<div class="mt-3 pt-3 border-t border-surface-variant flex justify-end">
+<button class="text-blueprint font-card-title text-small-body hover:underline flex items-center gap-1">Ver calendario <span class="material-symbols-outlined text-[16px]">chevron_right</span></button>
+</div>
+</div>
+<!-- Saldo de Caja -->
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-md shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+<div class="absolute right-0 bottom-0 w-24 h-24 bg-error-container opacity-20 rounded-tl-full -mb-8 -mr-8"></div>
+<div class="flex flex-col gap-1 relative z-10">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">account_balance</span> Saldo de Caja
+                        </span>
+<div class="flex items-center justify-between mt-1">
+<span class="font-page-title text-page-title text-terracotta tracking-tight font-data-mono">$-17.000</span>
+<div class="bg-error-container text-error p-1.5 rounded-lg">
+<span class="material-symbols-outlined text-[20px]">trending_down</span>
+</div>
+</div>
+<p class="font-small-body text-small-body text-on-surface-variant mt-2 border-t border-surface-variant pt-2">
+                            Se requiere inyección de capital para cubrir las obligaciones de este mes.
+                        </p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

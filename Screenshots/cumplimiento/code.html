@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cumplimiento - Escritorio Operativo</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;650;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "ochre": "#7f6c1f",
+                        "blossom": "#fae9f4",
+                        "buttercup": "#fbf4d8",
+                        "surface-dim": "#ddd9d9",
+                        "outline": "#76777b",
+                        "blueprint": "#2e77e5",
+                        "primary": "#181a1f",
+                        "ink": "#3f434a",
+                        "on-tertiary-fixed-variant": "#4f453f",
+                        "terracotta": "#f67748",
+                        "on-primary-container": "#95969c",
+                        "on-primary-fixed-variant": "#45474c",
+                        "inverse-surface": "#313030",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#d3c4bc",
+                        "surface-variant": "#e5e2e2",
+                        "surface-container": "#f1eded",
+                        "linen": "#f0e4d6",
+                        "vellum": "#fdf9f4",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "silver-mist": "#d9dde6",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#fcf8f8",
+                        "sage": "#547358",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#221a15",
+                        "on-secondary-container": "#00285c",
+                        "primary-fixed-dim": "#c5c6cc",
+                        "on-background": "#1c1b1c",
+                        "surface-container-high": "#ebe7e7",
+                        "tertiary": "#201914",
+                        "secondary-container": "#4c8efe",
+                        "on-tertiary-container": "#a1948d",
+                        "tertiary-container": "#362d28",
+                        "parchment": "#f9efe4",
+                        "surface": "#fcf8f8",
+                        "slate": "#656565",
+                        "surface-container-highest": "#e5e2e2",
+                        "surface-tint": "#5d5e64",
+                        "tertiary-fixed": "#efdfd8",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#e2e2e8",
+                        "secondary": "#005bc0",
+                        "inverse-primary": "#c5c6cc",
+                        "chalk": "#fdfdfd",
+                        "mauve": "#9d4d77",
+                        "primary-container": "#2d2f34",
+                        "on-secondary-fixed": "#001a41",
+                        "ash": "#9da3af",
+                        "surface-container-low": "#f6f3f3",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "dusk-blue": "#446aa7",
+                        "background": "#fcf8f8",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#191c20",
+                        "secondary-fixed": "#d8e2ff",
+                        "outline-variant": "#c6c6cb",
+                        "on-secondary-fixed-variant": "#004493",
+                        "graphite": "#2d2f34",
+                        "on-surface": "#1c1b1c",
+                        "on-surface-variant": "#45474b",
+                        "inverse-on-surface": "#f4f0f0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "page-padding-mobile": "16px",
+                        "gap-sm": "12px",
+                        "gap-base": "8px",
+                        "sidebar-width": "260px",
+                        "gap-md": "16px",
+                        "gap-lg": "24px",
+                        "contextual-panel-width": "320px",
+                        "page-padding-desktop": "24px"
+                    },
+                    "fontFamily": {
+                        "caption": ["Work Sans"],
+                        "data-mono": ["ui-monospace"],
+                        "small-body": ["Work Sans"],
+                        "body": ["Work Sans"],
+                        "section-title": ["Work Sans"],
+                        "page-title": ["Work Sans"],
+                        "card-title": ["Work Sans"]
+                    },
+                    "fontSize": {
+                        "caption": ["11px", { "lineHeight": "16px", "fontWeight": "600" }],
+                        "data-mono": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "small-body": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "section-title": ["20px", { "lineHeight": "28px", "fontWeight": "650" }],
+                        "page-title": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "card-title": ["15px", { "lineHeight": "22px", "fontWeight": "650" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-parchment font-body text-body text-graphite flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full w-[260px] bg-vellum dark:bg-graphite flex flex-col p-gap-md overflow-y-auto border-r border-linen dark:border-primary-container z-20">
+<div class="flex items-center gap-gap-sm mb-gap-lg">
+<div class="w-10 h-10 rounded-full bg-silver-mist flex items-center justify-center overflow-hidden">
+<img alt="Logo de la Empresa" class="w-full h-full object-cover" data-alt="A clean, minimalist circular avatar image representing a corporate logo. The design uses warm, subtle colors fitting a modern SaaS operational desk aesthetic, perhaps a soft geometric shape in ochre or sage on a vellum background. High legibility, no distracting details." src="https://lh3.googleusercontent.com/aida/ADBb0uiDQGaxv7qVLCUivW7IKdjGQKzSgqx_2jp2GAos4wBwpjlnTsEvndlLXR9IRRZHXfKkCCWPHQmPbEkhnRKAwPW1PaEI9BxSHvDzcQZGngxfpv0EAdILmi03NKJwUwKA6AY0bLcNWUzx7yKquOFt97x84HG93PmHxtDC2UPVn5i8xmo14xffFWpI5sKobCNiV2Kl-qATVcW2i77b8JoXKDWOWC8odktvVYeYsZtyPCvCShukgZEhbNZ_ED7BGVFsOo3N7JzwF7z__g"/>
+</div>
+<div>
+<h1 class="font-page-title text-card-title font-bold text-graphite dark:text-chalk">Escritorio Operativo</h1>
+<p class="font-caption text-caption text-on-surface-variant">Chile Emprende</p>
+</div>
+</div>
+<button class="bg-graphite text-chalk font-body text-small-body rounded-full py-2 px-4 mb-gap-lg hover:bg-ink transition-colors duration-200 w-full flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            Nueva Operación
+        </button>
+<div class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="smart_toy">smart_toy</span>
+<span class="font-body text-small-body">Agente IA</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="map">map</span>
+<span class="font-body text-small-body">Hoja de Ruta</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="business">business</span>
+<span class="font-body text-small-body">Empresa</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="description">description</span>
+<span class="font-body text-small-body">Documentos</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-body text-small-body">Libro de Caja</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-primary dark:text-inverse-primary font-bold bg-surface-container-high dark:bg-ink border-r-4 border-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified_user">verified_user</span>
+<span class="font-body text-small-body">Cumplimiento</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="bolt">bolt</span>
+<span class="font-body text-small-body">Acciones IA</span>
+</a>
+</div>
+<div class="mt-auto pt-gap-md border-t border-linen dark:border-primary-container flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+<span class="font-body text-small-body">Agente IA</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+<span class="font-body text-small-body">Ayuda</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 ml-[260px] flex flex-col h-full bg-parchment">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center h-16 px-page-padding-desktop bg-parchment border-b border-silver-mist z-10 sticky top-0">
+<div class="flex items-center gap-gap-md">
+<h2 class="font-section-title text-section-title text-graphite hidden md:block">Calendario y estado de obligaciones tributarias, laborales y legales</h2>
+</div>
+<div class="flex items-center gap-gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-transform scale-95 active:scale-100 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-silver-mist overflow-hidden cursor-pointer hover:opacity-80 transition-opacity">
+<img alt="Avatar de usuario" class="w-full h-full object-cover" data-alt="A professional, warm corporate headshot avatar for a user profile. The person is smiling subtly, well-lit with soft natural light against a neutral vellum background. It fits seamlessly into a modern SaaS dashboard." src="https://lh3.googleusercontent.com/aida/ADBb0uitoQir9mQMkWwdXSIrup6fx53lzD8Ug4XdG3s3fuJNjDNknL98k4dL5XctLjqD_JZjbjaAWCndrwtjCbfingmruDXMpQ05ckVNAEKnGgX2DuVEGtl7WKqZWzz7riU2rLYHeifoYUDrJ33O1E4pG_VpN5WvN-61WBghbQBXKBWooLNfDdJmfcXkf1dJVzvnOJNkjkxbW5j-tBb7ZV1XSXyYIl_6MZyPXUjQoVTV2oYu_ZaatxE3HepikqSQpXGf2UuQH6J3ZxeHXA"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-page-padding-desktop">
+<div class="max-w-[1200px] mx-auto space-y-gap-lg">
+<!-- KPIs Panel -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-gap-md">
+<!-- KPI: Pendientes -->
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-md shadow-sm flex flex-col justify-between">
+<div class="flex justify-between items-start mb-2">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider">Pendientes</span>
+<span class="material-symbols-outlined text-ochre" data-icon="warning">warning</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="font-page-title text-page-title text-graphite">2</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-buttercup text-ochre font-caption text-caption mb-1 border border-linen">Acción requerida</span>
+</div>
+</div>
+<!-- KPI: Preparados -->
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-md shadow-sm flex flex-col justify-between">
+<div class="flex justify-between items-start mb-2">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider">Preparados</span>
+<span class="material-symbols-outlined text-buttercup" data-icon="edit_document">edit_document</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="font-page-title text-page-title text-graphite">1</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-bright text-ink font-caption text-caption mb-1 border border-silver-mist">Revisar</span>
+</div>
+</div>
+<!-- KPI: Cumplidos -->
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-md shadow-sm flex flex-col justify-between opacity-80">
+<div class="flex justify-between items-start mb-2">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider">Cumplidos</span>
+<span class="material-symbols-outlined text-sage" data-icon="check_circle">check_circle</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="font-page-title text-page-title text-graphite">0</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-bright text-sage font-caption text-caption mb-1 border border-linen">Al día</span>
+</div>
+</div>
+<!-- KPI: No aplica -->
+<div class="bg-chalk border border-silver-mist rounded-xl p-gap-md shadow-sm flex flex-col justify-between opacity-60">
+<div class="flex justify-between items-start mb-2">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider">No aplica</span>
+<span class="material-symbols-outlined text-ash" data-icon="block">block</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="font-page-title text-page-title text-graphite">2</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-variant text-ash font-caption text-caption mb-1 border border-silver-mist">Inactivo</span>
+</div>
+</div>
+</section>
+<!-- Obligations Table Panel -->
+<section class="bg-chalk border border-silver-mist rounded-xl shadow-sm overflow-hidden">
+<div class="p-gap-md border-b border-silver-mist bg-vellum flex justify-between items-center">
+<h3 class="font-card-title text-card-title text-graphite">Obligaciones Activas</h3>
+<div class="flex gap-2">
+<button class="bg-transparent border border-silver-mist text-ink font-caption text-caption rounded-lg px-3 py-1.5 hover:bg-surface-container-highest transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">filter_list</span> Filtrar
+                            </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-vellum border-b border-silver-mist text-on-surface-variant font-caption text-caption uppercase tracking-wider">
+<th class="p-3 font-medium">Obligación</th>
+<th class="p-3 font-medium">Formulario</th>
+<th class="p-3 font-medium">Periodo</th>
+<th class="p-3 font-medium text-right">Vencimiento</th>
+<th class="p-3 font-medium text-center">Estado</th>
+<th class="p-3 font-medium"></th>
+</tr>
+</thead>
+<tbody class="font-small-body text-small-body text-graphite divide-y divide-silver-mist/50">
+<!-- Row 1: Pendiente IVA -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="p-3">
+<div class="flex items-center gap-2">
+<span class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-ink">
+<span class="material-symbols-outlined text-[18px]">receipt_long</span>
+</span>
+<span class="font-medium">Declaración de IVA</span>
+</div>
+</td>
+<td class="p-3 text-on-surface-variant">F29</td>
+<td class="p-3 text-on-surface-variant">Septiembre 2023</td>
+<td class="p-3 text-right font-data-mono text-data-mono text-terracotta">20 Oct 2023</td>
+<td class="p-3 text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-buttercup text-ochre font-caption text-caption border border-linen">Pendiente</span>
+</td>
+<td class="p-3 text-right">
+<button class="text-blueprint hover:text-secondary font-caption text-caption opacity-0 group-hover:opacity-100 transition-opacity">Revisar</button>
+</td>
+</tr>
+<!-- Row 2: Pendiente Cotizaciones -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="p-3">
+<div class="flex items-center gap-2">
+<span class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-ink">
+<span class="material-symbols-outlined text-[18px]">group</span>
+</span>
+<span class="font-medium">Cotizaciones Previsionales</span>
+</div>
+</td>
+<td class="p-3 text-on-surface-variant">Previred</td>
+<td class="p-3 text-on-surface-variant">Septiembre 2023</td>
+<td class="p-3 text-right font-data-mono text-data-mono text-terracotta">13 Oct 2023</td>
+<td class="p-3 text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-buttercup text-ochre font-caption text-caption border border-linen">Pendiente</span>
+</td>
+<td class="p-3 text-right">
+<button class="text-blueprint hover:text-secondary font-caption text-caption opacity-0 group-hover:opacity-100 transition-opacity">Pagar</button>
+</td>
+</tr>
+<!-- Row 3: Preparado Renta -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="p-3">
+<div class="flex items-center gap-2">
+<span class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-ink">
+<span class="material-symbols-outlined text-[18px]">analytics</span>
+</span>
+<span class="font-medium">Declaración de Renta</span>
+</div>
+</td>
+<td class="p-3 text-on-surface-variant">F22</td>
+<td class="p-3 text-on-surface-variant">AT 2024</td>
+<td class="p-3 text-right font-data-mono text-data-mono text-ink">30 Abr 2024</td>
+<td class="p-3 text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-surface-bright text-ink font-caption text-caption border border-silver-mist">Preparado</span>
+</td>
+<td class="p-3 text-right">
+<button class="text-blueprint hover:text-secondary font-caption text-caption opacity-0 group-hover:opacity-100 transition-opacity">Ver Borrador</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Educational/Contextual Section -->
+<section class="bg-vellum border border-silver-mist rounded-xl p-gap-md shadow-sm flex items-start gap-4">
+<div class="w-12 h-12 rounded-full bg-blossom flex items-center justify-center text-mauve shrink-0">
+<span class="material-symbols-outlined" data-icon="lightbulb">lightbulb</span>
+</div>
+<div>
+<h4 class="font-card-title text-card-title text-graphite mb-1">Entendiendo tu brújula de cumplimiento</h4>
+<p class="font-small-body text-small-body text-on-surface-variant max-w-2xl">
+                            Esta vista resume tus responsabilidades clave ante el SII y la Dirección del Trabajo. Mantener los KPIs "Pendientes" en cero asegura la salud operativa de tu empresa. Las fechas de vencimiento se actualizan automáticamente según el calendario oficial.
+                        </p>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>

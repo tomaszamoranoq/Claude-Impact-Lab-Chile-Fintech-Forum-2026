@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Copiloto Pyme Chile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#ebe7e7",
+                        "slate": "#656565",
+                        "on-primary-fixed": "#191c20",
+                        "ash": "#9da3af",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#4f453f",
+                        "on-tertiary": "#ffffff",
+                        "mauve": "#9d4d77",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#45474b",
+                        "on-surface": "#1c1b1c",
+                        "dusk-blue": "#446aa7",
+                        "on-tertiary-container": "#a1948d",
+                        "outline-variant": "#c6c6cb",
+                        "ink": "#3f434a",
+                        "graphite": "#2d2f34",
+                        "on-secondary-fixed-variant": "#004493",
+                        "inverse-surface": "#313030",
+                        "surface-variant": "#e5e2e2",
+                        "tertiary-container": "#362d28",
+                        "on-tertiary-fixed": "#221a15",
+                        "chalk": "#fdfdfd",
+                        "surface-container-highest": "#e5e2e2",
+                        "surface-container-lowest": "#ffffff",
+                        "ochre": "#7f6c1f",
+                        "blossom": "#fae9f4",
+                        "background": "#fcf8f8",
+                        "surface-tint": "#5d5e64",
+                        "surface-bright": "#fcf8f8",
+                        "error": "#ba1a1a",
+                        "blueprint": "#2e77e5",
+                        "on-secondary-container": "#00285c",
+                        "on-primary-container": "#95969c",
+                        "primary-fixed-dim": "#c5c6cc",
+                        "buttercup": "#fbf4d8",
+                        "tertiary": "#201914",
+                        "outline": "#76777b",
+                        "secondary-fixed": "#d8e2ff",
+                        "linen": "#f0e4d6",
+                        "on-secondary-fixed": "#001a41",
+                        "on-primary": "#ffffff",
+                        "primary": "#181a1f",
+                        "secondary-container": "#4c8efe",
+                        "surface-container": "#f1eded",
+                        "on-primary-fixed-variant": "#45474c",
+                        "surface": "#fcf8f8",
+                        "terracotta": "#f67748",
+                        "inverse-on-surface": "#f4f0f0",
+                        "sage": "#547358",
+                        "secondary": "#005bc0",
+                        "surface-container-low": "#f6f3f3",
+                        "primary-container": "#2d2f34",
+                        "inverse-primary": "#c5c6cc",
+                        "silver-mist": "#d9dde6",
+                        "tertiary-fixed-dim": "#d3c4bc",
+                        "primary-fixed": "#e2e2e8",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "surface-dim": "#ddd9d9",
+                        "vellum": "#fdf9f4",
+                        "on-error": "#ffffff",
+                        "parchment": "#f9efe4",
+                        "tertiary-fixed": "#efdfd8",
+                        "on-background": "#1c1b1c",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "contextual-panel-width": "320px",
+                        "page-padding-mobile": "16px",
+                        "sidebar-width": "260px",
+                        "gap-sm": "12px",
+                        "gap-lg": "24px",
+                        "gap-md": "16px",
+                        "page-padding-desktop": "24px",
+                        "gap-base": "8px"
+                    },
+                    "fontFamily": {
+                        "page-title": ["Work Sans"],
+                        "data-mono": ["ui-monospace"],
+                        "card-title": ["Work Sans"],
+                        "section-title": ["Work Sans"],
+                        "caption": ["Work Sans"],
+                        "small-body": ["Work Sans"],
+                        "body": ["Work Sans"]
+                    },
+                    "fontSize": {
+                        "page-title": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "data-mono": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "card-title": ["15px", { "lineHeight": "22px", "fontWeight": "650" }],
+                        "section-title": ["20px", { "lineHeight": "28px", "fontWeight": "650" }],
+                        "caption": ["11px", { "lineHeight": "16px", "fontWeight": "600" }],
+                        "small-body": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body": ["14px", { "lineHeight": "22px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-parchment font-body text-body text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="docked full-width top-0 sticky z-50 bg-parchment dark:bg-tertiary">
+<div class="flex justify-between items-center w-full px-page-padding-mobile md:px-page-padding-desktop py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-gap-md">
+<span class="font-page-title text-section-title font-bold text-graphite dark:text-chalk">Copiloto Pyme</span>
+</div>
+<nav class="hidden md:flex gap-gap-lg">
+<a class="text-graphite dark:text-chalk font-bold border-b-2 border-graphite" href="#">Características</a>
+<a class="text-slate dark:text-ash hover:text-graphite dark:hover:text-chalk transition-colors" href="#">Cómo Funciona</a>
+</nav>
+<div class="flex items-center gap-gap-md">
+<button class="hidden md:block text-graphite dark:text-chalk font-body text-body hover:text-graphite transition-colors">Iniciar Sesión</button>
+<button class="bg-graphite text-chalk px-4 py-2 rounded-full font-body text-body hover:opacity-90 transition-opacity">Acceder a Demo</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow">
+<!-- Hero Section -->
+<section class="max-w-7xl mx-auto px-page-padding-mobile md:px-page-padding-desktop py-16 md:py-24 flex flex-col md:flex-row items-center gap-12">
+<div class="flex-1 space-y-6">
+<h1 class="font-page-title text-page-title text-graphite md:text-5xl md:leading-tight">
+                    Copiloto IA para microempresas chilenas
+                </h1>
+<p class="font-body text-body text-slate text-lg max-w-2xl">
+                    Guía a emprendedores desde la idea inicial hasta la operación mensual, convirtiendo lenguaje natural en acciones estructuradas, validadas y auditables.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 pt-4">
+<button class="bg-graphite text-chalk px-6 py-3 rounded-full font-body text-body hover:opacity-90 transition-opacity w-full sm:w-auto text-center">
+                        Entrar a la demo
+                    </button>
+<button class="bg-transparent border border-silver-mist text-graphite px-6 py-3 rounded-full font-body text-body hover:bg-surface-container transition-colors w-full sm:w-auto text-center">
+                        Ver cómo funciona
+                    </button>
+</div>
+</div>
+<div class="flex-1 w-full max-w-md mx-auto md:max-w-none relative">
+<div class="absolute -inset-4 bg-vellum rounded-xl transform rotate-2 opacity-50"></div>
+<img alt="A realistic, high-quality photograph of a modern, organized desk workspace bathed in soft, natural window light. The scene includes a neatly arranged laptop, an open notebook with structured handwritten notes, and a sleek cup of coffee. The overall aesthetic is warm, professional, and editorial, utilizing a color palette dominated by parchment tones, soft whites, and graphite accents to convey a sense of calm operational efficiency." class="relative w-full rounded-lg shadow-sm border border-silver-mist object-cover h-64 md:h-96" data-alt="A realistic, high-quality photograph of a modern, organized desk workspace bathed in soft, natural window light. The scene includes a neatly arranged laptop, an open notebook with structured handwritten notes, and a sleek cup of coffee. The overall aesthetic is warm, professional, and editorial, utilizing a color palette dominated by parchment tones, soft whites, and graphite accents to convey a sense of calm operational efficiency." src="https://lh3.googleusercontent.com/aida/ADBb0uiDQGaxv7qVLCUivW7IKdjGQKzSgqx_2jp2GAos4wBwpjlnTsEvndlLXR9IRRZHXfKkCCWPHQmPbEkhnRKAwPW1PaEI9BxSHvDzcQZGngxfpv0EAdILmi03NKJwUwKA6AY0bLcNWUzx7yKquOFt97x84HG93PmHxtDC2UPVn5i8xmo14xffFWpI5sKobCNiV2Kl-qATVcW2i77b8JoXKDWOWC8odktvVYeYsZtyPCvCShukgZEhbNZ_ED7BGVFsOo3N7JzwF7z__g"/>
+</div>
+</section>
+<!-- Features (Bento Grid Style) -->
+<section class="max-w-7xl mx-auto px-page-padding-mobile md:px-page-padding-desktop py-16">
+<h2 class="font-page-title text-section-title text-graphite mb-10 text-center">Características</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[250px]">
+<!-- Diagnóstico inicial guiado -->
+<div class="bg-chalk rounded-xl p-6 border border-silver-mist shadow-sm flex flex-col h-full lg:col-span-2">
+<div class="flex items-center gap-3 mb-4">
+<div class="bg-vellum p-2 rounded-lg border border-silver-mist">
+<span class="material-symbols-outlined text-graphite">psychiatry</span>
+</div>
+<h3 class="font-card-title text-card-title text-graphite">Diagnóstico inicial guiado</h3>
+</div>
+<p class="font-body text-body text-slate mb-4 flex-grow">
+                        Describe tu idea de negocio en lenguaje natural. El sistema extrae rubro, comuna, socios y etapa.
+                    </p>
+<div class="bg-vellum rounded-lg p-4 border border-silver-mist mt-auto relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-mauve"></div>
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-sm text-mauve">auto_awesome</span>
+<span class="font-caption text-caption text-ink uppercase tracking-wider">IA Propone</span>
+</div>
+<p class="font-small-body text-small-body text-ink">Rubro detectado: Comercialización de alimentos.</p>
+</div>
+</div>
+<!-- Libro de caja conversacional -->
+<div class="bg-chalk rounded-xl p-6 border border-silver-mist shadow-sm flex flex-col h-full row-span-2">
+<div class="flex items-center gap-3 mb-4">
+<div class="bg-vellum p-2 rounded-lg border border-silver-mist">
+<span class="material-symbols-outlined text-graphite">receipt_long</span>
+</div>
+<h3 class="font-card-title text-card-title text-graphite">Libro de caja conversacional</h3>
+</div>
+<p class="font-body text-body text-slate mb-6">
+                        Registra ingresos y egresos escribiendo como hablas. La IA propone la acción y tú confirmas.
+                    </p>
+<div class="flex-grow flex flex-col gap-3">
+<div class="bg-graphite text-chalk p-3 rounded-lg rounded-br-none self-end max-w-[85%]">
+<p class="font-small-body text-small-body">Gasté $15.000 en insumos de oficina en la librería de la esquina.</p>
+</div>
+<div class="bg-chalk border border-silver-mist text-ink p-3 rounded-lg rounded-bl-none self-start max-w-[90%]">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-xs text-slate">verified</span>
+<span class="font-caption text-caption text-slate">Borrador generado</span>
+</div>
+<p class="font-small-body text-small-body">Gasto: $15.000. Categoría: Insumos Oficina.</p>
+<div class="flex gap-2 mt-2">
+<button class="bg-graphite text-chalk px-3 py-1 rounded-full font-caption text-caption">Confirmar</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Hoja de ruta de cumplimiento -->
+<div class="bg-chalk rounded-xl p-6 border border-silver-mist shadow-sm flex flex-col h-full">
+<div class="flex items-center gap-3 mb-4">
+<div class="bg-vellum p-2 rounded-lg border border-silver-mist">
+<span class="material-symbols-outlined text-graphite">map</span>
+</div>
+<h3 class="font-card-title text-card-title text-graphite">Hoja de ruta de cumplimiento</h3>
+</div>
+<p class="font-body text-body text-slate flex-grow">
+                        Visualiza obligaciones tributarias, laborales y legales ordenadas por etapa del ciclo de vida.
+                    </p>
+</div>
+<!-- Auditoría de acciones IA -->
+<div class="bg-chalk rounded-xl p-6 border border-silver-mist shadow-sm flex flex-col h-full">
+<div class="flex items-center gap-3 mb-4">
+<div class="bg-vellum p-2 rounded-lg border border-silver-mist">
+<span class="material-symbols-outlined text-graphite">history</span>
+</div>
+<h3 class="font-card-title text-card-title text-graphite">Auditoría de acciones IA</h3>
+</div>
+<p class="font-body text-body text-slate flex-grow">
+                        Revisa cada acción propuesta, confirmada o rechazada por el sistema, con trazabilidad completa.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Trust Section -->
+</main>
+<!-- Footer -->
+<footer class="full-width mt-auto bg-linen dark:bg-tertiary-container border-t border-silver-mist">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-page-padding-mobile md:px-page-padding-desktop py-12 gap-gap-md max-w-7xl mx-auto">
+<div class="font-page-title text-card-title font-bold text-graphite dark:text-chalk mb-4 md:mb-0">
+                Copiloto Pyme
+            </div>
+<div class="text-center md:text-left mb-4 md:mb-0">
+<p class="font-caption text-caption text-slate dark:text-ash">
+                    © 2024 Copiloto Pyme Chile. Herramientas profesionales para el crecimiento empresarial.
+                </p>
+</div>
+<nav class="flex flex-wrap justify-center gap-4 font-caption text-caption">
+<a class="text-slate dark:text-ash hover:underline transition-all duration-200" href="#">Privacidad</a>
+<a class="text-slate dark:text-ash hover:underline transition-all duration-200" href="#">Términos de Uso</a>
+<a class="text-slate dark:text-ash hover:underline transition-all duration-200" href="#">Contacto</a>
+<a class="text-slate dark:text-ash hover:underline transition-all duration-200" href="#">LinkedIn</a>
+</nav>
+</div>
+</footer><div class="w-full bg-surface-container-low py-4 border-t border-silver-mist">
+<div class="max-w-7xl mx-auto px-page-padding-mobile md:px-page-padding-desktop text-center">
+<p class="font-small-body text-small-body text-slate">
+      Creado en el marco del <span class="font-semibold">Claude Impact Lab</span>, llevado a cabo en el Chile Fintech Forum el 6 y 7 de mayo del 2026
+    </p>
+</div>
+</div>
+</body></html>

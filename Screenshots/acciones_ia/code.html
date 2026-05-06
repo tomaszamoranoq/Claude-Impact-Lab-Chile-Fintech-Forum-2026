@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Acciones IA - Escritorio Operativo</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#005bc0",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-tertiary": "#ffffff",
+                        "ink": "#3f434a",
+                        "error": "#ba1a1a",
+                        "blossom": "#fae9f4",
+                        "on-surface": "#1c1b1c",
+                        "mauve": "#9d4d77",
+                        "blueprint": "#2e77e5",
+                        "terracotta": "#f67748",
+                        "on-primary-fixed": "#191c20",
+                        "tertiary-container": "#362d28",
+                        "slate": "#656565",
+                        "vellum": "#fdf9f4",
+                        "on-tertiary-fixed-variant": "#4f453f",
+                        "secondary-container": "#4c8efe",
+                        "on-secondary-container": "#00285c",
+                        "silver-mist": "#d9dde6",
+                        "on-tertiary-fixed": "#221a15",
+                        "tertiary": "#201914",
+                        "inverse-on-surface": "#f4f0f0",
+                        "outline": "#76777b",
+                        "primary-fixed-dim": "#c5c6cc",
+                        "tertiary-fixed-dim": "#d3c4bc",
+                        "surface-bright": "#fcf8f8",
+                        "sage": "#547358",
+                        "surface-container-highest": "#e5e2e2",
+                        "primary-container": "#2d2f34",
+                        "on-primary-container": "#95969c",
+                        "on-background": "#1c1b1c",
+                        "chalk": "#fdfdfd",
+                        "surface-dim": "#ddd9d9",
+                        "surface-variant": "#e5e2e2",
+                        "primary-fixed": "#e2e2e8",
+                        "error-container": "#ffdad6",
+                        "parchment": "#f9efe4",
+                        "on-secondary-fixed": "#001a41",
+                        "linen": "#f0e4d6",
+                        "outline-variant": "#c6c6cb",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#c5c6cc",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#45474b",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#ebe7e7",
+                        "surface": "#fcf8f8",
+                        "tertiary-fixed": "#efdfd8",
+                        "ochre": "#7f6c1f",
+                        "surface-container": "#f1eded",
+                        "surface-tint": "#5d5e64",
+                        "on-secondary-fixed-variant": "#004493",
+                        "background": "#fcf8f8",
+                        "inverse-surface": "#313030",
+                        "on-tertiary-container": "#a1948d",
+                        "ash": "#9da3af",
+                        "surface-container-low": "#f6f3f3",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#45474c",
+                        "buttercup": "#fbf4d8",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "dusk-blue": "#446aa7",
+                        "primary": "#181a1f",
+                        "graphite": "#2d2f34"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gap-lg": "24px",
+                        "contextual-panel-width": "320px",
+                        "page-padding-mobile": "16px",
+                        "gap-sm": "12px",
+                        "sidebar-width": "260px",
+                        "page-padding-desktop": "24px",
+                        "gap-md": "16px",
+                        "gap-base": "8px"
+                    },
+                    "fontFamily": {
+                        "small-body": ["Work Sans"],
+                        "page-title": ["Work Sans"],
+                        "caption": ["Work Sans"],
+                        "card-title": ["Work Sans"],
+                        "body": ["Work Sans"],
+                        "section-title": ["Work Sans"],
+                        "data-mono": ["ui-monospace"]
+                    },
+                    "fontSize": {
+                        "small-body": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "page-title": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "caption": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "card-title": ["15px", {"lineHeight": "22px", "fontWeight": "650"}],
+                        "body": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "section-title": ["20px", {"lineHeight": "28px", "fontWeight": "650"}],
+                        "data-mono": ["12px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-parchment text-graphite font-body min-h-screen flex">
+<!-- SideNavBar Component -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-vellum dark:bg-graphite flex flex-col h-screen p-gap-md overflow-y-auto z-20 shadow-[1px_0_0_0_rgba(217,221,230,1)]">
+<div class="flex items-center gap-gap-sm mb-gap-lg px-2 pt-2">
+<img alt="Logo de la Empresa" class="w-10 h-10 rounded-full object-cover border border-silver-mist" data-alt="A small, stylized circular company logo featuring abstract geometric shapes in deep graphite and secondary blue, set against a solid white background to serve as an avatar." src="https://lh3.googleusercontent.com/aida/ADBb0uiDQGaxv7qVLCUivW7IKdjGQKzSgqx_2jp2GAos4wBwpjlnTsEvndlLXR9IRRZHXfKkCCWPHQmPbEkhnRKAwPW1PaEI9BxSHvDzcQZGngxfpv0EAdILmi03NKJwUwKA6AY0bLcNWUzx7yKquOFt97x84HG93PmHxtDC2UPVn5i8xmo14xffFWpI5sKobCNiV2Kl-qATVcW2i77b8JoXKDWOWC8odktvVYeYsZtyPCvCShukgZEhbNZ_ED7BGVFsOo3N7JzwF7z__g"/>
+<div class="flex flex-col">
+<span class="font-page-title text-page-title font-bold text-graphite dark:text-chalk text-lg leading-tight">Escritorio Operativo</span>
+<span class="font-caption text-caption text-slate">Chile Emprende</span>
+</div>
+</div>
+<button class="bg-graphite text-chalk font-card-title text-card-title rounded-full py-2 px-4 mb-gap-lg flex items-center justify-center gap-2 hover:bg-ink transition-colors w-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+            Nueva Operación
+        </button>
+<nav class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-body text-body">Asesor Inicial</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-body text-body">Hoja de Ruta</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">business</span>
+<span class="font-body text-body">Empresa</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-body text-body">Documentos</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-body text-body">Libro de Caja</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-ink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-body text-body">Cumplimiento</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-primary dark:text-inverse-primary font-bold bg-linen dark:bg-primary-container transition-colors duration-200 relative" href="#">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full"></div>
+<span class="material-symbols-outlined">bolt</span>
+<span class="font-body text-body font-bold">Acciones IA</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-1 pt-gap-md border-t border-silver-mist">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body text-body">Configuración</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body text-body">Ayuda</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col ml-[260px] min-h-screen">
+<!-- TopAppBar Component -->
+<header class="docked full-width top-0 bg-parchment dark:bg-primary border-b border-silver-mist dark:border-outline-variant flex justify-between items-center h-16 px-page-padding-desktop z-10 sticky">
+<div class="flex items-center gap-gap-md">
+<h1 class="font-page-title text-page-title font-bold text-graphite dark:text-chalk text-xl">Escritorio Operativo</h1>
+</div>
+<div class="flex items-center gap-gap-md">
+<nav class="hidden md:flex items-center gap-gap-md mr-gap-md">
+<a class="font-section-title text-section-title text-on-surface-variant dark:text-on-primary-container hover:text-primary dark:hover:text-secondary-fixed text-sm transition-colors scale-95 active:scale-100" href="#">Dashboard</a>
+<a class="font-section-title text-section-title text-on-surface-variant dark:text-on-primary-container hover:text-primary dark:hover:text-secondary-fixed text-sm transition-colors scale-95 active:scale-100" href="#">Notificaciones</a>
+</nav>
+<div class="flex items-center gap-3 border-l border-silver-mist pl-gap-md">
+<button class="text-on-surface-variant hover:text-graphite transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+<img alt="Avatar de usuario" class="w-8 h-8 rounded-full object-cover" data-alt="A small, professional headshot photo of a business user in a modern office setting, smiling slightly, framed as a circular avatar." src="https://lh3.googleusercontent.com/aida/ADBb0uitoQir9mQMkWwdXSIrup6fx53lzD8Ug4XdG3s3fuJNjDNknL98k4dL5XctLjqD_JZjbjaAWCndrwtjCbfingmruDXMpQ05ckVNAEKnGgX2DuVEGtl7WKqZWzz7riU2rLYHeifoYUDrJ33O1E4pG_VpN5WvN-61WBghbQBXKBWooLNfDdJmfcXkf1dJVzvnOJNkjkxbW5j-tBb7ZV1XSXyYIl_6MZyPXUjQoVTV2oYu_ZaatxE3HepikqSQpXGf2UuQH6J3ZxeHXA"/>
+<span class="material-symbols-outlined text-on-surface-variant">arrow_drop_down</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-page-padding-desktop overflow-y-auto">
+<!-- Header Section -->
+<div class="mb-gap-lg">
+<h2 class="font-page-title text-page-title text-graphite mb-1">Centro de Acciones IA</h2>
+<p class="font-body text-body text-slate max-w-3xl">Auditoría de acciones propuestas, confirmadas, ejecutadas y rechazadas por el sistema.</p>
+</div>
+<!-- Main Panel: Data Table -->
+<div class="bg-chalk rounded-xl border border-silver-mist shadow-sm overflow-hidden">
+<!-- Table Controls / Filters -->
+<div class="flex items-center justify-between p-gap-md border-b border-silver-mist bg-vellum">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 bg-chalk border border-silver-mist rounded-lg font-small-body text-small-body focus:outline-none focus:border-graphite transition-colors" placeholder="Buscar acciones..." type="text"/>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center gap-1 px-3 py-1.5 bg-chalk border border-silver-mist rounded-lg font-caption text-caption text-graphite hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                            Filtros
+                        </button>
+</div>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-vellum border-b border-silver-mist">
+<th class="font-caption text-caption text-slate py-3 px-4 font-semibold uppercase tracking-wider w-32">Fecha</th>
+<th class="font-caption text-caption text-slate py-3 px-4 font-semibold uppercase tracking-wider">Intención</th>
+<th class="font-caption text-caption text-slate py-3 px-4 font-semibold uppercase tracking-wider">Datos Detectados</th>
+<th class="font-caption text-caption text-slate py-3 px-4 font-semibold uppercase tracking-wider w-40">Estado</th>
+<th class="font-caption text-caption text-slate py-3 px-4 font-semibold uppercase tracking-wider text-right w-24">Acción</th>
+</tr>
+</thead>
+<tbody class="font-body text-small-body text-graphite divide-y divide-silver-mist/50">
+<!-- Row 1: Propuesta (AI Action Highlight) -->
+<tr class="hover:bg-surface-container-low transition-colors group relative">
+<td class="py-3 px-4 font-data-mono text-data-mono text-slate">12 Oct, 14:30</td>
+<td class="py-3 px-4">
+<div class="flex items-start gap-2">
+<div class="w-1 h-full bg-mauve absolute left-0 top-0 bottom-0 rounded-r"></div>
+<div class="flex flex-col">
+<span class="font-card-title text-card-title">Clasificar Gasto: AWS Web Services</span>
+<span class="font-caption text-caption text-slate flex items-center gap-1 mt-0.5"><span class="material-symbols-outlined text-[12px]">bolt</span> Alta Confianza (98%)</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-slate">
+                                    Monto: $145.00 <br/>
+                                    Categoría Sugerida: Infraestructura TI
+                                </td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blossom text-mauve border border-mauve/20">
+                                        Propuesta
+                                    </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="bg-transparent text-graphite border border-silver-mist font-caption text-caption px-3 py-1.5 rounded-lg hover:bg-surface-container-highest transition-colors whitespace-nowrap">Ver detalle</button>
+</td>
+</tr>
+<!-- Row 2: Ejecutada -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-data-mono text-data-mono text-slate">11 Oct, 09:15</td>
+<td class="py-3 px-4">
+<div class="flex flex-col">
+<span class="font-card-title text-card-title">Generar Borrador Contrato Arriendo</span>
+<span class="font-caption text-caption text-slate">Plantilla Base C-2</span>
+</div>
+</td>
+<td class="py-3 px-4 text-slate">
+                                    Arrendador: Empresa Ltda.<br/>
+                                    Plazo: 12 meses
+                                </td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-sage/10 text-sage border border-sage/20">
+                                        Ejecutada
+                                    </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="bg-transparent text-graphite border border-silver-mist font-caption text-caption px-3 py-1.5 rounded-lg hover:bg-surface-container-highest transition-colors whitespace-nowrap">Ver detalle</button>
+</td>
+</tr>
+<!-- Row 3: Confirmada -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-data-mono text-data-mono text-slate">10 Oct, 16:45</td>
+<td class="py-3 px-4">
+<div class="flex flex-col">
+<span class="font-card-title text-card-title">Actualizar Ficha Proveedor</span>
+<span class="font-caption text-caption text-slate">Extracción de PDF adjunto</span>
+</div>
+</td>
+<td class="py-3 px-4 text-slate">
+                                    RUT válido, Dirección actualizada
+                                </td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-sage/10 text-sage border border-sage/20">
+                                        Confirmada
+                                    </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="bg-transparent text-graphite border border-silver-mist font-caption text-caption px-3 py-1.5 rounded-lg hover:bg-surface-container-highest transition-colors whitespace-nowrap">Ver detalle</button>
+</td>
+</tr>
+<!-- Row 4: Rechazada -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-data-mono text-data-mono text-slate">09 Oct, 11:20</td>
+<td class="py-3 px-4">
+<div class="flex flex-col">
+<span class="font-card-title text-card-title">Auto-responder Correo SII</span>
+<span class="font-caption text-caption text-slate">Notificación mensual</span>
+</div>
+</td>
+<td class="py-3 px-4 text-slate">
+                                    Borrador generado, pendiente revisión humana.
+                                </td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-surface-dim text-slate border border-outline/20">
+                                        Rechazada
+                                    </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="bg-transparent text-graphite border border-silver-mist font-caption text-caption px-3 py-1.5 rounded-lg hover:bg-surface-container-highest transition-colors whitespace-nowrap">Ver detalle</button>
+</td>
+</tr>
+<!-- Row 5: Fallida -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-data-mono text-data-mono text-slate">08 Oct, 10:00</td>
+<td class="py-3 px-4">
+<div class="flex flex-col">
+<span class="font-card-title text-card-title">Extraer Datos Factura #445</span>
+<span class="font-caption text-caption text-error flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">warning</span> Documento Ilegible</span>
+</div>
+</td>
+<td class="py-3 px-4 text-slate">
+<span class="text-terracotta">Faltan campos mandatorios</span>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-error-container text-error border border-error/20">
+                                        Fallida
+                                    </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="bg-transparent text-graphite border border-silver-mist font-caption text-caption px-3 py-1.5 rounded-lg hover:bg-surface-container-highest transition-colors whitespace-nowrap">Ver detalle</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="bg-vellum border-t border-silver-mist p-gap-sm flex items-center justify-between text-slate font-caption text-caption">
+<span>Mostrando 1 - 5 de 24 acciones</span>
+<div class="flex gap-1">
+<button class="p-1 rounded hover:bg-silver-mist transition-colors disabled:opacity-50" disabled=""><span class="material-symbols-outlined text-sm">chevron_left</span></button>
+<button class="p-1 rounded hover:bg-silver-mist transition-colors"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { getMockResponse, Message, ChatResponse, DiagnosisData } from "@/lib/mock-data";
 import ChatMessage from "./ChatMessage";
+import { Paperclip, Send } from "lucide-react";
 
 const MOCK_COMPANY_ID = "mock-company-1";
 const MOCK_USER_ID = "mock-user-1";
@@ -119,12 +120,10 @@ export default function ChatWindow() {
         }
       }
     } catch {
-      // Fallback: usar regex mock para mensaje conversacional
       const fallback = getMockResponse(userMsg.content);
       diagnosisMessage = fallback.message;
     }
 
-    // Si no hay diagnóstico estructurado, mostrar mensaje conversacional
     if (!diagnosisData) {
       const fallback = getMockResponse(userMsg.content);
       const assistantMsg: Message = {
@@ -138,7 +137,6 @@ export default function ChatWindow() {
       return;
     }
 
-    // Mostrar tarjeta de diagnóstico propuesto
     const assistantMsg: Message = {
       id: (Date.now() + 1).toString(),
       role: "assistant",
@@ -285,15 +283,15 @@ export default function ChatWindow() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white border border-gray-200 rounded-lg shadow-sm">
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h2 className="text-base font-semibold text-gray-900">Asesor Inicial</h2>
-        <p className="text-sm text-gray-500">
+    <div className="flex flex-col h-full bg-chalk border border-silver-mist rounded-2xl shadow-card overflow-hidden">
+      <div className="px-6 py-4 border-b border-silver-mist/60 bg-vellum/60">
+        <h2 className="text-base font-semibold text-graphite">Agente IA</h2>
+        <p className="text-sm text-slate mt-0.5">
           Responde algunas preguntas y te orientaré sobre figura legal, obligaciones y próximos pasos.
         </p>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-5 bg-parchment/30">
         {messages.map((msg) => (
           <ChatMessage
             key={msg.id}
@@ -305,30 +303,33 @@ export default function ChatWindow() {
           />
         ))}
         {loading && (
-          <div className="flex items-center space-x-2 text-sm text-gray-500">
-            <span className="inline-block w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-            <span className="inline-block w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.1s]" />
-            <span className="inline-block w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]" />
+          <div className="flex items-center gap-2 text-sm text-slate pl-2">
+            <span className="inline-block w-2 h-2 bg-slate rounded-full animate-bounce" />
+            <span className="inline-block w-2 h-2 bg-slate rounded-full animate-bounce [animation-delay:0.1s]" />
+            <span className="inline-block w-2 h-2 bg-slate rounded-full animate-bounce [animation-delay:0.2s]" />
           </div>
         )}
       </div>
 
-      <div className="px-6 py-4 border-t border-gray-200">
-        <div className="flex items-center space-x-3">
+      <div className="px-5 py-4 border-t border-silver-mist/60 bg-chalk">
+        <div className="flex items-center gap-3 bg-vellum border border-silver-mist rounded-full px-4 py-2">
+          <button className="text-ash hover:text-slate transition-colors cursor-default">
+            <Paperclip size={18} />
+          </button>
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Escribe tu mensaje..."
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Escribe un mensaje o adjunta un documento..."
+            className="flex-1 bg-transparent text-sm text-ink placeholder:text-ash focus:outline-none"
           />
           <button
             onClick={handleSend}
             disabled={loading || !input.trim()}
-            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-9 h-9 flex items-center justify-center bg-graphite text-chalk rounded-full hover:bg-ink disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
-            Enviar
+            <Send size={16} />
           </button>
         </div>
       </div>

@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-Abre http://localhost:3000 en tu navegador. La app redirige automaticamente al **Asesor Inicial**.
+Abre http://localhost:3000 en tu navegador. La raíz muestra la **landing pública**; la demo privada está en `/app`.
 
 ### Variables de entorno
 
@@ -116,6 +116,19 @@ ANTHROPIC_API_KEY=sk-ant-...
 - Página `/empresa` muestra el último diagnóstico guardado como tarjeta simple.
 - Sin cambios en `/acciones-ia` (solo acciones ejecutables).
 
+### Fase 3D — Landing pública + separación de app privada
+
+- Nueva landing pública en `/` con presentación del producto, características principales y disclaimer legal.
+- Aplicación privada/demo movida bajo `/app/*`:
+  - `/app/asesor-inicial`, `/app/hoja-de-ruta`, `/app/empresa`, `/app/documentos`, `/app/libro-de-caja`, `/app/acciones-ia`, `/app/cumplimiento`.
+- `app/layout.tsx` ya no incluye Sidebar globalmente; solo envuelve `html`/`body`.
+- `app/app/layout.tsx` incluye Sidebar + `<main>` para las rutas privadas.
+- Redirects en rutas antiguas para no romper bookmarks:
+  - `/asesor-inicial` → `/app/asesor-inicial`
+  - `/empresa` → `/app/empresa`
+  - etc.
+- Sidebar actualizado con links a `/app/*` y link "Inicio público" separado visualmente.
+
 #### Limitaciones técnicas Fase 2B
 
 - **Atomicidad:** la confirmación de una acción financiera implica dos queries sucesivas (update de acción + insert de transacción). Si falla la segunda, la acción queda como `executed` sin transacción asociada. Esto es aceptable para la demo single-tenant actual; la atomicidad real se abordará en una fase posterior.
@@ -148,6 +161,7 @@ ANTHROPIC_API_KEY=sk-ant-...
 
 ## Documentos Iniciales
 
+- [Sistema de Diseño](DESIGN.md)
 - [Vision de Producto](docs/product-vision.md)
 - [Alcance MVP](docs/mvp-scope.md)
 - [Arquitectura Tecnica](docs/architecture.md)

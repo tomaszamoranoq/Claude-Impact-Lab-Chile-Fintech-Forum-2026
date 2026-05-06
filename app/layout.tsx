@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Sidebar from "@/components/layout/Sidebar";
 
 export const metadata: Metadata = {
   title: "Copiloto Pyme Chile",
-  description: "MVP Fase 3C - Diagnóstico Inicial Guiado con Claude",
+  description: "Copiloto IA para microempresas chilenas. Guía a emprendedores desde la idea inicial hasta la operación mensual.",
 };
 
 export default function RootLayout({
@@ -14,9 +13,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className="bg-gray-50 text-gray-900 flex min-h-screen">
-        <Sidebar />
-        <main className="flex-1 flex overflow-hidden">{children}</main>
+      <body className="bg-gray-50 text-gray-900 min-h-screen">
+        {children}
       </body>
     </html>
   );

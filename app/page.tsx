@@ -34,6 +34,27 @@ const features = [
   },
 ];
 
+const howItWorks = [
+  {
+    step: "1",
+    title: "Describe tu negocio",
+    description:
+      "El emprendedor explica su idea, comuna, socios y situación actual en lenguaje natural.",
+  },
+  {
+    step: "2",
+    title: "La IA estructura la información",
+    description:
+      "El sistema propone diagnóstico, próximos pasos o acciones operativas con campos claros y trazables.",
+  },
+  {
+    step: "3",
+    title: "Tú confirmas antes de guardar",
+    description:
+      "Nada se registra automáticamente: cada acción pasa por revisión humana antes de llegar a la app privada.",
+  },
+];
+
 export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-parchment">
@@ -140,6 +161,34 @@ export default function HomePage() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section id="como-funciona" className="bg-vellum border-t border-silver-mist/40 py-16 md:py-20 scroll-mt-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="max-w-2xl">
+            <h2 className="text-2xl font-bold text-graphite">Cómo funciona</h2>
+            <p className="mt-3 text-sm md:text-base text-slate leading-relaxed">
+              Copiloto Pyme convierte conversaciones simples en información ordenada,
+              pero mantiene siempre una revisión humana antes de registrar cambios.
+            </p>
+          </div>
+
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5">
+            {howItWorks.map((item) => (
+              <div
+                key={item.step}
+                className="bg-chalk border border-silver-mist rounded-2xl p-6 shadow-soft"
+              >
+                <div className="w-9 h-9 rounded-full bg-graphite text-chalk flex items-center justify-center text-sm font-bold">
+                  {item.step}
+                </div>
+                <h3 className="mt-5 text-base font-bold text-graphite">{item.title}</h3>
+                <p className="mt-2 text-sm text-slate leading-relaxed">{item.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

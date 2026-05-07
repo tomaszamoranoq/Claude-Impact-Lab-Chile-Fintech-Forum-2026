@@ -15,7 +15,6 @@ const CHITCHAT_PATTERNS: RegExp[] = [
 ];
 
 const CHAT_STORAGE_KEY = "copiloto-pyme-chat-messages";
-const CHAT_PENDING_KEY = "copiloto-pyme-chat-pending";
 
 const initialMessages: Message[] = [
   {
@@ -50,44 +49,26 @@ function isChitChat(input: string): boolean {
 
 export default function ChatWindow({
   onRoadmapGenerated,
+  roadmapPrompt,
+  onRoadmapPromptConsumed,
 }: {
   onRoadmapGenerated?: () => void;
+  roadmapPrompt?: string;
+  onRoadmapPromptConsumed?: () => void;
 }) {
   const [messages, setMessages] = useState<Message[]>(loadStoredMessages);
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.localStorage.getItem(CHAT_PENDING_KEY) === "true";
-  });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     window.localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
   }, [messages]);
 
   useEffect(() => {
-    if (loading) {
-      window.localStorage.setItem(CHAT_PENDING_KEY, "true");
-    } else {
-      window.localStorage.removeItem(CHAT_PENDING_KEY);
-    }
-  }, [loading]);
-
-  useEffect(() => {
-    if (!loading) return;
-    const timeout = window.setTimeout(() => {
-      setLoading(false);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `${Date.now()}-timeout`,
-          role: "assistant",
-          content:
-            "La respuesta anterior quedó interrumpida al cambiar de vista o cerrar la pestaña. Puedes reenviar tu mensaje y sigo desde aquí.",
-        },
-      ]);
-    }, 45000);
-    return () => window.clearTimeout(timeout);
-  }, [loading]);
+    if (!roadmapPrompt) return;
+    setInput(roadmapPrompt);
+    onRoadmapPromptConsumed?.();
+  }, [roadmapPrompt, onRoadmapPromptConsumed]);
 
   const handleSend = async () => {
     if (!input.trim()) return;

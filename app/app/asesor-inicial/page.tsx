@@ -8,6 +8,7 @@ import { CashTransaction } from "@/lib/schemas";
 export default function AsesorInicialPage() {
   const [recentTransactions, setRecentTransactions] = useState<CashTransaction[]>([]);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [roadmapPrompt, setRoadmapPrompt] = useState<string | undefined>();
 
   useEffect(() => {
     async function fetchTransactions() {
@@ -28,7 +29,11 @@ export default function AsesorInicialPage() {
     <div className="flex h-full">
       <div className="flex-1 flex flex-col p-5 overflow-hidden">
         <div className="flex-1 overflow-hidden">
-          <ChatWindow onRoadmapGenerated={() => setRefreshTrigger((prev) => prev + 1)} />
+          <ChatWindow
+            onRoadmapGenerated={() => setRefreshTrigger((prev) => prev + 1)}
+            roadmapPrompt={roadmapPrompt}
+            onRoadmapPromptConsumed={() => setRoadmapPrompt(undefined)}
+          />
         </div>
         {recentTransactions.length > 0 && (
           <div className="mt-4 bg-chalk border border-silver-mist rounded-2xl p-4 shadow-card">
@@ -63,7 +68,10 @@ export default function AsesorInicialPage() {
           </div>
         )}
       </div>
-      <RoadmapPanel refreshTrigger={refreshTrigger} />
+      <RoadmapPanel
+        refreshTrigger={refreshTrigger}
+        onDiscussItem={(prompt) => setRoadmapPrompt(prompt)}
+      />
     </div>
   );
 }

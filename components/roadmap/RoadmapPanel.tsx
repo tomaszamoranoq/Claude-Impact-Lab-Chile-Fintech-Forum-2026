@@ -39,9 +39,13 @@ const statusConfig: Record<string, { label: string; dotClass: string; icon: Reac
 
 interface RoadmapPanelProps {
   refreshTrigger?: number;
+  onDiscussItem?: (prompt: string) => void;
 }
 
-export default function RoadmapPanel({ refreshTrigger = 0 }: RoadmapPanelProps) {
+export default function RoadmapPanel({
+  refreshTrigger = 0,
+  onDiscussItem,
+}: RoadmapPanelProps) {
   const [items, setItems] = useState<RoadmapItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -125,6 +129,18 @@ export default function RoadmapPanel({ refreshTrigger = 0 }: RoadmapPanelProps) 
                               <h4 className="text-sm font-medium text-graphite truncate">{item.title}</h4>
                             </div>
                             <p className="text-xs text-slate mt-0.5 line-clamp-2">{item.description}</p>
+                            {onDiscussItem && (
+                              <button
+                                onClick={() =>
+                                  onDiscussItem(
+                                    `Quiero trabajar esta tarea de mi hoja de ruta: "${item.title}". Explícame qué debo hacer ahora, qué datos necesitas y cuál sería el próximo paso concreto.`
+                                  )
+                                }
+                                className="mt-2 text-[11px] font-semibold text-blueprint hover:underline"
+                              >
+                                Trabajar en chat
+                              </button>
+                            )}
                           </div>
                           <span
                             className={`shrink-0 text-[10px] px-2 py-0.5 rounded-full font-semibold ${

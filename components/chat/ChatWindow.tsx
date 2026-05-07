@@ -6,9 +6,6 @@ import { AgentName } from "@/lib/schemas";
 import ChatMessage from "./ChatMessage";
 import { Paperclip, Send } from "lucide-react";
 
-const MOCK_COMPANY_ID = "mock-company-1";
-const MOCK_USER_ID = "mock-user-1";
-
 const CHITCHAT_PATTERNS: RegExp[] = [
   /^hola$/i, /^buenas$/i, /^gracias$/i, /^ok$/i, /^dale$/i,
   /^chao$/i, /^adiós$/i, /^adios$/i, /^qué puedes hacer$/i,
@@ -80,8 +77,6 @@ export default function ChatWindow() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            company_id: MOCK_COMPANY_ID,
-            user_id: MOCK_USER_ID,
             intent: actionResponse.proposed_action.intent,
             input_text: userMsg.content,
             proposed_payload: actionResponse.proposed_action.payload,
@@ -137,8 +132,6 @@ export default function ChatWindow() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           input_text: userMsg.content,
-          company_id: MOCK_COMPANY_ID,
-          user_id: MOCK_USER_ID,
           mode: "chat",
         }),
       });

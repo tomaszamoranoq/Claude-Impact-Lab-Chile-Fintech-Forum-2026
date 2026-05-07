@@ -3,6 +3,7 @@ import { getDocument, updateDocumentStatus } from "@/lib/server/documents";
 import { createAgentAction } from "@/lib/server/store";
 import { supabase } from "@/lib/server/supabase";
 import { DocumentExtraction } from "@/lib/schemas";
+import { getDemoIdentity } from "@/lib/server/demo-session";
 
 const OPERABLE_KINDS: DocumentExtraction["document_kind"][] = ["invoice", "receipt"];
 
@@ -18,9 +19,17 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
+    const { companyId, userId } = await getDemoIdentity();
     const existing = await getDocument(id);
 
     if (!existing) {
+      return NextResponse.json(
+        { success: false, error: "Documento no encontrado." },
+        { status: 404 }
+      );
+    }
+
+    if (existing.company_id !== companyId) {
       return NextResponse.json(
         { success: false, error: "Documento no encontrado." },
         { status: 404 }
@@ -72,7 +81,7 @@ export async function POST(
 
     const action = await createAgentAction({
       company_id: existing.company_id,
-      user_id: "mock-user-1",
+      user_id: userId,
       intent: "create_transaction_from_document",
       input_text: `Documento: ${existing.name} — Extracción confirmada desde gestor documental`,
       proposed_payload: {

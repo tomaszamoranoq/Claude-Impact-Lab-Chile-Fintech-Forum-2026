@@ -142,18 +142,20 @@ export interface DocumentFolder {
 
 export const mockCompany: Company = {
   id: "1",
-  legal_name: "Panadería La Estrella SpA",
-  rut: "76.123.456-7",
-  legal_type: "SpA",
-  tax_regime: "PROPYME General - Contabilidad Simplificada",
-  lifecycle_stage: "tax_start",
-  representative_name: "María González",
-  representative_rut: "12.345.678-9",
-  industry: "Elaboración de pan y productos de panadería",
-  municipality: "Providencia, Región Metropolitana",
+  legal_name: "Empresa sin configurar",
+  rut: "Pendiente",
+  legal_type: "Pendiente",
+  tax_regime: "Pendiente",
+  lifecycle_stage: "exploration",
+  representative_name: "Pendiente",
+  representative_rut: "Pendiente",
+  industry: "Pendiente",
+  municipality: "Pendiente",
 };
 
-export const mockRoadmap: RoadmapItem[] = [
+export const mockRoadmap: RoadmapItem[] = [];
+
+export const sampleRoadmap: RoadmapItem[] = [
   {
     id: "r1",
     stage: "exploration",
@@ -309,7 +311,9 @@ export const mockRoadmap: RoadmapItem[] = [
   },
 ];
 
-export const mockCompliance: ComplianceObligation[] = [
+export const mockCompliance: ComplianceObligation[] = [];
+
+export const sampleCompliance: ComplianceObligation[] = [
   {
     id: "c1",
     title: "Declaración de IVA",
@@ -367,7 +371,9 @@ export const mockCompliance: ComplianceObligation[] = [
   },
 ];
 
-export const mockTransactions: CashTransaction[] = [
+export const mockTransactions: CashTransaction[] = [];
+
+export const sampleTransactions: CashTransaction[] = [
   {
     id: "t1",
     type: "income",
@@ -447,7 +453,9 @@ export const mockTransactions: CashTransaction[] = [
   },
 ];
 
-export const mockFolders: DocumentFolder[] = [
+export const mockFolders: DocumentFolder[] = [];
+
+export const sampleFolders: DocumentFolder[] = [
   {
     id: "f1",
     name: "Legal",

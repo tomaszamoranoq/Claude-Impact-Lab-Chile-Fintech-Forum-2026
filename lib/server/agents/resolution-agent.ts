@@ -1,6 +1,7 @@
 import { resolutionAgentResponseSchema, ResolutionAgentResult } from "@/lib/schemas";
 import type { ResolutionTopic } from "@/lib/schemas";
 import { ResolutionKnowledgeClient } from "./knowledge/local/resolution-knowledge-client";
+import { McpKnowledgeClient } from "./knowledge/mcp/mcp-knowledge-client";
 import { BaseAgent } from "./base-agent";
 import { AgentContext, KnowledgeQuery, KnowledgeQueryContext } from "./types";
 import { ClaudeToolDefinition } from "./claude-client";
@@ -108,10 +109,13 @@ Debes invocar obligatoriamente la herramienta emit_resolution_guidance.`;
 }
 
 function normalizeResolutionResult(
-  raw: Record<string, unknown>
+  raw: Record<string, unknown>,
+  inputText: string
 ): ResolutionAgentResult {
   const message = String(raw.message || "Entiendo tu consulta sobre cierre o regularizacion. Te oriento con los pasos principales.");
-  const topic = sanitizeTopic(String(raw.topic || "general"));
+  const detectedTopic = detectTopic(inputText);
+  const rawTopic = sanitizeTopic(String(raw.topic || "general"));
+  const topic = detectedTopic !== "general" ? detectedTopic : rawTopic;
   const confidence = typeof raw.confidence === "number" ? raw.confidence : 0.7;
 
   const checklist = Array.isArray(raw.checklist)
@@ -263,7 +267,12 @@ export class ResolutionAgent extends BaseAgent<ResolutionAgentResult> {
     { name: "inactive_business_guidance", description: "Explica riesgos de empresa inactiva" },
     { name: "legal_risk_triage", description: "Triaje de riesgos legales y recomendaciones" },
   ];
-  protected readonly knowledgeClient = new ResolutionKnowledgeClient();
+  protected readonly knowledgeClient = new McpKnowledgeClient({
+    serverUrl: process.env.MCP_RESOLUTION_URL,
+    searchToolName: "search_resolution_knowledge",
+    sourceName: "MCP Resolution",
+    fallbackClient: new ResolutionKnowledgeClient(),
+  });
 
   protected buildTool(): ClaudeToolDefinition {
     return RESOLUTION_TOOL;
@@ -290,8 +299,8 @@ export class ResolutionAgent extends BaseAgent<ResolutionAgentResult> {
     };
   }
 
-  protected normalizeResult(raw: Record<string, unknown>, _inputText: string): ResolutionAgentResult {
-    return normalizeResolutionResult(raw);
+  protected normalizeResult(raw: Record<string, unknown>, inputText: string): ResolutionAgentResult {
+    return normalizeResolutionResult(raw, inputText);
   }
 
   protected getOutputSchema() {

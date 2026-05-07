@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
 import Sidebar from "@/components/layout/Sidebar";
 import {
-  Search,
-  Bell,
-  UserCircle,
   LayoutDashboard,
 } from "lucide-react";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Escritorio Operativo — Chile Emprende",
+  title: "Copiloto Pyme",
   description: "MVP Fase 3D - Demo privada",
 };
 
@@ -32,20 +29,6 @@ export default function AppLayout({
               <LayoutDashboard size={16} />
               Dashboard
             </Link>
-            <button className="flex items-center gap-1.5 text-sm font-medium text-slate hover:text-ink transition-colors cursor-default">
-              <Bell size={16} />
-              Notificaciones
-            </button>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-chalk border border-silver-mist rounded-full text-sm text-slate">
-              <Search size={14} />
-              <span>Buscar...</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-slate cursor-default">
-              <UserCircle size={20} />
-              <span>Perfil</span>
-            </div>
           </div>
         </header>
 

@@ -8,6 +8,7 @@ const PROTECTED_API_PREFIXES = [
   "/api/interpret-action",
   "/api/agent-actions",
   "/api/documents",
+  "/api/cash-transactions",
   "/api/business-diagnosis",
   "/api/roadmap-items",
 ]
@@ -67,6 +68,7 @@ export const config = {
     "/api/interpret-action/:path*",
     "/api/agent-actions/:path*",
     "/api/documents/:path*",
+    "/api/cash-transactions/:path*",
     "/api/business-diagnosis/:path*",
     "/api/roadmap-items/:path*",
   ],

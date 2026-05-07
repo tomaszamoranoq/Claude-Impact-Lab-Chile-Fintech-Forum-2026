@@ -12,7 +12,6 @@ import {
   Zap,
   Settings,
   HelpCircle,
-  Plus,
 } from "lucide-react";
 
 const navItems = [
@@ -33,24 +32,8 @@ export default function Sidebar() {
       {/* Branding */}
       <div className="px-6 pt-6 pb-4">
         <h1 className="text-xl font-bold text-graphite tracking-tight leading-tight">
-          Escritorio
-          <br />
-          Operativo
+          Copiloto Pyme
         </h1>
-        <p className="text-[11px] font-semibold text-ash uppercase tracking-wider mt-1">
-          Chile Emprende
-        </p>
-      </div>
-
-      {/* Nueva Operación */}
-      <div className="px-5 pb-4">
-        <Link
-          href="/app/asesor-inicial"
-          className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-graphite text-chalk text-sm font-medium rounded-full hover:bg-ink transition-colors shadow-soft"
-        >
-          <Plus size={16} strokeWidth={2.5} />
-          Nueva Operación
-        </Link>
       </div>
 
       {/* Navigation */}

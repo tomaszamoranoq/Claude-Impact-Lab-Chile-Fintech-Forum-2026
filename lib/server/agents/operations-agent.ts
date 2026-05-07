@@ -1,6 +1,7 @@
 import { operationsResponseSchema, OperationsAgentResult } from "@/lib/schemas";
 import type { OperationsTopic } from "@/lib/schemas";
 import { OperationsKnowledgeClient } from "./knowledge/local/operations-knowledge-client";
+import { McpKnowledgeClient } from "./knowledge/mcp/mcp-knowledge-client";
 import { BaseAgent } from "./base-agent";
 import { ClaudeToolDefinition } from "./claude-client";
 import { AgentContext } from "./types";
@@ -282,7 +283,12 @@ export class OperationsAgent extends BaseAgent<OperationsAgentResult> {
     { name: "balance_query", description: "Responde consultas de saldo, ingresos y egresos" },
     { name: "categorization", description: "Sugiere categorias para clasificar transacciones" },
   ];
-  protected readonly knowledgeClient = new OperationsKnowledgeClient();
+  protected readonly knowledgeClient = new McpKnowledgeClient({
+    serverUrl: process.env.MCP_OPERATIONS_URL,
+    searchToolName: "search_operations_knowledge",
+    sourceName: "MCP Operations",
+    fallbackClient: new OperationsKnowledgeClient(),
+  });
 
   private lastSummary?: CashTransactionSummary;
 

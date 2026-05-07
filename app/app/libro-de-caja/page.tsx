@@ -86,6 +86,18 @@ export default function LibroDeCajaPage() {
                     </tr>
                   </thead>
                   <tbody>
+                    {transactions.length === 0 && (
+                      <tr>
+                        <td colSpan={6} className="px-5 py-10 text-center">
+                          <p className="text-sm font-medium text-slate">
+                            Aún no hay movimientos registrados
+                          </p>
+                          <p className="text-xs text-ash mt-1">
+                            Usa el asesor o confirma una acción IA para crear el primer ingreso o egreso.
+                          </p>
+                        </td>
+                      </tr>
+                    )}
                     {transactions.map((t) => (
                       <tr key={t.id} className="border-b border-silver-mist/30 hover:bg-vellum/50 transition-colors">
                         <td className="px-5 py-3.5 text-sm text-slate whitespace-nowrap">{t.date}</td>
@@ -119,7 +131,7 @@ export default function LibroDeCajaPage() {
             </div>
 
             <p className="mt-4 text-xs text-ash italic">
-              Datos, fechas y fuentes simulados para demo. No constituyen información contable o legal vigente.
+              El libro de caja se completa con las acciones confirmadas por el usuario.
             </p>
           </>
         )}

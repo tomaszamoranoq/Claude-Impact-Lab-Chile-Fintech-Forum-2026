@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createBusinessDiagnosis } from "@/lib/server/business-diagnoses";
 import { createBusinessDiagnosisInputSchema } from "@/lib/schemas";
-
-const MOCK_COMPANY_ID = "mock-company-1";
-const MOCK_USER_ID = "mock-user-1";
+import { getDemoIdentity } from "@/lib/server/demo-session";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,10 +15,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const { companyId, userId } = await getDemoIdentity();
     const diagnosis = await createBusinessDiagnosis({
       ...parsed.data,
-      company_id: MOCK_COMPANY_ID,
-      user_id: MOCK_USER_ID,
+      company_id: companyId,
+      user_id: userId,
     });
 
     return NextResponse.json(

@@ -1,6 +1,7 @@
 import { documentsAgentResponseSchema, DocumentsAgentResult } from "@/lib/schemas";
 import type { DocumentsAgentTopic } from "@/lib/schemas";
 import { DocumentsKnowledgeClient } from "./knowledge/local/documents-knowledge-client";
+import { McpKnowledgeClient } from "./knowledge/mcp/mcp-knowledge-client";
 import { BaseAgent } from "./base-agent";
 import { ClaudeToolDefinition } from "./claude-client";
 import { AgentContext } from "./types";
@@ -257,7 +258,12 @@ export class DocumentsAgent extends BaseAgent<DocumentsAgentResult> {
     { name: "document_analysis_explanation", description: "Explica el flujo de analisis" },
     { name: "invoice_vs_payment_explanation", description: "Diferencia factura/pago" },
   ];
-  protected readonly knowledgeClient = new DocumentsKnowledgeClient();
+  protected readonly knowledgeClient = new McpKnowledgeClient({
+    serverUrl: process.env.MCP_DOCUMENTS_URL,
+    searchToolName: "search_documents_knowledge",
+    sourceName: "MCP Documents",
+    fallbackClient: new DocumentsKnowledgeClient(),
+  });
 
   private lastSummary?: DocumentSummary;
 

@@ -1,6 +1,7 @@
 import { complianceResponseSchema, ComplianceAgentResult } from "@/lib/schemas";
 import type { ComplianceTopic } from "@/lib/schemas";
 import { ComplianceKnowledgeClient } from "./knowledge/local/compliance-knowledge-client";
+import { McpKnowledgeClient } from "./knowledge/mcp/mcp-knowledge-client";
 import { BaseAgent } from "./base-agent";
 import { ClaudeToolDefinition } from "./claude-client";
 
@@ -259,7 +260,12 @@ export class ComplianceAgent extends BaseAgent<ComplianceAgentResult> {
     { name: "municipal_requirements", description: "Explica patente y permisos municipales" },
     { name: "labor_compliance", description: "Explica obligaciones previsionales (Previred)" },
   ];
-  protected readonly knowledgeClient = new ComplianceKnowledgeClient();
+  protected readonly knowledgeClient = new McpKnowledgeClient({
+    serverUrl: process.env.MCP_COMPLIANCE_URL,
+    searchToolName: "search_compliance_knowledge",
+    sourceName: "MCP Compliance",
+    fallbackClient: new ComplianceKnowledgeClient(),
+  });
 
   protected buildTool(): ClaudeToolDefinition {
     return COMPLIANCE_TOOL;

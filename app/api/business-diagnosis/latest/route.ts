@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { getLatestBusinessDiagnosis } from "@/lib/server/business-diagnoses";
-
-const MOCK_COMPANY_ID = "mock-company-1";
+import { getDemoIdentity } from "@/lib/server/demo-session";
 
 export async function GET() {
   try {
-    const diagnosis = await getLatestBusinessDiagnosis(MOCK_COMPANY_ID);
+    const { companyId } = await getDemoIdentity();
+    const diagnosis = await getLatestBusinessDiagnosis(companyId);
     return NextResponse.json({ success: true, data: diagnosis });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

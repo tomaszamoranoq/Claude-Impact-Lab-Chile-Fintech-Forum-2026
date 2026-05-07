@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { getLatestRoadmapItemsByDiagnosis } from "@/lib/server/roadmap-items";
+import { getDemoIdentity } from "@/lib/server/demo-session";
 
 export async function GET() {
   try {
-    const items = await getLatestRoadmapItemsByDiagnosis("mock-company-1");
+    const { companyId } = await getDemoIdentity();
+    const items = await getLatestRoadmapItemsByDiagnosis(companyId);
     return NextResponse.json({ success: true, data: items });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

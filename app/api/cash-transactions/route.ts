@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { listCashTransactions } from "@/lib/server/store";
+import { getDemoIdentity } from "@/lib/server/demo-session";
 
 export async function GET() {
   try {
-    const transactions = await listCashTransactions();
+    const { companyId } = await getDemoIdentity();
+    const transactions = await listCashTransactions(companyId);
     return NextResponse.json({ success: true, data: transactions });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

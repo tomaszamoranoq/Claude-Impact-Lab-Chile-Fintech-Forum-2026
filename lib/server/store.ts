@@ -10,11 +10,17 @@ function generateId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-export async function listAgentActions(): Promise<AgentAction[]> {
-  const { data, error } = await supabase
+export async function listAgentActions(companyId?: string): Promise<AgentAction[]> {
+  let query = supabase
     .from("agent_actions")
     .select("*")
     .order("created_at", { ascending: false });
+
+  if (companyId) {
+    query = query.eq("company_id", companyId);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     throw new Error(`Failed to list agent actions: ${error.message}`);
@@ -23,12 +29,20 @@ export async function listAgentActions(): Promise<AgentAction[]> {
   return (data ?? []) as AgentAction[];
 }
 
-export async function getAgentAction(id: string): Promise<AgentAction | undefined> {
-  const { data, error } = await supabase
+export async function getAgentAction(
+  id: string,
+  companyId?: string
+): Promise<AgentAction | undefined> {
+  let query = supabase
     .from("agent_actions")
     .select("*")
-    .eq("id", id)
-    .single();
+    .eq("id", id);
+
+  if (companyId) {
+    query = query.eq("company_id", companyId);
+  }
+
+  const { data, error } = await query.single();
 
   if (error) {
     if (error.code === "PGRST116") {
@@ -72,9 +86,10 @@ export async function createAgentAction(
 }
 
 export async function confirmAgentAction(
-  id: string
+  id: string,
+  companyId?: string
 ): Promise<{ action: AgentAction; transaction?: CashTransaction }> {
-  const action = await getAgentAction(id);
+  const action = await getAgentAction(id, companyId);
 
   if (!action) {
     throw new Error("Action not found");
@@ -158,8 +173,11 @@ export async function confirmAgentAction(
   return { action: updatedAction };
 }
 
-export async function rejectAgentAction(id: string): Promise<AgentAction> {
-  const action = await getAgentAction(id);
+export async function rejectAgentAction(
+  id: string,
+  companyId?: string
+): Promise<AgentAction> {
+  const action = await getAgentAction(id, companyId);
 
   if (!action) {
     throw new Error("Action not found");
@@ -181,11 +199,17 @@ export async function rejectAgentAction(id: string): Promise<AgentAction> {
   return { ...action, status: "rejected" };
 }
 
-export async function listCashTransactions(): Promise<CashTransaction[]> {
-  const { data, error } = await supabase
+export async function listCashTransactions(companyId?: string): Promise<CashTransaction[]> {
+  let query = supabase
     .from("cash_transactions")
     .select("*")
     .order("date", { ascending: false });
+
+  if (companyId) {
+    query = query.eq("company_id", companyId);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     throw new Error(`Failed to list cash transactions: ${error.message}`);
@@ -212,8 +236,7 @@ export interface CashTransactionSummary {
 export async function getCashTransactionSummary(
   companyId: string
 ): Promise<CashTransactionSummary> {
-  const allTransactions = await listCashTransactions();
-  const transactions = allTransactions.filter((t) => t.company_id === companyId);
+  const transactions = await listCashTransactions(companyId);
 
   const sortedByDateDesc = [...transactions].sort((a, b) =>
     b.date.localeCompare(a.date) || String(b.created_at).localeCompare(String(a.created_at))

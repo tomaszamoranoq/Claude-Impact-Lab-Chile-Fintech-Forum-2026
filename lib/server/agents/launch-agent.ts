@@ -7,6 +7,7 @@ import {
   RoadmapItem,
 } from "@/lib/schemas";
 import { LaunchKnowledgeClient } from "./knowledge/local/launch-knowledge-client";
+import { McpKnowledgeClient } from "./knowledge/mcp/mcp-knowledge-client";
 import {
   AgentContext,
   AgentOutput,
@@ -298,7 +299,12 @@ export class LaunchAgent extends BaseAgent<LaunchAgentResult> {
     { name: "diagnosis", description: "Genera diagnóstico de negocio" },
     { name: "roadmap", description: "Genera hoja de ruta personalizada" },
   ];
-  protected readonly knowledgeClient = new LaunchKnowledgeClient();
+  protected readonly knowledgeClient = new McpKnowledgeClient({
+    serverUrl: process.env.MCP_LAUNCH_URL,
+    searchToolName: "search_launch_knowledge",
+    sourceName: "MCP Launch",
+    fallbackClient: new LaunchKnowledgeClient(),
+  });
 
   private lastDiagnosisId?: string;
   private lastRoadmapItems?: RoadmapItem[];

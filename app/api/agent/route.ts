@@ -3,6 +3,7 @@ import { AgentRouter } from "@/lib/server/agents/agent-router";
 import { IntentClassifier } from "@/lib/server/agents/intent-classifier";
 import { AgentName, AgentContext, AgentRoutingMetadata } from "@/lib/server/agents/types";
 import { createAuditEvent } from "@/lib/server/audit";
+import { getDemoIdentity } from "@/lib/server/demo-session";
 
 const VALID_AGENTS: AgentName[] = [
   "launch",
@@ -20,11 +21,12 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { input_text, agent_name, company_id, user_id, mode } = body;
+    const { input_text, agent_name, mode } = body;
+    const { companyId, userId } = await getDemoIdentity();
 
     inputTextForAudit = input_text;
-    companyIdForAudit = company_id;
-    userIdForAudit = user_id;
+    companyIdForAudit = companyId;
+    userIdForAudit = userId;
 
     // 1. Validar mode si viene presente
     if (mode !== undefined && mode !== "chat" && mode !== "execute") {
@@ -58,8 +60,8 @@ export async function POST(request: NextRequest) {
 
     const context: AgentContext = {
       inputText: input_text,
-      companyId: company_id || "mock-company-1",
-      userId: user_id || "mock-user-1",
+      companyId,
+      userId,
       mode: mode === "chat" || mode === "execute" ? mode : undefined,
     };
 

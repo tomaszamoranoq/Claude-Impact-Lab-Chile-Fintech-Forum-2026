@@ -1,6 +1,7 @@
 import { laborAgentResponseSchema, LaborAgentResult } from "@/lib/schemas";
 import type { LaborTopic } from "@/lib/schemas";
 import { LaborKnowledgeClient } from "./knowledge/local/labor-knowledge-client";
+import { McpKnowledgeClient } from "./knowledge/mcp/mcp-knowledge-client";
 import { BaseAgent } from "./base-agent";
 import { ClaudeToolDefinition } from "./claude-client";
 
@@ -212,7 +213,12 @@ export class LaborAgent extends BaseAgent<LaborAgentResult> {
     { name: "previred_explanation", description: "Explica Previred y cotizaciones" },
     { name: "honorarios_vs_employee", description: "Diferencia honorarios vs dependiente" },
   ];
-  protected readonly knowledgeClient = new LaborKnowledgeClient();
+  protected readonly knowledgeClient = new McpKnowledgeClient({
+    serverUrl: process.env.MCP_LABOR_URL,
+    searchToolName: "search_labor_knowledge",
+    sourceName: "MCP Labor",
+    fallbackClient: new LaborKnowledgeClient(),
+  });
 
   protected buildTool(): ClaudeToolDefinition {
     return LABOR_TOOL;

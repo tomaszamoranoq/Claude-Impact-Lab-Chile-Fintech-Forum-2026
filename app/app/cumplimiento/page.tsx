@@ -81,6 +81,18 @@ export default function CumplimientoPage() {
                 </tr>
               </thead>
               <tbody>
+                {mockCompliance.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="px-5 py-10 text-center">
+                      <p className="text-sm font-medium text-slate">
+                        Aún no hay obligaciones configuradas
+                      </p>
+                      <p className="text-xs text-ash mt-1">
+                        Genera una hoja de ruta o registra datos de tu empresa para construir este calendario.
+                      </p>
+                    </td>
+                  </tr>
+                )}
                 {mockCompliance.map((item) => {
                   const cfg = statusConfig[item.status] || statusConfig.pending;
                   return (
@@ -124,7 +136,7 @@ export default function CumplimientoPage() {
         </div>
 
         <p className="mt-4 text-xs text-ash italic">
-          Datos, fechas y fuentes simulados para demo. No constituyen información legal vigente.
+          Este calendario se completa a medida que el usuario construye su empresa en la app.
         </p>
       </div>
     </div>

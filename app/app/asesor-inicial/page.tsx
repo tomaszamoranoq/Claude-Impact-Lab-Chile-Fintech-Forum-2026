@@ -11,9 +11,7 @@ export default function AsesorInicialPage() {
   const [launching, setLaunching] = useState(false);
   const [launchMessage, setLaunchMessage] = useState<string | null>(null);
   const [launchWarnings, setLaunchWarnings] = useState<string[]>([]);
-  const [launchInput, setLaunchInput] = useState(
-    "Quiero iniciar una panadería en Providencia con mi hermano. Necesito saber qué pasos seguir."
-  );
+  const [launchInput, setLaunchInput] = useState("");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {

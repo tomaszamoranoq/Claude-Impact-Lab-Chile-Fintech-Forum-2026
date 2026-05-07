@@ -4,10 +4,12 @@ import {
   listAgentActions,
 } from "@/lib/server/store";
 import { createAgentActionInputSchema } from "@/lib/schemas";
+import { getDemoIdentity } from "@/lib/server/demo-session";
 
 export async function GET() {
   try {
-    const actions = await listAgentActions();
+    const { companyId } = await getDemoIdentity();
+    const actions = await listAgentActions(companyId);
     return NextResponse.json({ success: true, data: actions });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
@@ -27,7 +29,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const action = await createAgentAction(parsed.data);
+    const { companyId, userId } = await getDemoIdentity();
+    const action = await createAgentAction({
+      ...parsed.data,
+      company_id: companyId,
+      user_id: userId,
+    });
     return NextResponse.json({ success: true, data: action }, { status: 201 });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

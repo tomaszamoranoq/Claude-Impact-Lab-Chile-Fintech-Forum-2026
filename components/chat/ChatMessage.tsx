@@ -2,6 +2,7 @@
 
 import { Message, isFinancialPayload, isConstitutionPayload } from "@/lib/mock-data";
 import { Sparkles, Check, X, Save, Trash2, AlertTriangle } from "lucide-react";
+import ComplianceCard, { type ComplianceCardData } from "./ComplianceCard";
 
 interface Props {
   message: Message;
@@ -21,6 +22,9 @@ export default function ChatMessage({ message, onConfirm, onReject, onSaveDiagno
   const isDiagnosisProposed = message.diagnosis_status === "proposed";
   const isDiagnosisSaved = message.diagnosis_status === "saved";
   const showDiagnosisCard = diagnosis && (isDiagnosisProposed || isDiagnosisSaved);
+
+  const isCompliance = message.agent_response?.agent === "compliance";
+  const complianceData = isCompliance ? message.agent_response!.data as ComplianceCardData : null;
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
@@ -262,6 +266,11 @@ export default function ChatMessage({ message, onConfirm, onReject, onSaveDiagno
             <Trash2 size={14} className="text-terracotta" />
             <p className="text-sm text-terracotta font-medium">Diagnóstico descartado</p>
           </div>
+        )}
+
+        {/* Compliance card */}
+        {isCompliance && complianceData && (
+          <ComplianceCard data={complianceData} />
         )}
 
         {message.response?.assumptions && (

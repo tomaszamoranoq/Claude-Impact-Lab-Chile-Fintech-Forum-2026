@@ -128,10 +128,10 @@ function normalizeResolutionResult(
       }))
     : [];
 
-  const risks = Array.isArray(raw.risks) ? raw.risks as string[] : [];
-  const assumptions = Array.isArray(raw.assumptions) ? raw.assumptions as string[] : [];
-  const missingContext = Array.isArray(raw.missing_context) ? raw.missing_context as string[] : [];
-  const nextSteps = Array.isArray(raw.next_steps) ? raw.next_steps as string[] : [];
+  const risks = Array.isArray(raw.risks) ? (raw.risks as unknown[]).filter((r): r is string => typeof r === "string") : [];
+  const assumptions = Array.isArray(raw.assumptions) ? (raw.assumptions as unknown[]).filter((a): a is string => typeof a === "string") : [];
+  const missingContext = Array.isArray(raw.missing_context) ? (raw.missing_context as unknown[]).filter((m): m is string => typeof m === "string") : [];
+  const nextSteps = Array.isArray(raw.next_steps) ? (raw.next_steps as unknown[]).filter((n): n is string => typeof n === "string") : [];
 
   return {
     agent: "resolution",

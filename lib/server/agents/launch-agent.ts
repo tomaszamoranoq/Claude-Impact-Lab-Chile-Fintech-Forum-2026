@@ -15,8 +15,8 @@ import {
   AgentRunOutput,
 } from "./types";
 import { BaseAgent } from "./base-agent";
-import { createBusinessDiagnosis, getLatestDiagnosisWithRoadmap, updateBusinessDiagnosis } from "@/lib/server/business-diagnoses";
-import { createRoadmapItems, deleteRoadmapItemsByDiagnosis } from "@/lib/server/roadmap-items";
+import { createBusinessDiagnosis } from "@/lib/server/business-diagnoses";
+import { createRoadmapItems } from "@/lib/server/roadmap-items";
 import { z } from "zod";
 import { safeParseRoadmapItems, buildDefaultRoadmapItems } from "./utils/roadmap-utils";
 
@@ -308,6 +308,7 @@ export class LaunchAgent extends BaseAgent<LaunchAgentResult> {
 
   private lastDiagnosisId?: string;
   private lastRoadmapItems?: RoadmapItem[];
+  private lastRunWasChat = false;
 
   protected buildTool() {
     return LAUNCH_TOOL;
@@ -329,34 +330,8 @@ export class LaunchAgent extends BaseAgent<LaunchAgentResult> {
     const mode = context.mode ?? "execute";
 
     if (mode === "chat") {
-      // Solo reutilizar diagnóstico que ya tenga roadmap_items asociados
-      const existingDiagnosis = await getLatestDiagnosisWithRoadmap(context.companyId, 24);
-
-      if (existingDiagnosis) {
-        // DEBT: sin transacción SQL. Si falla a mitad, puede haber inconsistencia.
-        // 1. Actualizar diagnóstico
-        await updateBusinessDiagnosis(existingDiagnosis.id, {
-          input_text: result.diagnosis.input_text,
-          business_profile: result.diagnosis.business_profile,
-          recommended_legal_type: result.diagnosis.recommended_legal_type,
-          lifecycle_stage: result.diagnosis.lifecycle_stage,
-          assumptions: result.diagnosis.assumptions,
-          unknowns: result.diagnosis.unknowns,
-          next_steps: result.diagnosis.next_steps,
-          confidence: result.diagnosis.confidence,
-          model_used: result.diagnosis.model_used,
-        });
-        // 2. Borrar roadmap_items anteriores
-        await deleteRoadmapItemsByDiagnosis(existingDiagnosis.id);
-        // 3. Insertar roadmap_items nuevos
-        this.lastDiagnosisId = existingDiagnosis.id;
-        this.lastRoadmapItems = await createRoadmapItems(
-          result.roadmap_items,
-          context.companyId,
-          existingDiagnosis.id
-        );
-        return;
-      }
+      this.lastRunWasChat = true;
+      return;
     }
 
     const diagnosis = await createBusinessDiagnosis({
@@ -379,6 +354,9 @@ export class LaunchAgent extends BaseAgent<LaunchAgentResult> {
   async run(context: AgentContext): Promise<AgentOutput<LaunchAgentResult & { diagnosis_id: string; roadmap_items: RoadmapItem[] }>> {
     const output = await super.run(context);
     if (!output.success || !output.data) {
+      return output as AgentOutput<LaunchAgentResult & { diagnosis_id: string; roadmap_items: RoadmapItem[] }>;
+    }
+    if (this.lastRunWasChat) {
       return output as AgentOutput<LaunchAgentResult & { diagnosis_id: string; roadmap_items: RoadmapItem[] }>;
     }
     if (!this.lastDiagnosisId) {

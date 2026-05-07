@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getMockResponse, Message, ChatResponse, DiagnosisData } from "@/lib/mock-data";
 import { AgentName } from "@/lib/schemas";
 import ChatMessage from "./ChatMessage";
@@ -13,6 +13,29 @@ const CHITCHAT_PATTERNS: RegExp[] = [
   /^hey$/i, /^buenos días$/i, /^buenas tardes$/i, /^buenas noches$/i,
   /^gracias!$/i, /^ok!$/i, /^sí$/i, /^si$/i, /^no$/i, /^nop$/i,
 ];
+
+const CHAT_STORAGE_KEY = "copiloto-pyme-chat-messages";
+
+const initialMessages: Message[] = [
+  {
+    id: "welcome",
+    role: "assistant",
+    content:
+      "Hola. Cuéntame en simple qué negocio quieres crear o qué estás intentando ordenar. Si faltan datos, te los voy a pedir antes de proponerte una hoja de ruta.",
+  },
+];
+
+function loadStoredMessages(): Message[] {
+  if (typeof window === "undefined") return initialMessages;
+  try {
+    const raw = window.localStorage.getItem(CHAT_STORAGE_KEY);
+    if (!raw) return initialMessages;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : initialMessages;
+  } catch {
+    return initialMessages;
+  }
+}
 
 function isChitChat(input: string): boolean {
   const trimmed = input.trim().toLowerCase();
@@ -29,16 +52,13 @@ export default function ChatWindow({
 }: {
   onRoadmapGenerated?: () => void;
 }) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      content:
-        "¡Hola! Soy tu Asesor Inicial. Cuéntame sobre tu negocio: ¿qué rubro, en qué comuna, cuántos socios, y qué etapa crees que estás?",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(loadStoredMessages);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    window.localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+  }, [messages]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -146,14 +166,15 @@ export default function ChatWindow({
 
         // LaunchAgent response: tiene diagnosis + roadmap_items
         if (agentData.diagnosis && agentData.message) {
-          onRoadmapGenerated?.();
           const diagnosisData = agentData.diagnosis as DiagnosisData;
           const assistantMsg: Message = {
             id: (Date.now() + 1).toString(),
             role: "assistant",
-            content: String(agentData.message),
+            content:
+              `${String(agentData.message)}\n\n` +
+              "Te dejo una propuesta inicial abajo. No voy a crear la hoja de ruta hasta que la apruebes.",
             diagnosis: diagnosisData,
-            diagnosis_status: "saved",
+            diagnosis_status: "proposed",
             diagnosis_model_used: String(agentData.model_used || "claude"),
             agent_response: {
               agent: (agentData.agent as AgentName) || "launch",
@@ -317,6 +338,12 @@ export default function ChatWindow({
           next_steps: msg.diagnosis.next_steps,
           confidence: msg.diagnosis.confidence,
           model_used: msg.diagnosis_model_used || "unknown",
+          roadmap_items:
+            msg.agent_response?.data &&
+            typeof msg.agent_response.data === "object" &&
+            "roadmap_items" in msg.agent_response.data
+              ? (msg.agent_response.data as Record<string, unknown>).roadmap_items
+              : undefined,
         }),
       });
       const json = await res.json();
@@ -330,6 +357,14 @@ export default function ChatWindow({
           m.id === messageId ? { ...m, diagnosis_status: "saved" as const } : m
         )
       );
+      onRoadmapGenerated?.();
+
+      const systemMsg: Message = {
+        id: (Date.now() + 2).toString(),
+        role: "assistant",
+        content: "Listo. Guardé el diagnóstico y creé la hoja de ruta para que la revises.",
+      };
+      setMessages((prev) => [...prev, systemMsg]);
     } catch {
       const errorMsg: Message = {
         id: (Date.now() + 2).toString(),

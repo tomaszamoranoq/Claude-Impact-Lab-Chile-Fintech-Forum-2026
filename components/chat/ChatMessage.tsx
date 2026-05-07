@@ -39,7 +39,7 @@ export default function ChatMessage({ message, onConfirm, onReject, onSaveDiagno
             : "bg-chalk border border-silver-mist text-ink rounded-2xl rounded-bl-md px-5 py-3 shadow-card"
         }`}
       >
-        <p className="leading-relaxed">{message.content}</p>
+        <p className="leading-relaxed whitespace-pre-wrap">{message.content}</p>
 
         {/* Action proposed */}
         {action && isProposed && (
@@ -250,7 +250,7 @@ export default function ChatMessage({ message, onConfirm, onReject, onSaveDiagno
                     className="inline-flex items-center gap-1.5 px-4 py-2 bg-graphite text-chalk text-xs font-semibold rounded-full hover:bg-ink transition-colors"
                   >
                     <Save size={14} />
-                    Guardar diagnóstico
+                    Aprobar y crear hoja de ruta
                   </button>
                   <button
                     onClick={() => onDiscardDiagnosis?.(message.id)}

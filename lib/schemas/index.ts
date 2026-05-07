@@ -531,3 +531,58 @@ export type ObligationStatusHint = z.infer<typeof obligationStatusHintSchema>;
 export type ObligationItem = z.infer<typeof obligationItemSchema>;
 export type ComplianceSource = z.infer<typeof complianceSourceSchema>;
 export type ComplianceAgentResult = z.infer<typeof complianceResponseSchema>;
+
+// ------------------------------------------------------------------
+// Schemas para OperationsAgent (Fase 5E-A)
+// ------------------------------------------------------------------
+
+export const operationsTopicSchema = z.enum([
+  "cashbook",
+  "balance",
+  "expenses",
+  "income",
+  "invoice_payment",
+  "categorization",
+  "missing_amount",
+  "general",
+]);
+
+export const operationsTransactionSummaryItemSchema = z.object({
+  type: z.enum(["income", "expense"]),
+  amount: z.number(),
+  category: z.string(),
+  description: z.string(),
+  date: z.string(),
+});
+
+export const operationsCategorySummarySchema = z.object({
+  category: z.string(),
+  count: z.number(),
+  total: z.number(),
+});
+
+export const operationsSummarySchema = z.object({
+  current_balance: z.number().optional(),
+  monthly_income: z.number().optional(),
+  monthly_expenses: z.number().optional(),
+  transaction_count: z.number().optional(),
+  last_transactions: z.array(operationsTransactionSummaryItemSchema).optional(),
+  top_categories: z.array(operationsCategorySummarySchema).optional(),
+});
+
+export const operationsResponseSchema = z.object({
+  agent: z.literal("operations"),
+  message: z.string().min(1),
+  topic: operationsTopicSchema,
+  summary: operationsSummarySchema.optional(),
+  insights: z.array(z.string()).default([]),
+  suggested_categories: z.array(z.string()).default([]),
+  missing_context: z.array(z.string()).default([]),
+  next_steps: z.array(z.string()).default([]),
+  confidence: z.number().min(0).max(1),
+  model_used: z.string(),
+  warnings: z.array(z.string()).default([]),
+});
+
+export type OperationsTopic = z.infer<typeof operationsTopicSchema>;
+export type OperationsAgentResult = z.infer<typeof operationsResponseSchema>;

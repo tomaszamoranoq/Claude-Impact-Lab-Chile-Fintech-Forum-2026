@@ -193,3 +193,80 @@ export async function listCashTransactions(): Promise<CashTransaction[]> {
 
   return (data ?? []) as CashTransaction[];
 }
+
+export interface CashTransactionSummary {
+  currentBalance: number;
+  monthlyIncome: number;
+  monthlyExpenses: number;
+  transactionCount: number;
+  lastTransactions: Array<{
+    type: "income" | "expense";
+    amount: number;
+    category: string;
+    description: string;
+    date: string;
+  }>;
+  topCategories: Array<{ category: string; count: number; total: number }>;
+}
+
+export async function getCashTransactionSummary(
+  companyId: string
+): Promise<CashTransactionSummary> {
+  const allTransactions = await listCashTransactions();
+  const transactions = allTransactions.filter((t) => t.company_id === companyId);
+
+  const sortedByDateDesc = [...transactions].sort((a, b) =>
+    b.date.localeCompare(a.date) || String(b.created_at).localeCompare(String(a.created_at))
+  );
+
+  const totalIncome = transactions
+    .filter((t) => t.type === "income")
+    .reduce((sum, t) => sum + t.amount, 0);
+  const totalExpenses = transactions
+    .filter((t) => t.type === "expense")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  let monthlyIncome = 0;
+  let monthlyExpenses = 0;
+
+  if (transactions.length > 0) {
+    const recentDate = transactions.reduce((max, t) => (t.date > max ? t.date : max), transactions[0].date);
+    const referenceMonth = recentDate.substring(0, 7);
+
+    monthlyIncome = transactions
+      .filter((t) => t.type === "income" && t.date.startsWith(referenceMonth))
+      .reduce((sum, t) => sum + t.amount, 0);
+    monthlyExpenses = transactions
+      .filter((t) => t.type === "expense" && t.date.startsWith(referenceMonth))
+      .reduce((sum, t) => sum + t.amount, 0);
+  }
+
+  const lastTransactions = sortedByDateDesc.slice(0, 5).map((t) => ({
+    type: t.type,
+    amount: t.amount,
+    category: t.category,
+    description: t.description,
+    date: t.date,
+  }));
+
+  const categoryMap = new Map<string, { count: number; total: number }>();
+  for (const t of transactions) {
+    const entry = categoryMap.get(t.category) || { count: 0, total: 0 };
+    entry.count += 1;
+    entry.total += t.type === "income" ? t.amount : -t.amount;
+    categoryMap.set(t.category, entry);
+  }
+  const topCategories = Array.from(categoryMap.entries())
+    .map(([category, data]) => ({ category, count: data.count, total: data.total }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
+  return {
+    currentBalance: totalIncome - totalExpenses,
+    monthlyIncome,
+    monthlyExpenses,
+    transactionCount: transactions.length,
+    lastTransactions,
+    topCategories,
+  };
+}

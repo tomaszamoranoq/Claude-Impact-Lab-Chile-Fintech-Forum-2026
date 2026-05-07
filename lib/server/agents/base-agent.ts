@@ -33,6 +33,10 @@ export abstract class BaseAgent<TOutput = unknown> {
     throw new Error("Fallback not implemented");
   }
 
+  protected async buildAdditionalContext(_context: AgentContext): Promise<string> {
+    return "";
+  }
+
   protected async fetchCompanyContext(
     companyId: string
   ): Promise<Record<string, unknown> | null> {
@@ -86,7 +90,8 @@ export abstract class BaseAgent<TOutput = unknown> {
 
       // 3. Construir prompt
       const systemPrompt = this.buildSystemPrompt(knowledge);
-      const userMessage = this.buildUserMessage(company, context.inputText);
+      const additionalContext = await this.buildAdditionalContext(context);
+      const userMessage = this.buildUserMessage(company, context.inputText, additionalContext);
 
       // 4. Llamar Claude
       const tool = this.buildTool();
@@ -147,8 +152,10 @@ export abstract class BaseAgent<TOutput = unknown> {
 
   protected buildUserMessage(
     company: Record<string, unknown> | null,
-    inputText: string
+    inputText: string,
+    additionalContext?: string
   ): string {
-    return `Contexto de la empresa:\nNombre: ${company?.legal_name || "No disponible"}\nRubro: ${company?.industry || "No disponible"}\nComuna: ${company?.municipality || "No disponible"}\n\nInput del usuario:\n${inputText}`;
+    const base = `Contexto de la empresa:\nNombre: ${company?.legal_name || "No disponible"}\nRubro: ${company?.industry || "No disponible"}\nComuna: ${company?.municipality || "No disponible"}\n\nInput del usuario:\n${inputText}`;
+    return additionalContext ? `${base}\n\n${additionalContext}` : base;
   }
 }

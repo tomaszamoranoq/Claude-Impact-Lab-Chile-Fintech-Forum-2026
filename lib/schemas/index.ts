@@ -586,3 +586,61 @@ export const operationsResponseSchema = z.object({
 
 export type OperationsTopic = z.infer<typeof operationsTopicSchema>;
 export type OperationsAgentResult = z.infer<typeof operationsResponseSchema>;
+
+// ------------------------------------------------------------------
+// Schemas para DocumentsAgent (Fase 5F-A)
+// ------------------------------------------------------------------
+
+export const documentsAgentTopicSchema = z.enum([
+  "upload_guidance",
+  "document_types",
+  "document_status",
+  "analysis_flow",
+  "invoice_vs_payment",
+  "limitations",
+  "general",
+]);
+
+export const documentAgentFolderSummarySchema = z.object({
+  folder: z.string(),
+  count: z.number(),
+});
+
+export const documentAgentStatusSummarySchema = z.object({
+  status: z.string(),
+  count: z.number(),
+});
+
+export const documentAgentRecentItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  folder: z.string(),
+  status: z.string(),
+  file_type: z.string(),
+  created_at: z.string(),
+});
+
+export const documentAgentSummarySchema = z.object({
+  total_documents: z.number().optional(),
+  by_folder: z.array(documentAgentFolderSummarySchema).optional(),
+  by_status: z.array(documentAgentStatusSummarySchema).optional(),
+  recent_documents: z.array(documentAgentRecentItemSchema).optional(),
+});
+
+export const documentsAgentResponseSchema = z.object({
+  agent: z.literal("documents"),
+  message: z.string().min(1),
+  topic: documentsAgentTopicSchema,
+  summary: documentAgentSummarySchema.optional(),
+  accepted_file_types: z.array(z.string()).default([]),
+  guidance: z.array(z.string()).default([]),
+  limitations: z.array(z.string()).default([]),
+  missing_context: z.array(z.string()).default([]),
+  next_steps: z.array(z.string()).default([]),
+  confidence: z.number().min(0).max(1),
+  model_used: z.string(),
+  warnings: z.array(z.string()).default([]),
+});
+
+export type DocumentsAgentTopic = z.infer<typeof documentsAgentTopicSchema>;
+export type DocumentsAgentResult = z.infer<typeof documentsAgentResponseSchema>;

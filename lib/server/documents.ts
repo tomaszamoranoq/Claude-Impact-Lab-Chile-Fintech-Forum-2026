@@ -80,3 +80,54 @@ export async function getDocument(id: string): Promise<Document | null> {
 
   return data as unknown as Document;
 }
+
+export interface DocumentSummary {
+  totalDocuments: number;
+  byFolder: Array<{ folder: string; count: number }>;
+  byStatus: Array<{ status: string; count: number }>;
+  recentDocuments: Array<{
+    id: string;
+    name: string;
+    folder: string;
+    status: string;
+    file_type: string;
+    created_at: string;
+  }>;
+}
+
+export async function getDocumentSummary(
+  companyId: string = DEFAULT_COMPANY_ID
+): Promise<DocumentSummary> {
+  const docs = await listDocuments(companyId);
+
+  const folderMap = new Map<string, number>();
+  const statusMap = new Map<string, number>();
+  for (const d of docs) {
+    folderMap.set(d.folder, (folderMap.get(d.folder) || 0) + 1);
+    statusMap.set(d.status, (statusMap.get(d.status) || 0) + 1);
+  }
+
+  const byFolder = Array.from(folderMap.entries())
+    .map(([folder, count]) => ({ folder, count }))
+    .sort((a, b) => b.count - a.count);
+
+  const byStatus = Array.from(statusMap.entries())
+    .map(([status, count]) => ({ status, count }))
+    .sort((a, b) => b.count - a.count);
+
+  const recentDocuments = docs.slice(0, 5).map((d) => ({
+    id: d.id,
+    name: d.name,
+    folder: d.folder,
+    status: d.status,
+    file_type: d.file_type,
+    created_at: d.created_at,
+  }));
+
+  return {
+    totalDocuments: docs.length,
+    byFolder,
+    byStatus,
+    recentDocuments,
+  };
+}

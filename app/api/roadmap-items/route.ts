@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { getLatestRoadmapItemsByDiagnosis } from "@/lib/server/roadmap-items";
-import { getDemoIdentity } from "@/lib/server/demo-session";
+import { getDemoIdentityWithCompany } from "@/lib/server/demo-session";
 
 export async function GET() {
   try {
-    const { companyId } = await getDemoIdentity();
+    const { companyId } = await getDemoIdentityWithCompany();
     const items = await getLatestRoadmapItemsByDiagnosis(companyId);
     return NextResponse.json({ success: true, data: items });
   } catch (error) {

@@ -24,7 +24,11 @@ function isChitChat(input: string): boolean {
   return false;
 }
 
-export default function ChatWindow() {
+export default function ChatWindow({
+  onRoadmapGenerated,
+}: {
+  onRoadmapGenerated?: () => void;
+}) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -142,6 +146,7 @@ export default function ChatWindow() {
 
         // LaunchAgent response: tiene diagnosis + roadmap_items
         if (agentData.diagnosis && agentData.message) {
+          onRoadmapGenerated?.();
           const diagnosisData = agentData.diagnosis as DiagnosisData;
           const assistantMsg: Message = {
             id: (Date.now() + 1).toString(),

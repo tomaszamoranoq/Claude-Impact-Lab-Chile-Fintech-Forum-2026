@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { LaunchAgent } from "@/lib/server/agents/launch-agent";
-import { getDemoIdentity } from "@/lib/server/demo-session";
+import { getDemoIdentityWithCompany } from "@/lib/server/demo-session";
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     }
 
     const agent = new LaunchAgent();
-    const { companyId, userId } = await getDemoIdentity();
+    const { companyId, userId } = await getDemoIdentityWithCompany();
     const result = await agent.run({
       inputText,
       companyId,

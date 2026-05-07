@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createBusinessDiagnosis } from "@/lib/server/business-diagnoses";
 import { createBusinessDiagnosisInputSchema } from "@/lib/schemas";
-import { getDemoIdentity } from "@/lib/server/demo-session";
+import { getDemoIdentityWithCompany } from "@/lib/server/demo-session";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { companyId, userId } = await getDemoIdentity();
+    const { companyId, userId } = await getDemoIdentityWithCompany();
     const diagnosis = await createBusinessDiagnosis({
       ...parsed.data,
       company_id: companyId,

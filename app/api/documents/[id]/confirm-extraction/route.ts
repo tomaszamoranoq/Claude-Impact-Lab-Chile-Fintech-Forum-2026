@@ -3,7 +3,7 @@ import { getDocument, updateDocumentStatus } from "@/lib/server/documents";
 import { createAgentAction } from "@/lib/server/store";
 import { supabase } from "@/lib/server/supabase";
 import { DocumentExtraction } from "@/lib/schemas";
-import { getDemoIdentity } from "@/lib/server/demo-session";
+import { getDemoIdentityWithCompany } from "@/lib/server/demo-session";
 
 const OPERABLE_KINDS: DocumentExtraction["document_kind"][] = ["invoice", "receipt"];
 
@@ -19,7 +19,7 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const { companyId, userId } = await getDemoIdentity();
+    const { companyId, userId } = await getDemoIdentityWithCompany();
     const existing = await getDocument(id);
 
     if (!existing) {

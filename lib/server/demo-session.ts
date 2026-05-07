@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { supabase } from "./supabase";
 
 export const DEMO_ID_COOKIE = "demo_identity";
 
@@ -31,4 +32,34 @@ export async function getDemoIdentity(): Promise<DemoIdentity> {
     userId: `demo-user-${identity}`,
     companyId: `demo-company-${identity}`,
   };
+}
+
+export async function ensureDemoCompany(companyId: string): Promise<void> {
+  const { error } = await supabase
+    .from("companies")
+    .upsert(
+      {
+        id: companyId,
+        legal_name: "Empresa sin configurar",
+        rut: "Pendiente",
+        legal_type: "Pendiente",
+        tax_regime: "Pendiente",
+        lifecycle_stage: "exploration",
+        representative_name: "Pendiente",
+        representative_rut: "Pendiente",
+        industry: "Pendiente",
+        municipality: "Pendiente",
+      },
+      { onConflict: "id" }
+    );
+
+  if (error) {
+    throw new Error(`Error preparando empresa demo: ${error.message}`);
+  }
+}
+
+export async function getDemoIdentityWithCompany(): Promise<DemoIdentity> {
+  const identity = await getDemoIdentity();
+  await ensureDemoCompany(identity.companyId);
+  return identity;
 }

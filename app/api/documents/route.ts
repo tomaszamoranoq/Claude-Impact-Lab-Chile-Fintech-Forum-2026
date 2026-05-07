@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { listDocuments } from "@/lib/server/documents";
-import { getDemoIdentity } from "@/lib/server/demo-session";
+import { getDemoIdentityWithCompany } from "@/lib/server/demo-session";
 
 export async function GET() {
   try {
-    const { companyId } = await getDemoIdentity();
+    const { companyId } = await getDemoIdentityWithCompany();
     const documents = await listDocuments(companyId);
     return NextResponse.json({ success: true, data: documents });
   } catch (error) {

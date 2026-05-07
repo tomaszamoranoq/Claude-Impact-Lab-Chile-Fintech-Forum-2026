@@ -4,11 +4,11 @@ import {
   listAgentActions,
 } from "@/lib/server/store";
 import { createAgentActionInputSchema } from "@/lib/schemas";
-import { getDemoIdentity } from "@/lib/server/demo-session";
+import { getDemoIdentityWithCompany } from "@/lib/server/demo-session";
 
 export async function GET() {
   try {
-    const { companyId } = await getDemoIdentity();
+    const { companyId } = await getDemoIdentityWithCompany();
     const actions = await listAgentActions(companyId);
     return NextResponse.json({ success: true, data: actions });
   } catch (error) {
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { companyId, userId } = await getDemoIdentity();
+    const { companyId, userId } = await getDemoIdentityWithCompany();
     const action = await createAgentAction({
       ...parsed.data,
       company_id: companyId,

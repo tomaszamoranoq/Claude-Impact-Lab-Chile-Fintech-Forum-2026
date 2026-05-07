@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createDocument } from "@/lib/server/documents";
 import { uploadCompanyDocument } from "@/lib/server/storage";
 import { documentFolderSchema } from "@/lib/schemas";
-import { getDemoIdentity } from "@/lib/server/demo-session";
+import { getDemoIdentityWithCompany } from "@/lib/server/demo-session";
 
 const ALLOWED_MIME_TYPES = [
   "application/pdf",
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const { companyId } = await getDemoIdentity();
+    const { companyId } = await getDemoIdentityWithCompany();
     const { path } = await uploadCompanyDocument(buffer, {
       companyId,
       folder: folderParsed.data,

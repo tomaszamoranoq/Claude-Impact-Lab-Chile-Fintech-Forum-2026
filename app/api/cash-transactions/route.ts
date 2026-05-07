@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { listCashTransactions } from "@/lib/server/store";
-import { getDemoIdentity } from "@/lib/server/demo-session";
+import { getDemoIdentityWithCompany } from "@/lib/server/demo-session";
 
 export async function GET() {
   try {
-    const { companyId } = await getDemoIdentity();
+    const { companyId } = await getDemoIdentityWithCompany();
     const transactions = await listCashTransactions(companyId);
     return NextResponse.json({ success: true, data: transactions });
   } catch (error) {

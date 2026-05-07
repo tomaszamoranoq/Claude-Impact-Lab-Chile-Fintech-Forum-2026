@@ -75,15 +75,17 @@ function formatDateOnly(isoString: string): string {
 function tryParseExtraction(payload: unknown): DocumentExtraction | null {
   if (!payload || typeof payload !== "object") return null;
   const p = payload as Record<string, unknown>;
-  if (p.mode !== "mock") return null;
+  if (p.mode !== "mock" && p.mode !== "vision") return null;
   return {
-    mode: "mock",
+    mode: p.mode as DocumentExtraction["mode"],
     document_kind: (p.document_kind as DocumentExtraction["document_kind"]) || "unknown",
     issuer_name: p.issuer_name as string | undefined,
     issuer_rut: p.issuer_rut as string | undefined,
     document_date: p.document_date as string | undefined,
     total_amount: p.total_amount as number | undefined,
     currency: (p.currency as string) || "CLP",
+    folio: p.folio as string | undefined,
+    document_number: p.document_number as string | undefined,
     suggested_folder: p.suggested_folder as DocumentFolder | undefined,
     suggested_category: p.suggested_category as string | undefined,
     confidence: (p.confidence as number) ?? 0,
@@ -419,7 +421,9 @@ export default function DocumentosPage() {
                               <div className="space-y-3">
                                 <div className="flex items-center gap-2 text-sm text-mauve font-semibold">
                                   <Sparkles size={14} />
-                                  Extracción simulada. Revisa los datos antes de usarlos.
+                                  {extraction.mode === "vision"
+                                    ? "Extracción desde archivo con Claude. Revisa antes de confirmar."
+                                    : "Extracción simulada. Revisa los datos antes de usarlos."}
                                 </div>
 
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
@@ -458,6 +462,15 @@ export default function DocumentosPage() {
                                       {extraction.document_date
                                         ? formatDateOnly(extraction.document_date)
                                         : "—"}
+                                    </div>
+                                  </div>
+
+                                  <div className="bg-chalk border border-silver-mist rounded-xl px-3 py-2">
+                                    <div className="text-[11px] font-bold text-ash uppercase tracking-wider">
+                                      Folio / N° documento
+                                    </div>
+                                    <div className="mt-0.5 text-ink">
+                                      {extraction.folio || extraction.document_number || "—"}
                                     </div>
                                   </div>
 
@@ -562,11 +575,13 @@ export default function DocumentosPage() {
           </div>
           <div>
             <h3 className="text-sm font-semibold text-graphite">
-              Análisis de documentos con IA
+              Análisis de documentos con Claude Vision
             </h3>
             <p className="text-sm text-slate mt-1 leading-relaxed">
-              Análisis visual se activará en la siguiente fase. Por ahora puedes
-              subir PDFs y fotos para organizar tu gestor documental.
+              Los PDFs e imágenes se analizan con Claude Vision para extraer
+              datos estructurados. Si la clave API no está configurada, se usa
+              una extracción simulada de respaldo. Toda extracción requiere
+              revisión y confirmación humana antes de generar acciones.
             </p>
           </div>
         </div>

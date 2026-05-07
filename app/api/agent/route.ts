@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { AgentRouter } from "@/lib/server/agents/agent-router";
 import { IntentClassifier } from "@/lib/server/agents/intent-classifier";
 import { AgentName, AgentContext, AgentRoutingMetadata } from "@/lib/server/agents/types";
+import { createAuditEvent } from "@/lib/server/audit";
 
 const VALID_AGENTS: AgentName[] = [
   "launch",
@@ -13,9 +14,17 @@ const VALID_AGENTS: AgentName[] = [
 ];
 
 export async function POST(request: NextRequest) {
+  let inputTextForAudit: string | undefined;
+  let companyIdForAudit: string | undefined;
+  let userIdForAudit: string | undefined;
+
   try {
     const body = await request.json();
     const { input_text, agent_name, company_id, user_id, mode } = body;
+
+    inputTextForAudit = input_text;
+    companyIdForAudit = company_id;
+    userIdForAudit = user_id;
 
     // 1. Validar mode si viene presente
     if (mode !== undefined && mode !== "chat" && mode !== "execute") {
@@ -26,6 +35,15 @@ export async function POST(request: NextRequest) {
         classifier_model: "none",
         classifier_used: "manual",
       };
+      await createAuditEvent({
+        companyId: companyIdForAudit,
+        userId: userIdForAudit,
+        inputText: inputTextForAudit,
+        endpoint: "/api/agent",
+        success: false,
+        error: `Invalid mode: "${mode}"`,
+        reason: routing.reason,
+      });
       return NextResponse.json(
         {
           success: false,
@@ -54,6 +72,15 @@ export async function POST(request: NextRequest) {
         classifier_model: "none",
         classifier_used: "manual",
       };
+      await createAuditEvent({
+        companyId: companyIdForAudit,
+        userId: userIdForAudit,
+        inputText: inputTextForAudit,
+        endpoint: "/api/agent",
+        success: false,
+        error: "input_text faltante",
+        reason: routing.reason,
+      });
       return NextResponse.json(
         {
           success: false,
@@ -75,6 +102,15 @@ export async function POST(request: NextRequest) {
         classifier_model: "none",
         classifier_used: "manual",
       };
+      await createAuditEvent({
+        companyId: context.companyId,
+        userId: context.userId,
+        inputText: context.inputText,
+        endpoint: "/api/agent",
+        success: false,
+        error: `Invalid agent_name: ${agent_name}`,
+        reason: routing.reason,
+      });
       return NextResponse.json(
         {
           success: false,
@@ -124,6 +160,19 @@ export async function POST(request: NextRequest) {
       selectedAgent === "launch" &&
       routing.confidence < launchGuardThreshold
     ) {
+      await createAuditEvent({
+        companyId: context.companyId,
+        userId: context.userId,
+        inputText: context.inputText,
+        endpoint: "/api/agent",
+        selectedAgent: routing.selected_agent || undefined,
+        classifierUsed: routing.classifier_used,
+        classifierModel: routing.classifier_model,
+        confidence: routing.confidence,
+        reason: routing.reason,
+        success: true,
+        modelUsed: "launch-guard",
+      });
       return NextResponse.json(
         {
           success: true,
@@ -152,6 +201,20 @@ export async function POST(request: NextRequest) {
           : result.model_used === "invalid-agent"
             ? 400
             : 500;
+      await createAuditEvent({
+        companyId: context.companyId,
+        userId: context.userId,
+        inputText: context.inputText,
+        endpoint: "/api/agent",
+        selectedAgent: routing.selected_agent || undefined,
+        classifierUsed: routing.classifier_used,
+        classifierModel: routing.classifier_model,
+        confidence: routing.confidence,
+        reason: routing.reason,
+        success: false,
+        modelUsed: result.model_used,
+        error: result.error || "Error desconocido",
+      });
       return NextResponse.json(
         {
           success: false,
@@ -163,6 +226,20 @@ export async function POST(request: NextRequest) {
         { status }
       );
     }
+
+    await createAuditEvent({
+      companyId: context.companyId,
+      userId: context.userId,
+      inputText: context.inputText,
+      endpoint: "/api/agent",
+      selectedAgent: routing.selected_agent || undefined,
+      classifierUsed: routing.classifier_used,
+      classifierModel: routing.classifier_model,
+      confidence: routing.confidence,
+      reason: routing.reason,
+      success: true,
+      modelUsed: result.model_used,
+    });
 
     return NextResponse.json(
       {
@@ -183,6 +260,15 @@ export async function POST(request: NextRequest) {
       classifier_model: "none",
       classifier_used: "manual",
     };
+    await createAuditEvent({
+      companyId: companyIdForAudit,
+      userId: userIdForAudit,
+      inputText: inputTextForAudit,
+      endpoint: "/api/agent",
+      success: false,
+      error: message,
+      reason: routing.reason,
+    });
     return NextResponse.json(
       {
         success: false,

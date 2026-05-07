@@ -17,17 +17,29 @@ Abre http://localhost:3000 en tu navegador. La raíz muestra la **landing públi
 
 ### Variables de entorno
 
-Crea un archivo `.env.local` en la raíz del proyecto con:
+Copia `.env.example` a `.env.local` y completa los valores:
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
-ANTHROPIC_API_KEY=sk-ant-...
-# Opcional:
-# ANTHROPIC_MODEL=claude-3-5-haiku-latest
+```bash
+cp .env.example .env.local
 ```
 
-> **Advertencia de seguridad:** `SUPABASE_SERVICE_ROLE_KEY` otorga acceso administrativo a la base de datos. Nunca la expongas al frontend, ni la incluyas en repositorios públicos. El archivo `.env.local` ya está en `.gitignore`.
+Variables requeridas:
+
+| Variable | Descripción |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | URL del proyecto Supabase |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon key de Supabase (pública, para cliente) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key de Supabase (solo server) |
+| `ANTHROPIC_API_KEY` | API key de Anthropic para Claude |
+| `DEMO_PASSWORD` | Contraseña para proteger la demo |
+
+> **Advertencia de seguridad:** `SUPABASE_SERVICE_ROLE_KEY` y `ANTHROPIC_API_KEY` son secretos server-side. Nunca los expongas al frontend ni los incluyas en repositorios públicos. El archivo `.env.local` ya está en `.gitignore`.
+
+Opcional:
+
+```env
+ANTHROPIC_MODEL=claude-3-5-haiku-latest
+```
 
 ### Configurar Supabase
 
@@ -157,13 +169,46 @@ ANTHROPIC_API_KEY=sk-ant-...
 
 ### Fase 4B — Extracción documental mock-controlada con propuesta confirmable
 
-- El análisis documental es **100% mock y determinístico**: clasifica según el nombre del archivo, carpeta y tipo, sin OCR ni Claude Vision.
 - Al hacer click en "Analizar", el sistema genera una propuesta estructurada (`DocumentExtraction`) con campos como tipo de documento, emisor, monto, categoría sugerida, confianza y advertencias.
 - La propuesta queda guardada en `documents.extracted_payload` y se muestra en una fila expandida dentro de la tabla de documentos.
-- Montos mock son determinísticos (ej. factura de harina = $120.000, boleta = $25.000) para que la demo sea reproducible.
 - **No se crean `agent_actions` ni `cash_transactions` al analizar documentos.**
-- Botón "Confirmar extracción" está visible pero deshabilitado, con copy "Disponible en próxima fase".
-- Próxima fase: convertir la extracción confirmada en propuesta operativa (factura, pago, caja) con confirmación humana explícita.
+- Botón "Confirmar extracción" convierte la extracción confirmada en una `agent_action` propuesta.
+
+### Fase 4D — Extracción documental real con Claude Vision/PDF
+
+- Los documentos con archivo en Storage (PDF, PNG, JPEG) se analizan con **Claude Vision** usando el SDK de Anthropic.
+- Se envía el archivo en base64 a Claude con un prompt estructurado y `tool_choice` forzado (`emit_document_extraction`) para obtener JSON validado con Zod (`documentExtractionSchema.parse()`).
+- Campos extraídos y persistidos: `document_kind`, `issuer_name`, `issuer_rut`, `document_date`, `total_amount`, `currency`, `folio`, `document_number`, `suggested_folder`, `suggested_category`, `confidence`, `warnings`, `fields_detected`.
+- **Validación Zod estricta:** enums sanitizados (`document_kind`, `suggested_folder`), `fields_detected` como objeto plano, `confidence` entre 0-1. Si Zod rechaza, el error se propaga para que el analyze route use fallback mock.
+- **Fallback automático a extracción mock** con warnings diferenciados:
+  - `ANTHROPIC_API_KEY` no configurada.
+  - Documento sin archivo en Storage.
+  - Tipo MIME no soportado para extracción visual.
+  - Claude falla o Zod rechaza la salida.
+- Cuando se usa fallback mock, el warning incluye la causa exacta (ej. `"Extracción visual falló (ZodError); se usó extracción mock."`).
+- El modo de extracción (`mock` vs `vision`) se muestra en la UI para transparencia.
+- Sin OCR externo; Claude procesa directamente PDFs e imágenes.
+- Límite de 5 MB por archivo mantenido.
+
+#### Trazabilidad de fuente en acciones confirmadas
+
+- Al confirmar una extracción `vision`, la `agent_action` creada registra:
+  - `model_used: "document-vision-extractor"`
+  - `sources_used: ["claude-vision", "document-storage"]`
+- Al confirmar una extracción `mock`, la `agent_action` creada registra:
+  - `model_used: "document-mock-extractor"`
+  - `sources_used: ["document-extraction-mock"]`
+- Esto permite auditar en `/app/acciones-ia` si una acción provino de extracción real o simulada.
+
+#### Limitaciones de la extracción con Claude Vision
+
+- **Sin garantía legal/tributaria:** los datos extraídos son informativos y no reemplazan la revisión de un contador.
+- **Revisión humana obligatoria:** toda extracción debe ser confirmada por el usuario antes de generar acciones.
+- **Solo documentos en español chileno:** el prompt está optimizado para documentos chilenos (facturas electrónicas SII, boletas, F29, etc.).
+- **Sin OCR externo:** Claude procesa el documento directamente; la calidad depende de la legibilidad del archivo.
+- **Procesamiento server-side:** los archivos se descargan desde Supabase Storage y se procesan en el backend; no se exponen al cliente.
+- **Sin soporte para múltiples páginas complejas:** PDFs muy extensos pueden exceder el contexto del modelo.
+- La confianza (`confidence`) reportada por Claude es una estimación; validar siempre contra el documento original.
 
 ### Fase 4C — Confirmación documental controlada
 
@@ -269,11 +314,57 @@ ANTHROPIC_API_KEY=sk-ant-...
 | GET | `/api/business-diagnosis/latest` | Obtener último diagnóstico de negocio |
 | GET | `/api/documents` | Listar documentos de la empresa |
 | POST | `/api/documents/upload` | Subir documento a Supabase Storage |
-| POST | `/api/documents/[id]/analyze` | Simular análisis de documento (mock, sin Vision) |
+| POST | `/api/documents/[id]/analyze` | Analizar documento con Claude Vision (fallback a mock si no disponible) |
 | POST | `/api/documents/[id]/confirm-extraction` | Confirmar extracción y crear acción propuesta |
 | POST | `/api/launch-agent` | Ejecutar LaunchAgent: diagnóstico + roadmap persistente (legacy) |
 | POST | `/api/agent` | Endpoint unificado multi-agente (dispatch manual por `agent_name`) |
 | GET | `/api/roadmap-items` | Listar roadmap items del último diagnóstico |
+
+## Deploy en Vercel
+
+1. Conecta el repositorio a Vercel.
+2. Configura las **5 variables de entorno** en Settings > Environment Variables.
+3. En Supabase, ejecuta [`docs/supabase-schema.sql`](docs/supabase-schema.sql) en el SQL Editor para crear/actualizar las tablas (incluye `audit_events`).
+4. Crea el bucket privado `company-documents` en Supabase Storage.
+5. Deploya.
+
+### Checklist pre-deploy
+
+- [ ] Las 5 variables de entorno están configuradas en Vercel
+- [ ] El schema de Supabase está actualizado (`docs/supabase-schema.sql` ejecutado)
+- [ ] El bucket `company-documents` existe en Storage y es privado
+- [ ] `.env.local` no se commitea (está en `.gitignore`)
+- [ ] `npm run build` compila sin errores
+- [ ] La landing `/` carga sin pedir contraseña
+- [ ] `/app/asesor-inicial` redirige a `/login`
+- [ ] El login acepta contraseña correcta y rechaza incorrecta
+- [ ] Las APIs protegidas (`/api/agent`, etc.) devuelven 401 sin cookie
+
+## Protección de la demo
+
+Las rutas de la aplicación privada y las APIs sensibles están protegidas con una barrera de contraseña simple:
+
+- **Rutas protegidas:** `/app/*`, `/api/agent`, `/api/launch-agent`, `/api/interpret-action`, `/api/agent-actions/*`, `/api/documents/*`, `/api/business-diagnosis`, `/api/roadmap-items`.
+- **Rutas públicas:** `/` (landing), `/login`, assets de Next.js, favicon.
+- **Mecanismo:** middleware (`middleware.ts`) que valida una cookie `demo_session` httpOnly contra el hash de `DEMO_PASSWORD`.
+- Sin acceso a la demo (`/app/*`) ni a las APIs sensibles sin la contraseña configurada en `DEMO_PASSWORD`.
+- El password gate es protección de demo, no autenticación multiusuario productiva.
+
+## Auditoría IA
+
+Cada llamada al endpoint unificado `/api/agent` se registra en la tabla `audit_events` con:
+
+- `input_text`, `selected_agent`, `classifier_used`, `classifier_model`, `confidence`, `reason`
+- `success` / `error`
+- `model_used`, `created_at`, `company_id`, `user_id`
+
+El registro es transparente para el usuario: si la escritura de auditoría falla, la respuesta de la API no se ve afectada. El helper `createAuditEvent()` en `lib/server/audit.ts` encapsula la lógica y nunca lanza excepciones.
+
+Para consultar los eventos de auditoría, usa el SQL Editor de Supabase:
+
+```sql
+select * from audit_events order by created_at desc limit 50;
+```
 
 ## Enfoque del MVP
 

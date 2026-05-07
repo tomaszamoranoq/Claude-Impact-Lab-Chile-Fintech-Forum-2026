@@ -40,7 +40,7 @@ const SYSTEM_PROMPT = `Eres un clasificador de intenciones para microempresas ch
 - documents: subir, cargar, adjuntar, analizar, clasificar o revisar documentos, PDFs, fotos, imágenes, archivos escaneados.
 - compliance: fechas de vencimiento, obligaciones tributarias recurrentes, F29, F22, IVA, impuestos, patente (renovación), SII, Previred, calendario de obligaciones.
 - labor: trabajadores, contratos, sueldos, liquidaciones, jornada, imposiciones, contratación.
-- resolution: cerrar empresa, disolver sociedad, término de giro, deudas, cierre, liquidar empresa.
+- resolution: cerrar empresa, disolver sociedad, término de giro, deudas, cierre, liquidar empresa, dejar inactiva, regularizar atrasos, embargo, demanda, riesgo legal, insolvencia, quiebra, no puedo pagar.
 
 DISTINCIONES CLAVE:
 1. "subí una factura pdf" → documents (acción sobre archivo), NO operations.
@@ -49,6 +49,10 @@ DISTINCIONES CLAVE:
 4. "cuándo vence el IVA" → compliance (obligación recurrente), NO launch.
 5. "necesito permisos para abrir panadería" → launch (constitución), NO compliance.
 6. "renovar patente municipal" → compliance (recurrente), NO launch.
+7. "tengo deudas y quiero cerrar" → resolution (cierre/deuda), NO compliance.
+8. "qué pasa si no pago impuestos" → resolution si busca consecuencias/riesgo; compliance si es obligación normal.
+9. "quiero dejar la empresa inactiva" → resolution (inactividad), NO launch.
+10. "me están demandando" → resolution (riesgo legal), NO labor.
 
 REGLAS:
 1. No ejecutes acciones, solo clasifica.

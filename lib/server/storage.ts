@@ -1,5 +1,28 @@
 import { supabase } from "./supabase";
 
+export async function downloadDocumentFile(
+  bucket: string,
+  path: string
+): Promise<{ data: Buffer; mimeType: string }> {
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .download(path);
+
+  if (error) {
+    throw new Error(`Error descargando archivo desde Storage: ${error.message}`);
+  }
+
+  if (!data) {
+    throw new Error("Archivo no encontrado en Storage.");
+  }
+
+  const mimeType = data.type || "application/octet-stream";
+  const arrayBuffer = await data.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  return { data: buffer, mimeType };
+}
+
 const ALLOWED_MIME_TYPES = [
   "application/pdf",
   "image/png",

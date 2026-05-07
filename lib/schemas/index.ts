@@ -350,7 +350,7 @@ export type UploadDocumentResponse = z.infer<typeof uploadDocumentResponseSchema
 // ------------------------------------------------------------------
 
 export const documentExtractionSchema = z.object({
-  mode: z.literal("mock"),
+  mode: z.enum(["mock", "vision"]),
   document_kind: z.enum([
     "invoice",
     "receipt",
@@ -363,6 +363,8 @@ export const documentExtractionSchema = z.object({
   document_date: z.string().optional(),
   total_amount: z.number().optional(),
   currency: z.string().default("CLP"),
+  folio: z.string().optional(),
+  document_number: z.string().optional(),
   suggested_folder: documentFolderSchema.optional(),
   suggested_category: z.string().optional(),
   confidence: z.number().min(0).max(1),
@@ -644,3 +646,95 @@ export const documentsAgentResponseSchema = z.object({
 
 export type DocumentsAgentTopic = z.infer<typeof documentsAgentTopicSchema>;
 export type DocumentsAgentResult = z.infer<typeof documentsAgentResponseSchema>;
+
+// ------------------------------------------------------------------
+// Schemas para LaborAgent (Fase 5G-A)
+// ------------------------------------------------------------------
+
+export const laborTopicSchema = z.enum([
+  "hiring",
+  "contract",
+  "salary",
+  "payroll",
+  "previred",
+  "working_hours",
+  "honorarios_vs_employee",
+  "general",
+]);
+
+export const laborRequirementStatusSchema = z.enum([
+  "required",
+  "conditional",
+  "informational",
+]);
+
+export const laborRequirementSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  applies_if: z.string().optional(),
+  institution: z.string().optional(),
+  status_hint: laborRequirementStatusSchema,
+});
+
+export const laborAgentResponseSchema = z.object({
+  agent: z.literal("labor"),
+  message: z.string().min(1),
+  topic: laborTopicSchema,
+  requirements: z.array(laborRequirementSchema).default([]),
+  assumptions: z.array(z.string()).default([]),
+  missing_context: z.array(z.string()).default([]),
+  next_steps: z.array(z.string()).default([]),
+  sources: z.array(complianceSourceSchema).default([]),
+  confidence: z.number().min(0).max(1),
+  model_used: z.string(),
+  warnings: z.array(z.string()).default([]),
+});
+
+export type LaborTopic = z.infer<typeof laborTopicSchema>;
+export type LaborAgentResult = z.infer<typeof laborAgentResponseSchema>;
+
+// ------------------------------------------------------------------
+// Schemas para ResolutionAgent (Fase 5H-A)
+// ------------------------------------------------------------------
+
+export const resolutionTopicSchema = z.enum([
+  "business_closure",
+  "tax_termination",
+  "debts",
+  "inactive_business",
+  "tax_debt_regularization",
+  "legal_risk",
+  "general",
+]);
+
+export const resolutionRiskLevelSchema = z.enum([
+  "low",
+  "medium",
+  "high",
+]);
+
+export const resolutionChecklistItemSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  institution: z.string().optional(),
+  risk_level: resolutionRiskLevelSchema,
+  status_hint: obligationStatusHintSchema,
+});
+
+export const resolutionAgentResponseSchema = z.object({
+  agent: z.literal("resolution"),
+  message: z.string().min(1),
+  topic: resolutionTopicSchema,
+  checklist: z.array(resolutionChecklistItemSchema).default([]),
+  risks: z.array(z.string()).default([]),
+  assumptions: z.array(z.string()).default([]),
+  missing_context: z.array(z.string()).default([]),
+  next_steps: z.array(z.string()).default([]),
+  sources: z.array(complianceSourceSchema).default([]),
+  confidence: z.number().min(0).max(1),
+  model_used: z.string(),
+  warnings: z.array(z.string()).default([]),
+});
+
+export type ResolutionTopic = z.infer<typeof resolutionTopicSchema>;
+export type ResolutionAgentResult = z.infer<typeof resolutionAgentResponseSchema>;

@@ -89,9 +89,16 @@ const DOMAIN_SCORERS: DomainScorer[] = [
       { word: "quiebra", weight: 2 }, { word: "insolvencia", weight: 2 },
       { word: "finalizar", weight: 2 }, { word: "terminar", weight: 2 },
       { word: "liquidar empresa", weight: 3 },
+      { word: "inactiva", weight: 3 }, { word: "inactivo", weight: 3 },
+      { word: "regularizar", weight: 3 }, { word: "atraso", weight: 2 }, { word: "atrasos", weight: 2 },
+      { word: "moroso", weight: 3 },
+      { word: "embargo", weight: 3 },
+      { word: "demanda", weight: 3 }, { word: "demandas", weight: 3 },
+      { word: "no puedo pagar", weight: 3 },
+      { word: "abandonar", weight: 2 },
     ],
-    strongSignals: ["cerrar", "cierre", "cerré", "disolver", "disolución", "liquidación de empresa", "liquidación empresa", "liquidación sociedad", "quiebra", "insolvencia", "termino de giro", "término de giro"],
-    reasonTemplate: "Detectado vocabulario de cierre",
+    strongSignals: ["cerrar", "cierre", "cerré", "disolver", "disolución", "liquidación de empresa", "liquidación empresa", "liquidación sociedad", "quiebra", "insolvencia", "termino de giro", "término de giro", "inactiva", "inactivo", "regularizar", "moroso", "embargo", "demanda", "no puedo pagar"],
+    reasonTemplate: "Detectado vocabulario de cierre/deuda/riesgo",
   },
   {
     name: "launch",
@@ -200,6 +207,25 @@ function resolveTie(
     const docs = DOMAIN_SCORERS.find((d) => d.name === "documents")!;
     const hasFileSignal = docs.strongSignals.some((s) => lower.includes(s.toLowerCase()));
     if (hasPaymentSignal && !hasFileSignal) return "operations";
+  }
+
+  // resolution wins over compliance when there are closure/debt/risk signals
+  if (winner === "compliance" && runnerUp === "resolution") {
+    const res = DOMAIN_SCORERS.find((d) => d.name === "resolution")!;
+    const hasResolutionSignal = res.strongSignals.some((s) => lower.includes(s.toLowerCase()));
+    if (hasResolutionSignal) return "resolution";
+  }
+  if (winner === "resolution" && runnerUp === "compliance") {
+    const comp = DOMAIN_SCORERS.find((d) => d.name === "compliance")!;
+    const hasComplianceSignal = comp.strongSignals.some((s) => lower.includes(s.toLowerCase()));
+    if (!hasComplianceSignal) return "resolution";
+  }
+
+  // resolution wins over operations when there are closure/debt/risk signals
+  if (winner === "operations" && runnerUp === "resolution") {
+    const res = DOMAIN_SCORERS.find((d) => d.name === "resolution")!;
+    const hasResolutionSignal = res.strongSignals.some((s) => lower.includes(s.toLowerCase()));
+    if (hasResolutionSignal) return "resolution";
   }
 
   return winner;

@@ -49,7 +49,8 @@ export abstract class BaseAgent<TOutput = unknown> {
   }
 
   protected buildKnowledgeQuery(
-    company: Record<string, unknown> | null
+    company: Record<string, unknown> | null,
+    _context: AgentContext
   ): KnowledgeQuery {
     return {
       topic: "general",
@@ -85,7 +86,7 @@ export abstract class BaseAgent<TOutput = unknown> {
       const company = await this.fetchCompanyContext(context.companyId);
 
       // 2. Obtener conocimiento
-      const knowledgeQuery = this.buildKnowledgeQuery(company);
+      const knowledgeQuery = this.buildKnowledgeQuery(company, context);
       const knowledge = await this.knowledgeClient.query(knowledgeQuery);
 
       // 3. Construir prompt

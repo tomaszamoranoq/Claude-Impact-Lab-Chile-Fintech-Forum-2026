@@ -52,9 +52,23 @@ export async function POST(
     }
 
     const type = extraction.document_kind === "receipt" ? "income" : "expense";
-    const description = extraction.document_kind === "receipt"
+    const baseDescription = extraction.document_kind === "receipt"
       ? `Boleta: ${existing.name}`
       : `Factura: ${existing.name}`;
+    const missingFields: string[] = extraction.document_date ? [] : ["date"];
+    const proposedDate = extraction.document_date || new Date().toISOString().slice(0, 10);
+    const description = missingFields.length > 0
+      ? `${baseDescription} — Fecha no detectada; revisar antes de ejecutar.`
+      : baseDescription;
+
+    const modelUsed =
+      extraction.mode === "vision"
+        ? "document-vision-extractor"
+        : "document-mock-extractor";
+    const sourcesUsed =
+      extraction.mode === "vision"
+        ? ["claude-vision", "document-storage"]
+        : ["document-extraction-mock"];
 
     const action = await createAgentAction({
       company_id: existing.company_id,
@@ -66,14 +80,14 @@ export async function POST(
         amount: extraction.total_amount!,
         category: extraction.suggested_category || "Otro",
         description,
-        date: extraction.document_date || new Date().toISOString().slice(0, 10),
+        date: proposedDate,
         document_id: existing.id,
         document_name: existing.name,
       },
       confidence: extraction.confidence,
-      missing_fields: [],
-      model_used: "document-mock-extractor",
-      sources_used: ["document-extraction-mock"],
+      missing_fields: missingFields,
+      model_used: modelUsed,
+      sources_used: sourcesUsed,
     });
 
     const updated = await updateDocumentStatus(id, "confirmed", {

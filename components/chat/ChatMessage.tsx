@@ -29,6 +29,13 @@ export default function ChatMessage({ message, onConfirm, onReject, onSaveDiagno
 
   const isOperations = message.agent_response?.agent === "operations";
   const operationsData = isOperations ? message.agent_response!.data as OperationsCardData : null;
+  const roadmapPreview =
+    message.agent_response?.data &&
+    typeof message.agent_response.data === "object" &&
+    "roadmap_items" in message.agent_response.data &&
+    Array.isArray((message.agent_response.data as Record<string, unknown>).roadmap_items)
+      ? ((message.agent_response.data as Record<string, unknown>).roadmap_items as Array<Record<string, unknown>>)
+      : [];
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
@@ -240,6 +247,34 @@ export default function ChatMessage({ message, onConfirm, onReject, onSaveDiagno
                       <li key={i}>{step}</li>
                     ))}
                   </ol>
+                </div>
+              )}
+
+              {roadmapPreview.length > 0 && (
+                <div className="mt-3">
+                  <p className="text-xs text-slate font-medium">Hoja de ruta propuesta</p>
+                  <div className="mt-2 space-y-2">
+                    {roadmapPreview.slice(0, 5).map((item, i) => (
+                      <div key={i} className="bg-chalk border border-silver-mist rounded-lg px-3 py-2">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-xs font-semibold text-graphite">
+                            {String(item.title || "Tarea sugerida")}
+                          </p>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-ash/10 text-ash">
+                            {String(item.stage || "etapa")}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate mt-1">
+                          {String(item.description || "")}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  {roadmapPreview.length > 5 && (
+                    <p className="text-[11px] text-ash mt-1">
+                      + {roadmapPreview.length - 5} tareas adicionales al aprobar.
+                    </p>
+                  )}
                 </div>
               )}
 

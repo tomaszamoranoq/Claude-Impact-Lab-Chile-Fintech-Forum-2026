@@ -15,6 +15,7 @@ const CHITCHAT_PATTERNS: RegExp[] = [
 ];
 
 const CHAT_STORAGE_KEY = "copiloto-pyme-chat-messages";
+const CHAT_PENDING_KEY = "copiloto-pyme-chat-pending";
 
 const initialMessages: Message[] = [
   {
@@ -54,11 +55,39 @@ export default function ChatWindow({
 }) {
   const [messages, setMessages] = useState<Message[]>(loadStoredMessages);
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem(CHAT_PENDING_KEY) === "true";
+  });
 
   useEffect(() => {
     window.localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
   }, [messages]);
+
+  useEffect(() => {
+    if (loading) {
+      window.localStorage.setItem(CHAT_PENDING_KEY, "true");
+    } else {
+      window.localStorage.removeItem(CHAT_PENDING_KEY);
+    }
+  }, [loading]);
+
+  useEffect(() => {
+    if (!loading) return;
+    const timeout = window.setTimeout(() => {
+      setLoading(false);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `${Date.now()}-timeout`,
+          role: "assistant",
+          content:
+            "La respuesta anterior quedó interrumpida al cambiar de vista o cerrar la pestaña. Puedes reenviar tu mensaje y sigo desde aquí.",
+        },
+      ]);
+    }, 45000);
+    return () => window.clearTimeout(timeout);
+  }, [loading]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -235,6 +264,61 @@ export default function ChatWindow({
     }
 
     setLoading(false);
+  };
+
+  const handleFileUpload = async (file: File | null) => {
+    if (!file || loading) return;
+
+    const userMsg: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: `Adjunté el documento: ${file.name}`,
+    };
+    setMessages((prev) => [...prev, userMsg]);
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "operaciones");
+
+      const uploadRes = await fetch("/api/documents/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const uploadJson = await uploadRes.json();
+
+      if (!uploadJson.success) {
+        throw new Error(uploadJson.error || "No se pudo subir el documento.");
+      }
+
+      const doc = uploadJson.data as { id: string; name: string };
+      const analyzeRes = await fetch(`/api/documents/${doc.id}/analyze`, {
+        method: "POST",
+      });
+      const analyzeJson = await analyzeRes.json();
+
+      const assistantMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: analyzeJson.success
+          ? `Subí y analicé ${doc.name}. Revisa el resultado en Documentos; si contiene un monto operable, puedes confirmar la extracción para crear una acción IA.`
+          : `Subí ${doc.name}, pero no pude analizarlo automáticamente. Puedes revisarlo en Documentos.`,
+      };
+      setMessages((prev) => [...prev, assistantMsg]);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Error al subir documento.";
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: `No pude procesar el archivo: ${message}`,
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -414,9 +498,20 @@ export default function ChatWindow({
 
       <div className="px-5 py-4 border-t border-silver-mist/60 bg-chalk">
         <div className="flex items-center gap-3 bg-vellum border border-silver-mist rounded-full px-4 py-2">
-          <button className="text-ash hover:text-slate transition-colors cursor-default">
+          <label className="text-ash hover:text-slate transition-colors cursor-pointer">
             <Paperclip size={18} />
-          </button>
+            <input
+              type="file"
+              accept="application/pdf,image/png,image/jpeg"
+              className="hidden"
+              disabled={loading}
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                e.target.value = "";
+                void handleFileUpload(file);
+              }}
+            />
+          </label>
           <input
             type="text"
             value={input}

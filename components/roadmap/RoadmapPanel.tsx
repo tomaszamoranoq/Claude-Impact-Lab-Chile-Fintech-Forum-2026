@@ -1,5 +1,8 @@
-import { mockRoadmap } from "@/lib/mock-data";
-import { Check, Circle } from "lucide-react";
+"use client";
+
+import { useEffect, useState } from "react";
+import { RoadmapItem } from "@/lib/schemas";
+import { Check, Circle, Sparkles } from "lucide-react";
 
 const stageLabels: Record<string, string> = {
   exploration: "Exploración",
@@ -34,8 +37,33 @@ const statusConfig: Record<string, { label: string; dotClass: string; icon: Reac
   },
 };
 
-export default function RoadmapPanel() {
-  const grouped = mockRoadmap.reduce<Record<string, typeof mockRoadmap>>((acc, item) => {
+interface RoadmapPanelProps {
+  refreshTrigger?: number;
+}
+
+export default function RoadmapPanel({ refreshTrigger = 0 }: RoadmapPanelProps) {
+  const [items, setItems] = useState<RoadmapItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchItems() {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/roadmap-items");
+        const json = await res.json();
+        if (json.success) {
+          setItems(json.data);
+        }
+      } catch {
+        // ignore
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchItems();
+  }, [refreshTrigger]);
+
+  const grouped = items.reduce<Record<string, RoadmapItem[]>>((acc, item) => {
     if (!acc[item.stage]) acc[item.stage] = [];
     acc[item.stage].push(item);
     return acc;
@@ -50,61 +78,76 @@ export default function RoadmapPanel() {
         <p className="text-sm text-slate mt-0.5">Progreso actual de tu proyecto.</p>
       </div>
       <div className="p-4 space-y-5">
-        {stageOrder.map((stage) => {
-          const items = grouped[stage];
-          if (!items || items.length === 0) return null;
+        {loading ? (
+          <p className="text-xs text-ash">Cargando…</p>
+        ) : items.length === 0 ? (
+          <div className="text-center py-6">
+            <p className="text-xs text-ash mb-3">No hay hoja de ruta generada.</p>
+            <a
+              href="/app/asesor-inicial"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-graphite text-chalk text-xs font-semibold rounded-full hover:bg-ink transition-colors"
+            >
+              <Sparkles size={12} />
+              Generar desde Asesor Inicial
+            </a>
+          </div>
+        ) : (
+          stageOrder.map((stage) => {
+            const stageItems = grouped[stage];
+            if (!stageItems || stageItems.length === 0) return null;
 
-          const allCompleted = items.every((i) => i.status === "completed");
-          const someInProgress = items.some((i) => i.status === "in_progress");
-          const stageStatus = allCompleted ? "completed" : someInProgress ? "in_progress" : "pending";
-          const stageCfg = statusConfig[stageStatus];
+            const allCompleted = stageItems.every((i) => i.status === "completed");
+            const someInProgress = stageItems.some((i) => i.status === "in_progress");
+            const stageStatus = allCompleted ? "completed" : someInProgress ? "in_progress" : "pending";
+            const stageCfg = statusConfig[stageStatus];
 
-          return (
-            <div key={stage}>
-              <div className="flex items-center gap-2 mb-3">
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center ${stageCfg.dotClass}`}>
-                  {stageCfg.icon}
-                </span>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-graphite">
-                  {stageLabels[stage] || stage}
-                </h3>
-              </div>
-              <div className="space-y-2 pl-7 border-l border-silver-mist/50 ml-2.5">
-                {items.map((item) => {
-                  const cfg = statusConfig[item.status] || statusConfig.pending;
-                  return (
-                    <div
-                      key={item.id}
-                      className="bg-chalk border border-silver-mist rounded-xl p-3 hover:shadow-card transition-shadow"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1.5">
-                            <h4 className="text-sm font-medium text-graphite truncate">{item.title}</h4>
+            return (
+              <div key={stage}>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center ${stageCfg.dotClass}`}>
+                    {stageCfg.icon}
+                  </span>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-graphite">
+                    {stageLabels[stage] || stage}
+                  </h3>
+                </div>
+                <div className="space-y-2 pl-7 border-l border-silver-mist/50 ml-2.5">
+                  {stageItems.map((item) => {
+                    const cfg = statusConfig[item.status] || statusConfig.pending;
+                    return (
+                      <div
+                        key={item.id}
+                        className="bg-chalk border border-silver-mist rounded-xl p-3 hover:shadow-card transition-shadow"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <h4 className="text-sm font-medium text-graphite truncate">{item.title}</h4>
+                            </div>
+                            <p className="text-xs text-slate mt-0.5 line-clamp-2">{item.description}</p>
                           </div>
-                          <p className="text-xs text-slate mt-0.5 line-clamp-2">{item.description}</p>
+                          <span
+                            className={`shrink-0 text-[10px] px-2 py-0.5 rounded-full font-semibold ${
+                              item.status === "completed"
+                                ? "bg-sage/10 text-sage"
+                                : item.status === "in_progress"
+                                ? "bg-blueprint/10 text-blueprint"
+                                : item.status === "blocked"
+                                ? "bg-terracotta/10 text-terracotta"
+                                : "bg-ash/10 text-ash"
+                            }`}
+                          >
+                            {cfg.label}
+                          </span>
                         </div>
-                        <span
-                          className={`shrink-0 text-[10px] px-2 py-0.5 rounded-full font-semibold ${
-                            item.status === "completed"
-                              ? "bg-sage/10 text-sage"
-                              : item.status === "in_progress"
-                              ? "bg-blueprint/10 text-blueprint"
-                              : item.status === "blocked"
-                              ? "bg-terracotta/10 text-terracotta"
-                              : "bg-ash/10 text-ash"
-                          }`}
-                        >
-                          {cfg.label}
-                        </span>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
     </div>
   );

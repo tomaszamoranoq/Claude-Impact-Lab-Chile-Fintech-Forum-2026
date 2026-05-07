@@ -2,11 +2,30 @@
 
 import { useState } from "react";
 import { getMockResponse, Message, ChatResponse, DiagnosisData } from "@/lib/mock-data";
+import { AgentName } from "@/lib/schemas";
 import ChatMessage from "./ChatMessage";
 import { Paperclip, Send } from "lucide-react";
 
 const MOCK_COMPANY_ID = "mock-company-1";
 const MOCK_USER_ID = "mock-user-1";
+
+const CHITCHAT_PATTERNS: RegExp[] = [
+  /^hola$/i, /^buenas$/i, /^gracias$/i, /^ok$/i, /^dale$/i,
+  /^chao$/i, /^adiós$/i, /^adios$/i, /^qué puedes hacer$/i,
+  /^que puedes hacer$/i, /^ayuda$/i, /^help$/i,
+  /^hey$/i, /^buenos días$/i, /^buenas tardes$/i, /^buenas noches$/i,
+  /^gracias!$/i, /^ok!$/i, /^sí$/i, /^si$/i, /^no$/i, /^nop$/i,
+];
+
+function isChitChat(input: string): boolean {
+  const trimmed = input.trim().toLowerCase();
+  if (trimmed.length < 20) {
+    for (const pattern of CHITCHAT_PATTERNS) {
+      if (pattern.test(trimmed)) return true;
+    }
+  }
+  return false;
+}
 
 export default function ChatWindow() {
   const [messages, setMessages] = useState<Message[]>([
@@ -98,55 +117,104 @@ export default function ChatWindow() {
       return;
     }
 
-    // PASO 2: Intentar interpretar como diagnóstico de negocio
-    let diagnosisData: DiagnosisData | undefined;
-    let diagnosisModelUsed = "mock-regex";
-    let diagnosisMessage = "";
-
-    try {
-      const res = await fetch("/api/interpret-business-diagnosis", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ input_text: userMsg.content }),
-      });
-      const json = await res.json();
-      if (json.success) {
-        diagnosisModelUsed = json.model_used || "mock-regex";
-        if (json.is_business_diagnosis && json.data) {
-          diagnosisData = json.data;
-          diagnosisMessage = json.message;
-        } else {
-          diagnosisMessage = json.message;
-        }
-      }
-    } catch {
-      const fallback = getMockResponse(userMsg.content);
-      diagnosisMessage = fallback.message;
-    }
-
-    if (!diagnosisData) {
+    // PASO 2: Chitchat Guard — evitar llamar /api/agent para saludos/inputs sin intención
+    if (isChitChat(userMsg.content)) {
       const fallback = getMockResponse(userMsg.content);
       const assistantMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: diagnosisMessage || fallback.message,
-        response: fallback.proposed_action ? undefined : fallback,
+        content: fallback.message,
       };
       setMessages((prev) => [...prev, assistantMsg]);
       setLoading(false);
       return;
     }
 
-    const assistantMsg: Message = {
-      id: (Date.now() + 1).toString(),
-      role: "assistant",
-      content: diagnosisMessage || "He analizado tu situación. Revisa el diagnóstico propuesto:",
-      diagnosis: diagnosisData,
-      diagnosis_status: "proposed",
-      diagnosis_model_used: diagnosisModelUsed,
-    };
+    // PASO 3: Llamar /api/agent con mode: "chat"
+    try {
+      const res = await fetch("/api/agent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          input_text: userMsg.content,
+          company_id: MOCK_COMPANY_ID,
+          user_id: MOCK_USER_ID,
+          mode: "chat",
+        }),
+      });
+      const json = await res.json();
 
-    setMessages((prev) => [...prev, assistantMsg]);
+      if (json.success && json.data) {
+        const agentData = json.data as Record<string, unknown>;
+
+        // LaunchAgent response: tiene diagnosis + roadmap_items
+        if (agentData.diagnosis && agentData.message) {
+          const diagnosisData = agentData.diagnosis as DiagnosisData;
+          const assistantMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            role: "assistant",
+            content: String(agentData.message),
+            diagnosis: diagnosisData,
+            diagnosis_status: "saved",
+            diagnosis_model_used: String(agentData.model_used || "claude"),
+            agent_response: {
+              agent: (agentData.agent as AgentName) || "launch",
+              data: agentData,
+            },
+          };
+          setMessages((prev) => [...prev, assistantMsg]);
+          setLoading(false);
+          return;
+        }
+
+        // Launch guard o agente que devuelve solo message
+        if (agentData.message) {
+          const assistantMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            role: "assistant",
+            content: String(agentData.message),
+            agent_response: agentData.agent
+              ? { agent: agentData.agent as AgentName, data: agentData }
+              : undefined,
+          };
+          setMessages((prev) => [...prev, assistantMsg]);
+          setLoading(false);
+          return;
+        }
+
+        // Respuesta genérica con data (fallback)
+        const assistantMsg: Message = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: "Recibí tu consulta. ¿Necesitas ayuda con algo específico?",
+          agent_response: { agent: "launch", data: agentData },
+        };
+        setMessages((prev) => [...prev, assistantMsg]);
+        setLoading(false);
+        return;
+      }
+
+      // Skeleton agent o error del router (HTTP 501, not-implemented)
+      const isSkeleton = res.status === 501 || json.model_used === "not-implemented";
+      const errorContent = isSkeleton
+        ? json.error || "Este módulo estará disponible pronto."
+        : json.error || "Lo siento, ocurrió un error. Intenta de nuevo.";
+
+      const fallbackMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: errorContent,
+      };
+      setMessages((prev) => [...prev, fallbackMsg]);
+    } catch {
+      const fallbackMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "Lo siento, no pude conectar con el asistente. Intenta de nuevo.",
+      };
+      setMessages((prev) => [...prev, fallbackMsg]);
+    }
+
     setLoading(false);
   };
 

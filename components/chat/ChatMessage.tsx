@@ -19,6 +19,8 @@ export default function ChatMessage({ message, onConfirm, onReject, onSaveDiagno
   const isRejected = message.action_status === "rejected";
   const diagnosis = message.diagnosis;
   const isDiagnosisProposed = message.diagnosis_status === "proposed";
+  const isDiagnosisSaved = message.diagnosis_status === "saved";
+  const showDiagnosisCard = diagnosis && (isDiagnosisProposed || isDiagnosisSaved);
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
@@ -136,8 +138,8 @@ export default function ChatMessage({ message, onConfirm, onReject, onSaveDiagno
           </div>
         )}
 
-        {/* Diagnosis proposed */}
-        {diagnosis && isDiagnosisProposed && (
+        {/* Diagnosis proposed / saved */}
+        {showDiagnosisCard && (
           <div className="mt-4 bg-vellum border border-silver-mist rounded-xl overflow-hidden">
             <div className="border-l-4 border-mauve px-4 py-4">
               <div className="flex items-center justify-between mb-3">
@@ -145,9 +147,17 @@ export default function ChatMessage({ message, onConfirm, onReject, onSaveDiagno
                   <Sparkles size={14} className="text-mauve" />
                   <h4 className="font-semibold text-graphite text-sm">Diagnóstico inicial</h4>
                 </div>
-                <span className="text-[11px] px-2 py-0.5 rounded-full bg-blossom text-mauve font-medium">
-                  {Math.round(diagnosis.confidence * 100)}% confianza
-                </span>
+                <div className="flex items-center gap-2">
+                  {isDiagnosisSaved && (
+                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-sage/10 text-sage font-medium flex items-center gap-1">
+                      <Check size={11} />
+                      Guardado
+                    </span>
+                  )}
+                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-blossom text-mauve font-medium">
+                    {Math.round(diagnosis.confidence * 100)}% confianza
+                  </span>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-ink">
@@ -225,32 +235,28 @@ export default function ChatMessage({ message, onConfirm, onReject, onSaveDiagno
                 </div>
               )}
 
-              <div className="mt-4 flex items-center gap-2">
-                <button
-                  onClick={() => onSaveDiagnosis?.(message.id)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-graphite text-chalk text-xs font-semibold rounded-full hover:bg-ink transition-colors"
-                >
-                  <Save size={14} />
-                  Guardar diagnóstico
-                </button>
-                <button
-                  onClick={() => onDiscardDiagnosis?.(message.id)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-chalk text-ink border border-silver-mist text-xs font-semibold rounded-full hover:bg-vellum transition-colors"
-                >
-                  <Trash2 size={14} />
-                  Descartar
-                </button>
-              </div>
+              {isDiagnosisProposed && (
+                <div className="mt-4 flex items-center gap-2">
+                  <button
+                    onClick={() => onSaveDiagnosis?.(message.id)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-graphite text-chalk text-xs font-semibold rounded-full hover:bg-ink transition-colors"
+                  >
+                    <Save size={14} />
+                    Guardar diagnóstico
+                  </button>
+                  <button
+                    onClick={() => onDiscardDiagnosis?.(message.id)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-chalk text-ink border border-silver-mist text-xs font-semibold rounded-full hover:bg-vellum transition-colors"
+                  >
+                    <Trash2 size={14} />
+                    Descartar
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        {message.diagnosis_status === "saved" && (
-          <div className="mt-3 flex items-center gap-2 px-3 py-2 bg-sage/10 border border-sage/20 rounded-lg">
-            <Check size={14} className="text-sage" />
-            <p className="text-sm text-sage font-medium">Diagnóstico guardado</p>
-          </div>
-        )}
         {message.diagnosis_status === "discarded" && (
           <div className="mt-3 flex items-center gap-2 px-3 py-2 bg-terracotta/10 border border-terracotta/20 rounded-lg">
             <Trash2 size={14} className="text-terracotta" />

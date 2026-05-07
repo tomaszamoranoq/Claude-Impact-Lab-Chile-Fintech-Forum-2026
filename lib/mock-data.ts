@@ -1,3 +1,5 @@
+import { AgentName } from "@/lib/schemas";
+
 export interface Company {
   id: string;
   legal_name: string;
@@ -96,6 +98,10 @@ export interface Message {
   diagnosis?: DiagnosisData;
   diagnosis_status?: "proposed" | "saved" | "discarded";
   diagnosis_model_used?: string;
+  agent_response?: {
+    agent: AgentName;
+    data: unknown;
+  };
 }
 
 export interface ComplianceObligation {

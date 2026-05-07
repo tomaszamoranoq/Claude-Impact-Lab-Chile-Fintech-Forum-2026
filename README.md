@@ -175,6 +175,85 @@ ANTHROPIC_API_KEY=sk-ant-...
 - Al confirmar la acción en Acciones IA, se crea la transacción de caja con `document_reference` apuntando al nombre del documento.
 - Flujo completo: Documento → Analizar → Confirmar extracción → Acción propuesta → Confirmar en Acciones IA → Transacción de caja.
 
+### Fase 5A — Claude Agent Framework + LaunchAgent con roadmap persistente
+
+- Nueva arquitectura de agentes en `lib/server/agents/`:
+  - `types.ts`: tipos base del framework (AgentRunOptions, AgentRunOutput, KnowledgeQuery).
+  - `claude-client.ts`: wrapper thin sobre Anthropic SDK con `callClaudeToolUse()` para forzar tool_use.
+  - `knowledge/launch-knowledge-client.ts`: KnowledgeClient pre-MCP con contenido curado sobre trámites chilenos (Empresa en un Día, PROPYME, patentes, laboral).
+  - `launch-agent.ts`: agente principal que orquesta diagnosis + roadmap en una sola corrida.
+- `LaunchAgent.run(inputText)` ejecuta:
+  1. Obtiene contexto empresa desde Supabase.
+  2. Consulta `LaunchKnowledgeClient` para conocimiento relevante.
+  3. Construye prompt de sistema con knowledge + reglas de negocio.
+  4. Llama a Claude con `tool_choice` forzado (`emit_launch_diagnosis`).
+  5. Valida output con Zod (`launchAgentResultSchema`).
+  6. Normaliza reglas de negocio (socios → SpA, partners_count, next_steps).
+  7. Persiste `business_diagnosis` + `roadmap_items` vinculados.
+  8. Si Claude falla o Zod no valida, usa **fallback determinístico** con `model_used: "fallback-deterministic"`.
+- Nueva tabla `roadmap_items` en Supabase con `source_diagnosis_id` FK a `business_diagnoses`.
+- `/app/hoja-de-ruta` deja de usar mocks; consume `GET /api/roadmap-items` y muestra items reales agrupados por etapa.
+- `/app/asesor-inicial` agrega CTA "Generar hoja de ruta" que llama `POST /api/launch-agent`.
+- No se reemplaza `/api/business-diagnosis` existente (Fase 3C); coexisten.
+- No se tocan flujos de documentos, caja ni acciones IA.
+
+#### Hotfix 5A.1 — Estabilización de LaunchAgent y hoja de ruta persistente
+
+- `launchAgentResultSchema` exige `roadmap_items.min(5)`.
+- `safeParseRoadmapItems()` filtra ítems inválidos de Claude y completa con defaults no duplicados hasta 10.
+- Si Claude devuelve 0 ítems: se usan 10 defaults + warning.
+- Si Claude devuelve 1–4 ítems válidos: se conservan, se completan con defaults no duplicados + warning.
+- Si Claude devuelve ítems inválidos (sin título/descripción/etapa): se filtran antes de Zod.
+- Fallback determinístico solo ocurre si Claude falla completamente o Zod rechaza el diagnosis.
+- `KnowledgeClient` es capa pre-MCP, diseñada como adapter reemplazable por MCP en fase posterior.
+- `/app/asesor-inicial` usa textarea editable (máx. 500 caracteres) para el input de LaunchAgent.
+- `RoadmapPanel` se refresca vía `refreshTrigger` state sin `window.location.reload()`.
+- Warnings del backend se muestran en la UI de forma discreta.
+
+### Fase 5B — Arquitectura multi-agente MCP-ready
+
+- **BaseAgent** abstracto en `lib/server/agents/base-agent.ts`: orquesta el ciclo común (contexto empresa → conocimiento → prompt → Claude → normalizar → validar Zod → persistir → fallback).
+- **AgentRouter** en `lib/server/agents/agent-router.ts`: dispatch manual por `agent_name` (sin clasificador inteligente todavía; eso viene en 5C).
+- **Skeleton agents** (`OperationsAgent`, `DocumentsAgent`, `ComplianceAgent`, `LaborAgent`, `ResolutionAgent`) extienden `BaseAgent` vía `SkeletonAgent`, pero sobreescriben `run()` para devolver respuesta estructurada `not-implemented` sin llamar a Claude.
+- **LaunchAgent** refactorizado para extender `BaseAgent<LaunchAgentResult>`: mantiene 100% de comportamiento previo (fallback determinístico, persistencia de diagnosis + roadmap, enriquecimiento con `diagnosis_id` y `roadmap_items`).
+- **KnowledgeClient** extraído a interfaz TypeScript (`knowledge/types.ts`) con implementaciones locales (`knowledge/local/*`) y placeholder MCP (`knowledge/mcp/mcp-knowledge-client.ts`).
+- **Utils** compartidos: `lib/server/agents/utils/roadmap-utils.ts` con `safeParseRoadmapItems()` y `buildDefaultRoadmapItems()`.
+- **Endpoint unificado** `POST /api/agent` recibe `agent_name` + `input_text` y enruta al agente correspondiente. Skeletons devuelven HTTP 200 con `success: false`, `model_used: "not-implemented"`.
+- **Endpoint legacy** `POST /api/launch-agent` sigue funcionando sin cambios visibles; internamente usa `LaunchAgent.run()` (ahora heredado de `BaseAgent`).
+- No se reemplazan endpoints existentes; coexisten.
+- No se tocan flujos de documentos, caja ni acciones IA.
+- Estabilidad sobre pureza arquitectónica: si el refactor de LaunchAgent a BaseAgent hubiera sido demasiado riesgoso, se habría documentado como deuda técnica.
+
+### Fase 5C — Router inteligente con IntentClassifier (Claude)
+
+- **IntentClassifier** (`lib/server/agents/intent-classifier.ts`): clase separada que clasifica `input_text` en uno de 6 dominios usando Claude con `tool_use` forzado (`emit_intent_classification`), `max_tokens: 256`, `temperature: 0`.
+- **Fallback determinístico** (`lib/server/agents/intent-classifier-fallback.ts`): si Claude falla o no hay `ANTHROPIC_API_KEY`, usa regex scoring por dominio con tie-breakers inteligentes.
+- **AgentRouter** actualizado: si `agent_name` viene explícito → dispatch manual (bypass del clasificador). Si no → clasifica automáticamente y enruta.
+- **Endpoint `POST /api/agent`**: incluye `routing` metadata SIEMPRE en la respuesta:
+  - `selected_agent`, `confidence`, `reason`, `classifier_model`, `classifier_used` (`claude` | `fallback-regex` | `manual`).
+- Skeleton agents devuelven HTTP 501 con mensajes amigables al usuario final (no técnicos).
+- No se reemplaza `/api/launch-agent`; sigue funcionando como legacy.
+
+#### Hotfix 5C.1 — Fallback por scoring y mensajes amigables
+
+- Fallback regex reemplaza primer-match por **scoring por dominio** con pesos diferenciados:
+  - `documents`: palabras de acción sobre archivos (`subir`, `pdf`, `foto`, `escanear`) pesan alto.
+  - `operations`: palabras de transacción (`pagué`, `monto`, `transferencia`, `caja`) pesan alto.
+  - `compliance`: palabras de vencimiento/obligación (`vence`, `f29`, `impuesto`, `renovar`) pesan alto.
+- **Tie-breakers**:
+  - `documents` gana sobre `operations` cuando hay señales de archivo (`pdf`, `foto`, `subir`).
+  - `compliance` gana sobre `launch` cuando hay señales de vencimiento/recurrente.
+  - `operations` gana sobre `documents` cuando hay señales de pago y NO señales de archivo.
+- **Prompt de Claude** ajustado para diferenciar:
+  - documentos físicos/digitales (`documents`) vs operaciones de caja (`operations`).
+  - trámites iniciales (`launch`) vs obligaciones recurrentes (`compliance`).
+- **Mensajes amigables** por skeleton:
+  - `operations`: "Detecté que esto corresponde a operaciones de caja, pero ese agente aún está en desarrollo..."
+  - `documents`: "Detecté que esto corresponde a documentos, pero ese agente conversacional aún está en desarrollo..."
+  - `compliance`: "Detecté que esto corresponde a cumplimiento tributario o legal, pero ese agente aún está en desarrollo..."
+  - `labor`, `resolution`: mensajes similares amigables.
+- **Deuda técnica**: `routing` metadata no se persiste en base de datos todavía; solo viaja en la respuesta HTTP.
+
 ### Endpoints API
 
 | Método | Endpoint | Descripción |
@@ -192,6 +271,9 @@ ANTHROPIC_API_KEY=sk-ant-...
 | POST | `/api/documents/upload` | Subir documento a Supabase Storage |
 | POST | `/api/documents/[id]/analyze` | Simular análisis de documento (mock, sin Vision) |
 | POST | `/api/documents/[id]/confirm-extraction` | Confirmar extracción y crear acción propuesta |
+| POST | `/api/launch-agent` | Ejecutar LaunchAgent: diagnóstico + roadmap persistente (legacy) |
+| POST | `/api/agent` | Endpoint unificado multi-agente (dispatch manual por `agent_name`) |
+| GET | `/api/roadmap-items` | Listar roadmap items del último diagnóstico |
 
 ## Enfoque del MVP
 

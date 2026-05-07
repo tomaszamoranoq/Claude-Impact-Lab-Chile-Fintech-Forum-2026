@@ -371,3 +371,105 @@ export const documentExtractionSchema = z.object({
 });
 
 export type DocumentExtraction = z.infer<typeof documentExtractionSchema>;
+
+// ------------------------------------------------------------------
+// Schemas para roadmap items (Fase 5A)
+// ------------------------------------------------------------------
+
+export const roadmapItemStatusSchema = z.enum([
+  "pending",
+  "in_progress",
+  "completed",
+  "blocked",
+]);
+
+export const roadmapItemSchema = z.object({
+  id: z.string(),
+  company_id: z.string(),
+  source_diagnosis_id: z.string().optional(),
+  stage: lifecycleStageSchema,
+  title: z.string(),
+  description: z.string(),
+  status: roadmapItemStatusSchema,
+  due_date: z.string().optional(),
+  source_name: z.string().optional(),
+  source_url: z.string().optional(),
+  sort_order: z.number().int(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const createRoadmapItemInputSchema = z.object({
+  company_id: z.string(),
+  source_diagnosis_id: z.string().optional(),
+  stage: lifecycleStageSchema,
+  title: z.string().min(1),
+  description: z.string().min(1),
+  status: roadmapItemStatusSchema.default("pending"),
+  due_date: z.string().optional(),
+  source_name: z.string().optional(),
+  source_url: z.string().optional(),
+  sort_order: z.number().int().default(0),
+});
+
+export type RoadmapItemStatus = z.infer<typeof roadmapItemStatusSchema>;
+export type RoadmapItem = z.infer<typeof roadmapItemSchema>;
+export type CreateRoadmapItemInput = z.infer<typeof createRoadmapItemInputSchema>;
+
+// ------------------------------------------------------------------
+// Schemas para LaunchAgent output (Fase 5A)
+// ------------------------------------------------------------------
+
+export const launchAgentRoadmapItemSchema = z.object({
+  stage: lifecycleStageSchema,
+  title: z.string().min(1),
+  description: z.string().min(1),
+  status: roadmapItemStatusSchema.default("pending"),
+  due_date: z.string().optional(),
+  source_name: z.string().optional(),
+  source_url: z.string().optional(),
+  sort_order: z.number().int().default(0),
+});
+
+export const launchAgentResultSchema = z.object({
+  diagnosis: createBusinessDiagnosisInputSchema,
+  roadmap_items: z.array(launchAgentRoadmapItemSchema).min(5),
+  message: z.string(),
+  model_used: z.string(),
+  warnings: z.array(z.string()).default([]),
+});
+
+export type LaunchAgentRoadmapItem = z.infer<typeof launchAgentRoadmapItemSchema>;
+export type LaunchAgentResult = z.infer<typeof launchAgentResultSchema>;
+
+// ------------------------------------------------------------------
+// Schemas para clasificación de intenciones (Fase 5C)
+// ------------------------------------------------------------------
+
+export const agentNameSchema = z.enum([
+  "launch",
+  "operations",
+  "documents",
+  "compliance",
+  "labor",
+  "resolution",
+]);
+
+export const intentClassificationSchema = z.object({
+  agent_name: agentNameSchema,
+  confidence: z.number().min(0).max(1),
+  reason: z.string().min(1),
+  missing_context: z.array(z.string()).default([]),
+});
+
+export type IntentClassificationData = z.infer<typeof intentClassificationSchema>;
+
+// ------------------------------------------------------------------
+// AgentName type export & mode schema (Fase 5D-A)
+// ------------------------------------------------------------------
+
+export type AgentName = z.infer<typeof agentNameSchema>;
+
+export const agentModeSchema = z.enum(["chat", "execute"]);
+
+export type AgentMode = z.infer<typeof agentModeSchema>;

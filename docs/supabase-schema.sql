@@ -1,5 +1,5 @@
 -- ============================================================
--- Copiloto Pyme Chile — Supabase Schema (Fase 3C)
+-- Copiloto Pyme Chile — Supabase Schema (Fase 5B)
 -- ============================================================
 -- Ejecutar este script en el SQL Editor de Supabase.
 -- Es idempotente: puede ejecutarse múltiples veces sin duplicar datos.
@@ -168,3 +168,31 @@ values
   ('t8', 'mock-company-1', 'expense', 42000, 'Servicios', '2026-05-04',
    'Internet y teléfono', 'confirmed', null)
 on conflict (id) do nothing;
+
+-- -----------------------------------------------------------
+-- Tabla: roadmap_items (Fase 5A)
+-- -----------------------------------------------------------
+create table if not exists roadmap_items (
+  id text primary key,
+  company_id text not null references companies(id) on delete cascade,
+  source_diagnosis_id text references business_diagnoses(id) on delete set null,
+  stage text not null,
+  title text not null,
+  description text not null,
+  status text not null check (status in ('pending', 'in_progress', 'completed', 'blocked')),
+  due_date date,
+  source_name text,
+  source_url text,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- -----------------------------------------------------------
+-- Índices para roadmap_items (Fase 5A)
+-- -----------------------------------------------------------
+create index if not exists idx_roadmap_items_company_stage
+  on roadmap_items(company_id, stage);
+
+create index if not exists idx_roadmap_items_company_status
+  on roadmap_items(company_id, status);

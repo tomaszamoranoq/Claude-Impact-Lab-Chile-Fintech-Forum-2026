@@ -60,3 +60,83 @@ export async function getLatestBusinessDiagnosis(
 
   return data as BusinessDiagnosis;
 }
+
+export async function getLatestDiagnosisByCompany(
+  companyId: string,
+  maxAgeHours: number = 24
+): Promise<BusinessDiagnosis | null> {
+  const cutoff = new Date(Date.now() - maxAgeHours * 60 * 60 * 1000).toISOString();
+
+  const { data, error } = await supabase
+    .from("business_diagnoses")
+    .select("*")
+    .eq("company_id", companyId)
+    .gte("created_at", cutoff)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error) {
+    if (error.code === "PGRST116") {
+      return null;
+    }
+    throw new Error(`Failed to get latest diagnosis by company: ${error.message}`);
+  }
+
+  return data as BusinessDiagnosis;
+}
+
+export async function updateBusinessDiagnosis(
+  id: string,
+  input: Partial<CreateBusinessDiagnosisInput>
+): Promise<BusinessDiagnosis> {
+  const { data, error } = await supabase
+    .from("business_diagnoses")
+    .update(input)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to update business diagnosis: ${error.message}`);
+  }
+
+  return data as BusinessDiagnosis;
+}
+
+export async function getLatestDiagnosisWithRoadmap(
+  companyId: string,
+  maxAgeHours: number = 24
+): Promise<BusinessDiagnosis | null> {
+  const cutoff = new Date(Date.now() - maxAgeHours * 60 * 60 * 1000).toISOString();
+
+  const { data: latestLink, error: linkError } = await supabase
+    .from("roadmap_items")
+    .select("source_diagnosis_id, created_at")
+    .eq("company_id", companyId)
+    .not("source_diagnosis_id", "is", null)
+    .gte("created_at", cutoff)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (linkError) {
+    if (linkError.code === "PGRST116") return null;
+    throw new Error(`Error querying roadmap items for diagnosis: ${linkError.message}`);
+  }
+
+  if (!latestLink?.source_diagnosis_id) return null;
+
+  const { data, error } = await supabase
+    .from("business_diagnoses")
+    .select("*")
+    .eq("id", latestLink.source_diagnosis_id)
+    .single();
+
+  if (error) {
+    if (error.code === "PGRST116") return null;
+    throw new Error(`Error fetching diagnosis with roadmap: ${error.message}`);
+  }
+
+  return data as BusinessDiagnosis;
+}

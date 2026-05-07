@@ -473,3 +473,61 @@ export type AgentName = z.infer<typeof agentNameSchema>;
 export const agentModeSchema = z.enum(["chat", "execute"]);
 
 export type AgentMode = z.infer<typeof agentModeSchema>;
+
+// ------------------------------------------------------------------
+// Schemas para ComplianceAgent (Fase 5D-B)
+// ------------------------------------------------------------------
+
+export const complianceTopicSchema = z.enum([
+  "f29",
+  "f22",
+  "iva",
+  "municipal_patent",
+  "previred",
+  "tax_start",
+  "general",
+]);
+
+export const obligationStatusHintSchema = z.enum([
+  "pending",
+  "conditional",
+  "informational",
+]);
+
+export const obligationItemSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  institution: z.string().min(1),
+  form_code: z.string().optional(),
+  frequency: z.string().optional(),
+  due_hint: z.string().optional(),
+  applies_if: z.string().optional(),
+  status_hint: obligationStatusHintSchema,
+});
+
+export const complianceSourceSchema = z.object({
+  name: z.string().min(1),
+  url: z.string().optional(),
+});
+
+export const complianceResponseSchema = z.object({
+  agent: z.literal("compliance"),
+  message: z.string().min(1),
+  topic: complianceTopicSchema,
+  explanation: z.string(),
+  obligations: z.array(obligationItemSchema).default([]),
+  assumptions: z.array(z.string()).default([]),
+  missing_context: z.array(z.string()).default([]),
+  next_steps: z.array(z.string()).default([]),
+  sources: z.array(complianceSourceSchema).default([]),
+  confidence: z.number().min(0).max(1),
+  model_used: z.string(),
+  warnings: z.array(z.string()).default([]),
+});
+
+export type ComplianceTopic = z.infer<typeof complianceTopicSchema>;
+
+export type ObligationStatusHint = z.infer<typeof obligationStatusHintSchema>;
+export type ObligationItem = z.infer<typeof obligationItemSchema>;
+export type ComplianceSource = z.infer<typeof complianceSourceSchema>;
+export type ComplianceAgentResult = z.infer<typeof complianceResponseSchema>;
